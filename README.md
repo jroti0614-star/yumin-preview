@@ -8,6 +8,9 @@
 ## 만든 방식
 `downloads/yumin-launcher-preview.html` 파일을 `index.html`로 올린 정적 페이지입니다. 서버나 빌드 과정은 없고, GitHub Pages가 이 파일을 그대로 서빙합니다.
 
+## 배포
+GitHub Pages는 `gh-pages` 브랜치를 게시 소스로 쓰고 있습니다. 내용을 고칠 때는 `main`에 반영한 뒤 `gh-pages`에도 같은 파일을 올려야 사이트에 반영됩니다.
+
 ## 참고
 - 아이폰 사파리에서 열면 홈 화면에 추가해 앱처럼 실행할 수 있습니다(`apple-mobile-web-app-capable`).
 - 화면은 미리보기용이라 실제 앱의 저장·동기화 동작과는 다를 수 있습니다.

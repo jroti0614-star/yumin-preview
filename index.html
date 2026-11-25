@@ -3806,12 +3806,8 @@ ART_LESSONS.forEach(function (row, i) {
     clearAnimAdvance();
     showQuizPage();
   });
-  $('animCard').addEventListener('click', function () {
-    if (SESSION.step !== 'anim' || ANIM.running) return;
-    clearAnimAdvance();
-    speak(LETTERSname());
-    playStrokeAnim();
-  });
+  /* 획순 안내 카드를 눌러도 애니메이션이 처음부터 재생되지 않도록 함.
+     음성 재생은 아래 animWord를 눌렀을 때만 실행. */
   function LETTERSname() {
     var L = LETTERS[ART.letter];
     return L.name + '! ' + L.word + '의 ' + L.glyph;

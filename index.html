@@ -2439,12 +2439,13 @@ ART_LESSONS.forEach(function (row, i) {
     return n + (((code - 0xAC00) % 28) === 0 ? '야' : '아');
   }
   function availableStars() {
-    return Math.max(0, state.stars - state.placed);
+    return Math.max(0, state.stars - state.placed - state.spent);
   }
 
   function checkMapComplete() {
     if (state.placed < CONFIG.stickerGoal) return false;
     state.tickets += 1;
+    state.spent += state.placed;
     state.placed = 0;
     saveState();
     renderAll();

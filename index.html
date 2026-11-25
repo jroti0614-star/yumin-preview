@@ -3696,8 +3696,8 @@ ART_LESSONS.forEach(function (row, i) {
     var strokes = letterScreenStrokes(L, g).map(function (pts) { return { pts: pts, len: polyLen(pts) }; });
     var totalLen = strokes.reduce(function (a, s) { return a + s.len; }, 0) || 1;
 
-    var base = Math.max(3400, Math.min(5000, totalLen * 28));
-    var durs = strokes.map(function (s) { return Math.max(1800, base * (s.len / totalLen)); });
+    var base = Math.max(2000, Math.min(3000, totalLen * 16));
+    var durs = strokes.map(function (s) { return Math.max(1000, base * (s.len / totalLen)); });
     var gap = 900;
     var totalTime = durs.reduce(function (a, d) { return a + d + gap; }, 0);
 

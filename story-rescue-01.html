@@ -113,7 +113,7 @@ el("picture").innerHTML='<span class="scene-art">'+s.emoji+'</span>';
 el("chapter").textContent=s.chapter;el("heading").textContent=s.title;el("story").textContent=s.text;
 el("speaker").textContent=s.speaker;el("avatar").textContent=s.avatar;el("dialogueText").textContent=s.line;
 el("bar").style.width=((step+1)/6*100)+"%";el("feedback").textContent="";el("task").innerHTML="";
-el("next").textContent=s.button||"다음 장면";el("next").style.display=["pick","animal","draw"].includes(s.type)?"none":"inline-block";
+el("next").textContent=s.button||"다음 장면";el("exit").style.display=s.type==="done"?"inline-block":"none";el("next").style.display=["pick","animal","draw"].includes(s.type)?"none":"inline-block";
 if(s.type==="pick")choices([["🚂","기차",true],["🍎","사과",false],["🍌","바나나",false]]);
 if(s.type==="animal")choices([["🦊","여우",false],["🐰","토끼",true],["🦉","부엉이",false]]);
 if(s.type==="say"){

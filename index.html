@@ -174,28 +174,24 @@ h1,h2,h3,p{margin:0}
 .hero-star.s2{bottom:14px;right:10px;font-size:18px}
 .hero-star.s3{top:-6px;right:38%;font-size:13px;opacity:.7}
 
-/* ── 프로필 + 난이도 ─────────────────────────────────── */
+/* ── 프로필 (읽기 전용 배지) ─────────────────────────── */
 .profile-card{
-  margin-top:16px;padding:16px 18px;
+  margin-top:16px;padding:15px 18px;
   background:var(--card);border:1px solid var(--line);border-radius:20px;
   box-shadow:var(--shadow);
-  display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
 }
-.profile-main{display:flex;align-items:center;gap:12px;min-width:0}
-.avatar{
-  width:46px;height:46px;flex:0 0 46px;border-radius:16px;
-  background:linear-gradient(135deg,#fff3dc,#ffe7ef);
-  display:grid;place-items:center;font-size:23px;
-  border:1px solid #f6e6d5;
+.profile-badge{
+  display:inline-flex;align-items:center;gap:7px;flex-wrap:wrap;
+  padding:9px 15px;border-radius:999px;
+  background:#f4f2ff;border:1px solid #e5e0fb;
+  font-size:13.5px;color:#4b4364;
 }
-.profile-text{min-width:0}
-.profile-name{font-family:var(--display);font-size:18px;line-height:1.2}
-.profile-age{
-  display:inline-block;margin-top:3px;padding:3px 10px;border-radius:999px;
-  background:#f2f0ff;color:#5b48c9;font-size:12px;
-}
-.level-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-width:0}
-.level-label{font-size:12px;color:var(--muted);flex:0 0 auto}
+.profile-badge .p-emoji{font-size:17px;line-height:1}
+.profile-badge b{font-family:var(--display);font-weight:400;font-size:15.5px;color:#2a2542}
+.profile-badge .p-dot{color:#b3add0}
+.profile-badge .p-level{color:var(--purple-d);font-weight:700}
+.profile-note{font-size:11.5px;color:#9aa0b3}
 .chips{display:flex;gap:7px;flex-wrap:wrap}
 .chip{
   padding:8px 13px;border-radius:999px;border:1.5px solid var(--line);
@@ -536,10 +532,10 @@ h1,h2,h3,p{margin:0}
   .hero-card-label{font-size:11.5px}
   .hero-card-value{font-size:16px}
   .hero-card .hero-bar{display:none}
-  .profile-card{padding:14px 15px;border-radius:18px;gap:12px}
-  .avatar{width:42px;height:42px;flex-basis:42px;font-size:21px;border-radius:14px}
-  .profile-name{font-size:17px}
-  .level-row{width:100%;gap:8px}
+  .profile-card{padding:13px 14px;border-radius:18px;gap:10px}
+  .profile-badge{padding:8px 12px;font-size:12.5px;gap:6px}
+  .profile-badge b{font-size:14.5px}
+  .profile-note{font-size:11px}
   .chip{padding:7px 11px;font-size:12px}
   .section-head{margin:20px 0 10px}
   .section-head h2{font-size:18px}
@@ -570,6 +566,118 @@ h1,h2,h3,p{margin:0}
   .brand-text small{display:none}
   .subject-grid{gap:9px}
   .sc-title{font-size:16px}
+}
+
+/* ── 그림 별 모드 탭 ─────────────────────────────────── */
+.mode-tabs{
+  max-width:788px;margin:0 auto 12px;
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;
+  padding:4px;border-radius:15px;background:#eceafb;
+}
+.mode-tab{
+  padding:10px 4px;border:0;border-radius:11px;background:transparent;
+  color:#6c6889;font-family:var(--display);font-size:13px;white-space:nowrap;
+  transition:background .15s ease,color .15s ease,box-shadow .15s ease;
+}
+.mode-tab.on{background:#fff;color:var(--purple-d);box-shadow:0 4px 12px -8px rgba(80,52,214,.85)}
+
+/* ── ✏️ 따라그리기 ─────────────────────────────────── */
+.draw-card{padding:16px 16px 18px;max-width:560px;margin:0 auto;width:100%}
+.draw-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.draw-head strong{font-family:var(--display);font-size:16px;font-weight:400}
+.draw-count{font-size:11.5px;color:var(--muted)}
+.shape-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.shape-chip{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:6px 10px;border-radius:999px;border:1.5px solid var(--line);background:#fff;
+  font-size:12px;color:#4a4e63;
+}
+.shape-chip .glyph{font-family:var(--display);font-size:14px;line-height:1}
+.shape-chip.on{border-color:var(--purple);background:var(--purple-soft);color:var(--purple-d);font-weight:700}
+.draw-stage{
+  position:relative;width:100%;max-width:430px;margin:0 auto;
+  aspect-ratio:1/1;border-radius:20px;
+  background:#fff;border:1.5px solid #e8e5f7;
+  box-shadow:0 12px 26px -24px rgba(23,24,40,.7);
+  overflow:hidden;
+}
+.draw-stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.guide-canvas{pointer-events:none}
+.draw-canvas{touch-action:none;cursor:crosshair}
+.draw-tools{display:flex;flex-direction:column;gap:9px;margin-top:14px}
+.tool-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tool-label{flex:0 0 auto;font-size:11.5px;color:#9aa0b3;min-width:22px}
+.tool-group{display:flex;align-items:center;gap:6px}
+.swatch{
+  width:30px;height:30px;border-radius:50%;border:2px solid #fff;padding:0;
+  box-shadow:0 0 0 1.5px #e2dff1;
+}
+.swatch.on{box-shadow:0 0 0 2.5px var(--purple);transform:scale(1.08)}
+.size-btn{
+  width:32px;height:30px;border-radius:10px;border:1.5px solid var(--line);background:#fff;
+  display:grid;place-items:center;padding:0;
+}
+.size-btn i{display:block;border-radius:50%;background:#4a4e63}
+.size-btn.on{border-color:var(--purple);background:var(--purple-soft)}
+.size-btn.on i{background:var(--purple)}
+.tool-btn{
+  padding:7px 11px;border-radius:10px;border:1.5px solid var(--line);background:#fff;
+  font-size:12px;color:#4a4e63;
+}
+.tool-btn.on{border-color:#8fd3b8;background:#eafaf1;color:#0e7a4b;font-weight:700}
+.draw-hint{font-size:12px;color:var(--muted);margin:11px 0 12px;text-align:center}
+.btn.wide{width:100%;padding:13px 16px;font-size:15px}
+
+/* ── 🧩 그림퍼즐 ────────────────────────────────────── */
+.puzzle-card{position:relative;padding:16px 16px 18px;max-width:460px;margin:0 auto;width:100%;overflow:hidden}
+.pz-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.pz-head strong{font-family:var(--display);font-size:16px;font-weight:400}
+.pz-count{font-size:11.5px;color:var(--muted)}
+.puzzle-board{
+  position:relative;width:100%;max-width:340px;margin:0 auto;
+  display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:7px;
+  aspect-ratio:1/1;
+}
+.pz-ghost{position:absolute;inset:0;opacity:.18;pointer-events:none}
+.pz-ghost svg{width:100%;height:100%;display:block}
+.pz-slot{
+  position:relative;padding:0;border:2px dashed #d8d3f0;border-radius:14px;
+  background:transparent;overflow:hidden;display:block;
+}
+.pz-slot.filled{border:2px solid #e4dffa;background:#fff;animation:pzPop .26s ease}
+.pz-slot svg{width:100%;height:100%;display:block}
+.pz-slot.shake{animation:pzShake .4s ease}
+@keyframes pzPop{from{transform:scale(.9)}to{transform:scale(1)}}
+@keyframes pzShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-5px)}40%{transform:translateX(5px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
+.pz-msg{font-size:12.5px;color:var(--muted);text-align:center;margin:13px 0 4px}
+.pz-msg.ok{color:#0e7a4b}
+.pz-msg.warn{color:#b26a00}
+.pz-tray{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;max-width:340px;margin:10px auto 0}
+.pz-piece{
+  padding:0;aspect-ratio:1/1;border:2px solid #e7e3f7;border-radius:12px;
+  background:#fff;overflow:hidden;display:block;
+  box-shadow:0 6px 14px -12px rgba(23,24,40,.8);
+  transition:transform .14s ease,border-color .14s ease;
+}
+.pz-piece svg{width:100%;height:100%;display:block}
+.pz-piece.sel{border-color:var(--purple);transform:translateY(-4px) scale(1.05);box-shadow:0 10px 18px -12px rgba(90,60,230,.9)}
+.pz-actions{display:flex;gap:8px;justify-content:center;margin-top:14px;flex-wrap:wrap}
+.pz-confetti{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.pz-confetti i{position:absolute;top:-14px;width:8px;height:13px;border-radius:2px;animation:confettiFall 1.7s ease-in forwards}
+@keyframes confettiFall{from{transform:translateY(-20px) rotate(0);opacity:1}to{transform:translateY(420px) rotate(540deg);opacity:0}}
+.g-dirty{font-size:11.5px;color:#a06a00;margin-top:8px}
+
+@media (max-width:640px){
+  .mode-tabs{margin:0 14px 10px;border-radius:13px}
+  .mode-tab{font-size:12px;padding:9px 2px}
+  .draw-card,.puzzle-card{padding:13px;border-radius:18px}
+  .shape-chip{padding:5px 9px;font-size:11.5px;gap:4px}
+  .shape-chip .glyph{font-size:13px}
+  .swatch{width:27px;height:27px}
+  .size-btn{width:29px;height:27px}
+  .tool-btn{padding:6px 9px;font-size:11.5px}
+  .draw-tools{gap:6px}
+  .draw-hint{font-size:11.5px}
 }
 
 @media (prefers-reduced-motion:reduce){
@@ -635,21 +743,15 @@ h1,h2,h3,p{margin:0}
     </div>
 
     <div class="profile-card">
-      <div class="profile-main">
-        <span class="avatar" aria-hidden="true">🧸</span>
-        <div class="profile-text">
-          <div class="profile-name" id="profileName">유민이</div>
-          <div class="profile-age" id="profileAge">3~4세 (입문)</div>
-        </div>
+      <div class="profile-badge" id="profileBadge">
+        <span class="p-emoji" aria-hidden="true">🧸</span>
+        <b id="profileName">유민이</b>
+        <span class="p-dot" aria-hidden="true">·</span>
+        <span id="profileAge">3~4세 (입문)</span>
+        <span class="p-dot" aria-hidden="true">·</span>
+        <span class="p-level" id="profileLevel">1단계 · 기초</span>
       </div>
-      <div class="level-row">
-        <span class="level-label">난이도</span>
-        <div class="chips" id="levelChips" role="group" aria-label="난이도 단계">
-          <button class="chip" type="button" data-level="0">1단계 · 기초</button>
-          <button class="chip" type="button" data-level="1">2단계 · 발전</button>
-          <button class="chip" type="button" data-level="2">3단계 · 도전</button>
-        </div>
-      </div>
+      <span class="profile-note">🔒 난이도는 보호자 탭에서 바꿔요</span>
     </div>
 
     <div class="section-head">
@@ -736,9 +838,15 @@ h1,h2,h3,p{margin:0}
     </div>
     <span class="counter" id="quizCounter">1 / 4</span>
   </div>
-  <div class="progress"><i id="quizBar"></i></div>
+  <div class="mode-tabs" id="modeTabs" role="tablist" aria-label="그림 별 놀이" hidden>
+    <button class="mode-tab on" type="button" data-mode="quiz" role="tab" aria-selected="true">📝 퀴즈</button>
+    <button class="mode-tab" type="button" data-mode="draw" role="tab" aria-selected="false">✏️ 따라그리기</button>
+    <button class="mode-tab" type="button" data-mode="puzzle" role="tab" aria-selected="false">🧩 그림퍼즐</button>
+  </div>
 
-  <div class="sheet-body">
+  <div class="progress" id="quizProgress"><i id="quizBar"></i></div>
+
+  <div class="sheet-body" id="quizBody">
     <div class="card q-card">
       <div class="q-top">
         <span class="type-badge" id="quizBadge">따라 말하기</span>
@@ -762,6 +870,52 @@ h1,h2,h3,p{margin:0}
       <p class="rec-status" id="recStatus">마이크를 누르고 또박또박 따라 말해 보세요.</p>
       <button class="btn send" id="sendRecBtn" type="button" disabled>📤 보호자에게 보내기</button>
       <audio id="recAudio" hidden></audio>
+    </div>
+  </div>
+
+  <!-- ✏️ 따라그리기 -->
+  <div class="sheet-body" id="drawBody" hidden>
+    <div class="card draw-card">
+      <div class="draw-head">
+        <strong>✏️ 따라그리기</strong>
+        <span class="draw-count" id="drawCount">4개 도안</span>
+      </div>
+      <div class="shape-row" id="shapeRow" role="group" aria-label="따라 그릴 그림"></div>
+      <div class="draw-stage" id="drawStage">
+        <canvas id="guideCanvas" class="guide-canvas" aria-hidden="true"></canvas>
+        <canvas id="drawCanvas" class="draw-canvas" role="img" aria-label="점선을 따라 그리는 칸"></canvas>
+      </div>
+      <div class="draw-tools">
+        <div class="tool-row">
+          <span class="tool-label">색</span>
+          <div class="tool-group" id="colorRow" role="group" aria-label="색깔"></div>
+        </div>
+        <div class="tool-row">
+          <span class="tool-label">굵기</span>
+          <div class="tool-group" id="sizeRow" role="group" aria-label="선 굵기"></div>
+          <button class="tool-btn" id="eraserBtn" type="button" aria-label="지우개">🧽 지우개</button>
+          <button class="tool-btn" id="clearBtn" type="button">↺ 다시 그리기</button>
+        </div>
+      </div>
+      <p class="draw-hint" id="drawHint">초록 점에서 시작해 점선을 손가락으로 천천히 따라가 봐요.</p>
+      <button class="btn primary wide" id="drawDone" type="button">✨ 다 그렸어요!</button>
+    </div>
+  </div>
+
+  <!-- 🧩 그림퍼즐 -->
+  <div class="sheet-body" id="puzzleBody" hidden>
+    <div class="card puzzle-card">
+      <div class="pz-head">
+        <strong id="pzTitle">🐻 곰</strong>
+        <span class="pz-count" id="pzCount">0 / 4 조각</span>
+      </div>
+      <div class="puzzle-board" id="puzzleBoard"></div>
+      <p class="pz-msg" id="pzMsg">조각을 하나 골라 같은 자리에 놓아 봐요.</p>
+      <div class="pz-tray" id="pzTray" role="group" aria-label="퍼즐 조각"></div>
+      <div class="pz-actions">
+        <button class="btn" id="pzShuffle" type="button">↺ 다시 섞기</button>
+        <button class="btn primary" id="pzNext" type="button" hidden>다음 그림 →</button>
+      </div>
     </div>
   </div>
 </div>
@@ -807,10 +961,19 @@ h1,h2,h3,p{margin:0}
           <button class="chip" type="button" data-age="2">🌳 7+세 (심화)</button>
         </div>
       </div>
+      <div class="field">
+        <span>난이도</span>
+        <div class="chips" id="levelChipsGuardian" role="group" aria-label="난이도 단계">
+          <button class="chip" type="button" data-level="0">1단계 · 기초</button>
+          <button class="chip" type="button" data-level="1">2단계 · 발전</button>
+          <button class="chip" type="button" data-level="2">3단계 · 도전</button>
+        </div>
+      </div>
       <div class="g-actions">
         <button class="btn primary" id="saveChild" type="button">저장</button>
         <span class="g-state" id="childState" role="status"></span>
       </div>
+      <p class="g-dirty" id="childDirty" role="status" hidden>바뀐 내용이 있어요. 저장을 눌러 주세요.</p>
     </div>
 
     <div class="card g-card">
@@ -1143,7 +1306,7 @@ QUESTIONS = {
       praise: '수학 별에 도착! 숫자가 재미있어!' },
     { id: 'english', emoji: '🔤', title: '영어 별', desc: '알파벳과 말을 익혀요', hero: '알파벳을 만나 볼까?', cls: 'english',
       praise: '영어 별에 도착! 알파벳을 만나 보자!' },
-    { id: 'art', emoji: '🎨', title: '그림 별', desc: '색과 모양을 살펴봐요', hero: '색과 모양을 살펴볼까?', cls: 'art',
+    { id: 'art', emoji: '🎨', title: '그림 별', desc: '퀴즈 · 따라그리기 · 퍼즐', hero: '색과 모양을 살펴볼까?', cls: 'art',
       praise: '그림 별에 도착! 눈으로 잘 살펴보자!' }
   ];
 
@@ -1318,10 +1481,7 @@ QUESTIONS = {
   function renderProfile() {
     $('profileName').textContent = state.name;
     $('profileAge').textContent = AGES[state.age].name;
-    var chips = $('levelChips').querySelectorAll('[data-level]');
-    for (var i = 0; i < chips.length; i++) {
-      chips[i].classList.toggle('on', Number(chips[i].getAttribute('data-level')) === state.level);
-    }
+    $('profileLevel').textContent = LEVELS[state.level].chip;
   }
 
   function renderSubjects() {
@@ -1505,14 +1665,28 @@ QUESTIONS = {
 
   /* ── 보호자 화면 ────────────────────────────────────── */
   var giftForm = { count: 1, from: '엄마' };
+  var gDraft = { name: '', age: 0, level: 0, dirty: false };
+
+  function resetGuardianDraft() {
+    gDraft.name = state.name;
+    gDraft.age = state.age;
+    gDraft.level = state.level;
+    gDraft.dirty = false;
+  }
 
   function renderGuardian() {
-    $('childNameInput').value = state.name;
+    $('childNameInput').value = gDraft.name;
 
     var ageChips = $('ageChips').querySelectorAll('[data-age]');
     for (var i = 0; i < ageChips.length; i++) {
-      ageChips[i].classList.toggle('on', Number(ageChips[i].getAttribute('data-age')) === state.age);
+      ageChips[i].classList.toggle('on', Number(ageChips[i].getAttribute('data-age')) === gDraft.age);
     }
+
+    var lvChips = $('levelChipsGuardian').querySelectorAll('[data-level]');
+    for (var l = 0; l < lvChips.length; l++) {
+      lvChips[l].classList.toggle('on', Number(lvChips[l].getAttribute('data-level')) === gDraft.level);
+    }
+    $('childDirty').hidden = !gDraft.dirty;
 
     var giftChips = $('giftCountChips').querySelectorAll('[data-gift]');
     for (var g = 0; g < giftChips.length; g++) {
@@ -1621,7 +1795,7 @@ QUESTIONS = {
   /* ── 퀴즈 ───────────────────────────────────────────── */
   var quiz = { sub: 0, index: 0, correct: 0, locked: false, list: [], answered: 0 };
 
-  function openQuiz(subIndex) {
+  function openQuiz(subIndex, mode) {
     quiz.sub = subIndex;
     quiz.list = questionsFor(SUBJECTS[subIndex].id);
     if (!quiz.list.length) { toast('이 단계의 문제를 찾지 못했어요.'); return; }
@@ -1631,19 +1805,24 @@ QUESTIONS = {
     quiz.locked = false;
     quiz.answered = quiz.index;
 
+    var isArt = SUBJECTS[subIndex].id === 'art';
     $('quizTitle').textContent = SUBJECTS[subIndex].title;
-    $('quizSub').textContent = AGES[state.age].name + ' · ' + LEVELS[state.level].short + ' · 4문제';
+    $('quizSub').textContent = AGES[state.age].name + ' · ' + LEVELS[state.level].short +
+      (isArt ? '' : ' · 4문제');
 
     resetRecorder();
     $('quizSheet').hidden = false;
     document.body.style.overflow = 'hidden';
     $('quizSheet').scrollTop = 0;
-    renderQuestion();
+    $('modeTabs').hidden = !isArt;
+    setArtMode(isArt ? (mode || 'quiz') : 'quiz');
     speak(SUBJECTS[subIndex].praise);
   }
 
   function closeQuiz() {
     stopRecording();
+    ART.mode = 'quiz';
+    ART.drawing = false;
     $('quizSheet').hidden = true;
     document.body.style.overflow = '';
     renderAll();
@@ -1725,24 +1904,30 @@ QUESTIONS = {
     var sub = SUBJECTS[quiz.sub];
     var key = stageKey(sub.id);
     var already = !!state.done[key];
+    var inQuiz = ART.mode === 'quiz';
     state.done[key] = true;
     state.progress[key] = 4;
 
     if (!already) {
       state.stars += 1;
       saveState();
-      closeQuiz();
-      $('starPill').classList.remove('pop');
-      void $('starPill').offsetWidth;
-      $('starPill').classList.add('pop');
-      setTimeout(function () { $('starPill').classList.remove('pop'); }, 420);
-      showCelebrate('🌟', '축하합니다!', sub.title + ' ' + LEVELS[state.level].short +
-        ' 완료! 별 스티커 1개를 받았어요. (정답 ' + quiz.correct + '/4)', true);
-      speak('축하합니다! 별 스티커 한 개를 얻었어요!');
+      if (!inQuiz) {
+        // 그림 별의 다른 놀이 중에 끝났다면 창을 닫지 않고 기록만 넘긴다.
+        toast('🎉 ' + sub.title + ' ' + LEVELS[state.level].short + ' 완료! 별 1개를 받았어요.');
+      } else {
+        closeQuiz();
+        $('starPill').classList.remove('pop');
+        void $('starPill').offsetWidth;
+        $('starPill').classList.add('pop');
+        setTimeout(function () { $('starPill').classList.remove('pop'); }, 420);
+        showCelebrate('🌟', '축하합니다!', sub.title + ' ' + LEVELS[state.level].short +
+          ' 완료! 별 스티커 1개를 받았어요. (정답 ' + quiz.correct + '/4)', true);
+        speak('축하합니다! 별 스티커 한 개를 얻었어요!');
+      }
     } else {
       saveState();
-      closeQuiz();
-      toast('다시 풀기 완료! 정답 ' + quiz.correct + '/4');
+      if (inQuiz) closeQuiz();
+      else toast('다시 풀기 완료! 정답 ' + quiz.correct + '/4');
     }
     renderAll();
   }
@@ -1939,6 +2124,7 @@ QUESTIONS = {
   });
 
   function openGuardian() {
+    resetGuardianDraft();
     renderGuardian();
     $('guardianSheet').hidden = false;
     document.body.style.overflow = 'hidden';
@@ -1954,16 +2140,33 @@ QUESTIONS = {
   }
   $('guardianClose').addEventListener('click', closeGuardian);
 
-  /* ── 보호자: 아이 정보 ─────────────────────────────── */
+  /* ── 보호자: 아이 정보 · 난이도 ─────────────────────── */
   var ageChips = $('ageChips').querySelectorAll('[data-age]');
   for (var a = 0; a < ageChips.length; a++) {
     ageChips[a].addEventListener('click', function () {
-      state.age = Number(this.getAttribute('data-age'));
-      saveState();
-      renderGuardian();
+      gDraft.age = Number(this.getAttribute('data-age'));
+      gDraft.dirty = true;
       $('childState').textContent = '';
+      renderGuardian();
     });
   }
+
+  var gLevelChips = $('levelChipsGuardian').querySelectorAll('[data-level]');
+  for (var gl = 0; gl < gLevelChips.length; gl++) {
+    gLevelChips[gl].addEventListener('click', function () {
+      gDraft.level = Number(this.getAttribute('data-level'));
+      gDraft.dirty = true;
+      $('childState').textContent = '';
+      renderGuardian();
+    });
+  }
+
+  $('childNameInput').addEventListener('input', function () {
+    gDraft.name = this.value;
+    gDraft.dirty = true;
+    $('childDirty').hidden = false;
+    $('childState').textContent = '';
+  });
 
   $('saveChild').addEventListener('click', function () {
     var name = $('childNameInput').value.trim();
@@ -1973,11 +2176,14 @@ QUESTIONS = {
       return;
     }
     state.name = name.slice(0, 10);
+    state.age = gDraft.age;
+    state.level = gDraft.level;
     saveState();
+    resetGuardianDraft();
     renderAll();
     $('childState').style.color = '#0e7a4b';
-    $('childState').textContent = '저장했어요! 안녕, ' + vocative(state.name) + '!';
-    toast('아이 정보를 저장했어요.');
+    $('childState').textContent = '저장했어요! ' + AGES[state.age].name + ' · ' + LEVELS[state.level].chip;
+    toast('아이 정보와 난이도를 저장했어요.');
   });
 
   /* ── 보호자: 별 선물 ───────────────────────────────── */
@@ -2031,14 +2237,597 @@ QUESTIONS = {
     toast('별 기록을 초기화했어요.');
   });
 
-  /* ── 단계 칩 ───────────────────────────────────────── */
-  var levelBtns = $('levelChips').querySelectorAll('[data-level]');
-  for (var lb = 0; lb < levelBtns.length; lb++) {
-    levelBtns[lb].addEventListener('click', function () {
-      state.level = Number(this.getAttribute('data-level'));
-      saveState();
-      renderAll();
+  /* ══════════════════════════════════════════════════════
+     🎨 그림 별 · ✏️ 따라그리기 & 🧩 그림퍼즐
+     이미지 파일 없이 Canvas · SVG로만 그립니다.
+     ══════════════════════════════════════════════════════ */
+  var ART = {
+    mode: 'quiz',
+    shape: 0,
+    color: '#ef4b4b',
+    size: 11,
+    eraser: false,
+    strokes: 0,
+    drawing: false,
+    dpr: 1,
+    w: 0,
+    h: 0,
+    puzzle: { set: 0, placed: [false, false, false, false], tray: [], selected: null, started: false, solved: false }
+  };
+
+  var COLORS = ['#ef4b4b', '#f59e22', '#23b26d', '#3b82f6', '#a259f7'];
+  var SIZES = [{ v: 6, label: '얇게' }, { v: 11, label: '보통' }, { v: 19, label: '굵게' }];
+
+  /* 점선 도안: 각 획은 (Path2D, X, Y) => 시작점 [u,v] */
+  var SHAPES = [
+    {
+      id: 'circle', label: '동그라미', glyph: '○',
+      strokes: [function (p, X, Y) {
+        p.ellipse(X(0.5), Y(0.5), X(0.36) - X(0), Y(0.36) - Y(0), 0, 0, Math.PI * 2);
+        return [0.5, 0.14];
+      }]
+    },
+    {
+      id: 'triangle', label: '세모', glyph: '△',
+      strokes: [function (p, X, Y) {
+        p.moveTo(X(0.5), Y(0.13));
+        p.lineTo(X(0.87), Y(0.84));
+        p.lineTo(X(0.13), Y(0.84));
+        p.closePath();
+        return [0.5, 0.13];
+      }]
+    },
+    {
+      id: 'square', label: '네모', glyph: '□',
+      strokes: [function (p, X, Y) {
+        p.moveTo(X(0.15), Y(0.17));
+        p.lineTo(X(0.85), Y(0.17));
+        p.lineTo(X(0.85), Y(0.83));
+        p.lineTo(X(0.15), Y(0.83));
+        p.closePath();
+        return [0.15, 0.17];
+      }]
+    },
+    {
+      id: 'star', label: '별', glyph: '★',
+      strokes: [function (p, X, Y) {
+        var R = 0.42, r = 0.17;
+        for (var i = 0; i < 10; i++) {
+          var ang = -Math.PI / 2 + i * Math.PI / 5;
+          var rad = (i % 2 === 0) ? R : r;
+          var x = 0.5 + Math.cos(ang) * rad;
+          var y = 0.5 + Math.sin(ang) * rad;
+          if (i === 0) p.moveTo(X(x), Y(y)); else p.lineTo(X(x), Y(y));
+        }
+        p.closePath();
+        return [0.5, 0.08];
+      }]
+    },
+    {
+      id: 'heart', label: '하트', glyph: '♥',
+      strokes: [function (p, X, Y) {
+        p.moveTo(X(0.5), Y(0.84));
+        p.bezierCurveTo(X(0.16), Y(0.64), X(0.08), Y(0.42), X(0.22), Y(0.27));
+        p.bezierCurveTo(X(0.34), Y(0.15), X(0.48), Y(0.22), X(0.5), Y(0.33));
+        p.bezierCurveTo(X(0.52), Y(0.22), X(0.66), Y(0.15), X(0.78), Y(0.27));
+        p.bezierCurveTo(X(0.92), Y(0.42), X(0.84), Y(0.64), X(0.5), Y(0.84));
+        p.closePath();
+        return [0.5, 0.84];
+      }]
+    },
+    {
+      id: 'giyeok', label: 'ㄱ', glyph: 'ㄱ',
+      strokes: [function (p, X, Y) {
+        p.moveTo(X(0.22), Y(0.24));
+        p.lineTo(X(0.78), Y(0.24));
+        p.lineTo(X(0.78), Y(0.82));
+        return [0.22, 0.24];
+      }]
+    },
+    {
+      id: 'one', label: '1', glyph: '1',
+      strokes: [function (p, X, Y) {
+        p.moveTo(X(0.34), Y(0.30));
+        p.lineTo(X(0.52), Y(0.16));
+        p.lineTo(X(0.52), Y(0.84));
+        return [0.34, 0.30];
+      }]
+    },
+    {
+      id: 'A', label: 'A', glyph: 'A',
+      strokes: [
+        function (p, X, Y) {
+          p.moveTo(X(0.16), Y(0.84));
+          p.lineTo(X(0.5), Y(0.14));
+          p.lineTo(X(0.84), Y(0.84));
+          return [0.16, 0.84];
+        },
+        function (p, X, Y) {
+          p.moveTo(X(0.31), Y(0.58));
+          p.lineTo(X(0.69), Y(0.58));
+          return [0.31, 0.58];
+        }
+      ]
+    }
+  ];
+
+  /* ── 모드 탭 ─────────────────────────────────────────── */
+  function setArtMode(mode) {
+    ART.mode = mode;
+    var tabs = $('modeTabs').querySelectorAll('[data-mode]');
+    for (var i = 0; i < tabs.length; i++) {
+      var on = tabs[i].getAttribute('data-mode') === mode;
+      tabs[i].classList.toggle('on', on);
+      tabs[i].setAttribute('aria-selected', on ? 'true' : 'false');
+    }
+    $('quizProgress').hidden = mode !== 'quiz';
+    $('quizBody').hidden = mode !== 'quiz';
+    $('drawBody').hidden = mode !== 'draw';
+    $('puzzleBody').hidden = mode !== 'puzzle';
+
+    if (mode === 'quiz') {
+      renderQuestion();
+    } else if (mode === 'draw') {
+      buildShapeRow();
+      buildDrawTools();
+      $('quizCounter').textContent = SHAPES[ART.shape].label;
+      window.requestAnimationFrame(ensureDrawArea);
+    } else if (mode === 'puzzle') {
+      if (!ART.puzzle.started) startPuzzle(0);
+      else renderPuzzle();
+    }
+    $('quizSheet').scrollTop = 0;
+  }
+
+  var modeTabBtns = $('modeTabs').querySelectorAll('[data-mode]');
+  for (var mtb = 0; mtb < modeTabBtns.length; mtb++) {
+    modeTabBtns[mtb].addEventListener('click', function () {
+      setArtMode(this.getAttribute('data-mode'));
     });
+  }
+
+  /* ── 따라그리기: 도안 · 색 · 굵기 ─────────────────────── */
+  function buildShapeRow() {
+    var row = $('shapeRow');
+    row.innerHTML = '';
+    $('drawCount').textContent = SHAPES.length + '개 도안';
+    for (var i = 0; i < SHAPES.length; i++) {
+      (function (idx) {
+        var b = make('button', 'shape-chip' + (idx === ART.shape ? ' on' : ''));
+        b.type = 'button';
+        b.setAttribute('data-shape', idx);
+        b.setAttribute('aria-label', SHAPES[idx].label + ' 따라그리기');
+        b.innerHTML = '<span class="glyph" aria-hidden="true">' + SHAPES[idx].glyph + '</span>' +
+          '<span class="nm">' + SHAPES[idx].label + '</span>';
+        b.addEventListener('click', function () {
+          ART.shape = idx;
+          buildShapeRow();
+          clearDrawing();
+          drawGuide();
+          $('quizCounter').textContent = SHAPES[ART.shape].label;
+        });
+        row.appendChild(b);
+      })(i);
+    }
+  }
+
+  function buildDrawTools() {
+    var row = $('colorRow');
+    row.innerHTML = '';
+    for (var i = 0; i < COLORS.length; i++) {
+      (function (c) {
+        var b = make('button', 'swatch' + (ART.color === c && !ART.eraser ? ' on' : ''));
+        b.type = 'button';
+        b.style.background = c;
+        b.setAttribute('data-color', c);
+        b.setAttribute('aria-label', '색깔 ' + (i + 1));
+        b.addEventListener('click', function () {
+          ART.color = c;
+          ART.eraser = false;
+          buildDrawTools();
+        });
+        row.appendChild(b);
+      })(COLORS[i]);
+    }
+
+    var srow = $('sizeRow');
+    srow.innerHTML = '';
+    for (var k = 0; k < SIZES.length; k++) {
+      (function (s) {
+        var b = make('button', 'size-btn' + (ART.size === s.v ? ' on' : ''));
+        b.type = 'button';
+        b.setAttribute('aria-label', '선 굵기 ' + s.label);
+        var dot = make('i');
+        dot.style.width = Math.max(6, s.v) + 'px';
+        dot.style.height = Math.max(6, s.v) + 'px';
+        b.appendChild(dot);
+        b.addEventListener('click', function () { ART.size = s.v; buildDrawTools(); });
+        srow.appendChild(b);
+      })(SIZES[k]);
+    }
+    $('eraserBtn').classList.toggle('on', ART.eraser);
+  }
+
+  function setupDrawArea() {
+    var stage = $('drawStage');
+    if (!stage) return;
+    var r = stage.getBoundingClientRect();
+    var w = Math.round(r.width), h = Math.round(r.height);
+    if (w < 20 || h < 20) return;
+    var dpr = Math.min(3, window.devicePixelRatio || 1);
+    ART.dpr = dpr;
+    ART.w = w;
+    ART.h = h;
+    var g = $('guideCanvas'), d = $('drawCanvas');
+    g.width = Math.round(w * dpr); g.height = Math.round(h * dpr);
+    d.width = Math.round(w * dpr); d.height = Math.round(h * dpr);
+    var gc = g.getContext('2d');
+    gc.setTransform(dpr, 0, 0, dpr, 0, 0);
+    gc.clearRect(0, 0, w, h);
+    var dc = d.getContext('2d');
+    dc.setTransform(dpr, 0, 0, dpr, 0, 0);
+    dc.clearRect(0, 0, w, h);
+    dc.lineCap = 'round';
+    dc.lineJoin = 'round';
+    ART.drawing = false;
+    ART.strokes = 0;
+    drawGuide();
+    updateDrawHint();
+  }
+
+  /* 화면 크기가 그대로면 그린 선을 그대로 둔다 */
+  function ensureDrawArea() {
+    var stage = $('drawStage');
+    if (!stage) return;
+    var r = stage.getBoundingClientRect();
+    var w = Math.round(r.width), h = Math.round(r.height);
+    if (w < 20 || h < 20) return;
+    var d = $('drawCanvas');
+    if (d && d.width && ART.w === w && ART.h === h) return;
+    setupDrawArea();
+  }
+
+  function drawGuide() {
+    var cv = $('guideCanvas');
+    if (!cv || !cv.width) return;
+    var dpr = ART.dpr;
+    var w = cv.width / dpr, h = cv.height / dpr;
+    var c = cv.getContext('2d');
+    c.setTransform(dpr, 0, 0, dpr, 0, 0);
+    c.clearRect(0, 0, w, h);
+    var s = Math.min(w, h);
+    if (s <= 0) return;
+    var pad = s * 0.13;
+    var inner = s - pad * 2;
+    var bx = (w - inner) / 2, by = (h - inner) / 2;
+    var X = function (u) { return bx + u * inner; };
+    var Y = function (v) { return by + v * inner; };
+
+    var shape = SHAPES[ART.shape] || SHAPES[0];
+    var strokes = [], i;
+    for (i = 0; i < shape.strokes.length; i++) {
+      var p = new Path2D();
+      strokes.push({ path: p, start: shape.strokes[i](p, X, Y) });
+    }
+
+    c.save();
+    c.lineCap = 'round';
+    c.lineJoin = 'round';
+    c.setLineDash([Math.max(7, inner * 0.035), Math.max(9, inner * 0.042)]);
+    c.lineWidth = Math.max(4, inner * 0.017);
+    c.strokeStyle = '#cdc7f4';
+    for (i = 0; i < strokes.length; i++) c.stroke(strokes[i].path);
+    c.restore();
+
+    var st = strokes[0].start;
+    var px = X(st[0]), py = Y(st[1]);
+    var rr = Math.max(7, inner * 0.028);
+    c.beginPath();
+    c.arc(px, py, rr + 3, 0, Math.PI * 2);
+    c.fillStyle = '#ffffff';
+    c.fill();
+    c.beginPath();
+    c.arc(px, py, rr, 0, Math.PI * 2);
+    c.fillStyle = '#23b26d';
+    c.fill();
+    c.font = '600 ' + Math.round(Math.max(11, inner * 0.05)) + 'px -apple-system,Apple SD Gothic Neo,sans-serif';
+    c.fillStyle = '#1a8a55';
+    c.textAlign = 'center';
+    var above = py <= h * 0.5;
+    c.textBaseline = above ? 'bottom' : 'top';
+    c.fillText('시작', px, above ? py - rr - 7 : py + rr + 7);
+  }
+
+  function clearDrawing() {
+    var d = $('drawCanvas');
+    if (!d) return;
+    var c = d.getContext('2d');
+    c.setTransform(1, 0, 0, 1, 0, 0);
+    c.clearRect(0, 0, d.width, d.height);
+    c.setTransform(ART.dpr, 0, 0, ART.dpr, 0, 0);
+    c.lineCap = 'round';
+    c.lineJoin = 'round';
+    ART.strokes = 0;
+    updateDrawHint();
+  }
+
+  function updateDrawHint() {
+    var el = $('drawHint');
+    if (!el) return;
+    el.textContent = ART.strokes
+      ? '좋아요! 점선을 따라 그리고 있네요. 다 그렸으면 ✨ 다 그렸어요! 를 눌러요.'
+      : '초록 점에서 시작해 점선을 손가락으로 천천히 따라가 봐요.';
+  }
+
+  (function bindDrawing() {
+    var cv = $('drawCanvas');
+    if (!cv) return;
+    function pos(e) {
+      var r = cv.getBoundingClientRect();
+      return { x: e.clientX - r.left, y: e.clientY - r.top };
+    }
+    cv.addEventListener('pointerdown', function (e) {
+      if (typeof e.button === 'number' && e.button !== 0) return;
+      e.preventDefault();
+      try { cv.setPointerCapture(e.pointerId); } catch (err) { /* 캡처가 안 돼도 그리기는 됩니다 */ }
+      ART.drawing = true;
+      ART.strokes += 1;
+      var p = pos(e);
+      var c = cv.getContext('2d');
+      c.setTransform(ART.dpr, 0, 0, ART.dpr, 0, 0);
+      c.globalCompositeOperation = ART.eraser ? 'destination-out' : 'source-over';
+      c.strokeStyle = ART.color;
+      c.lineWidth = ART.eraser ? ART.size * 1.8 : ART.size;
+      c.lineCap = 'round';
+      c.lineJoin = 'round';
+      c.beginPath();
+      c.moveTo(p.x, p.y);
+      c.lineTo(p.x + 0.01, p.y);
+      c.stroke();
+      c.beginPath();
+      c.moveTo(p.x, p.y);
+      updateDrawHint();
+    });
+    cv.addEventListener('pointermove', function (e) {
+      if (!ART.drawing) return;
+      e.preventDefault();
+      var p = pos(e);
+      var c = cv.getContext('2d');
+      c.lineTo(p.x, p.y);
+      c.stroke();
+    });
+    function endStroke() {
+      if (!ART.drawing) return;
+      ART.drawing = false;
+      var c = cv.getContext('2d');
+      c.closePath();
+      c.globalCompositeOperation = 'source-over';
+    }
+    cv.addEventListener('pointerup', endStroke);
+    cv.addEventListener('pointercancel', endStroke);
+  })();
+
+  $('eraserBtn').addEventListener('click', function () {
+    ART.eraser = !ART.eraser;
+    buildDrawTools();
+  });
+  $('clearBtn').addEventListener('click', function () {
+    clearDrawing();
+    toast('그린 선을 지웠어요. 처음부터 다시 그려 봐요!');
+  });
+  $('drawDone').addEventListener('click', function () {
+    if (ART.strokes === 0) {
+      toast('먼저 점선을 따라 그려 봐요!');
+      speak('먼저 점선을 따라 그려 봐요!');
+      return;
+    }
+    showCelebrate('✏️', '멋진 그림이야!', SHAPES[ART.shape].label + '를 아주 잘 따라 그렸어요!', false);
+    speak('와, 멋진 그림이야! 아주 잘했어요!');
+  });
+
+  /* ── 그림퍼즐: 2×2 조각 맞추기 ─────────────────────── */
+  var PUZZLES = [
+    {
+      title: '🐻 곰',
+      svg: '<g><circle cx="58" cy="54" r="26" fill="#a9744f"/><circle cx="142" cy="54" r="26" fill="#a9744f"/>' +
+        '<circle cx="58" cy="54" r="13" fill="#e8b98f"/><circle cx="142" cy="54" r="13" fill="#e8b98f"/>' +
+        '<circle cx="100" cy="108" r="62" fill="#c08a5f"/><ellipse cx="100" cy="132" rx="35" ry="27" fill="#f2d8b4"/>' +
+        '<circle cx="77" cy="98" r="8" fill="#3a2a20"/><circle cx="123" cy="98" r="8" fill="#3a2a20"/>' +
+        '<ellipse cx="100" cy="122" rx="11" ry="8" fill="#3a2a20"/>' +
+        '<path d="M100 130 v9 M100 139 q-11 9 -19 0 M100 139 q11 9 19 0" stroke="#3a2a20" stroke-width="4" fill="none" stroke-linecap="round"/></g>'
+    },
+    {
+      title: '🚗 자동차',
+      svg: '<g><path d="M52 110 L74 68 q6-10 18-10 h26 q12 0 18 10 L158 110 Z" fill="#7aa2ff"/>' +
+        '<rect x="76" y="74" width="46" height="30" rx="8" fill="#dceaff"/>' +
+        '<rect x="22" y="108" width="156" height="46" rx="16" fill="#4a7cf5"/>' +
+        '<rect x="32" y="120" width="18" height="11" rx="5" fill="#ffe27a"/>' +
+        '<rect x="150" y="120" width="18" height="11" rx="5" fill="#ff8a80"/>' +
+        '<circle cx="66" cy="156" r="19" fill="#2e3447"/><circle cx="66" cy="156" r="8" fill="#c9d3e6"/>' +
+        '<circle cx="138" cy="156" r="19" fill="#2e3447"/><circle cx="138" cy="156" r="8" fill="#c9d3e6"/></g>'
+    },
+    {
+      title: '🍎 사과',
+      svg: '<g><path d="M100 60 C 62 42 30 68 30 109 C 30 150 60 182 100 176 C 140 182 170 150 170 109 C 170 68 138 42 100 60 Z" fill="#e8483f"/>' +
+        '<path d="M100 62 q-4 -22 12 -30" stroke="#7a4a2a" stroke-width="9" fill="none" stroke-linecap="round"/>' +
+        '<path d="M112 42 q30 -20 41 5 q-27 15 -41 -5 Z" fill="#3fa65a"/>' +
+        '<ellipse cx="64" cy="96" rx="12" ry="18" fill="#ff9d94" transform="rotate(-20 64 96)"/></g>'
+    },
+    {
+      title: '🌈 무지개',
+      svg: '<g fill="none" stroke-linecap="round">' +
+        '<path d="M30 154 A70 70 0 0 1 170 154" stroke="#ef5350" stroke-width="17"/>' +
+        '<path d="M47 154 A53 53 0 0 1 153 154" stroke="#ffa726" stroke-width="17"/>' +
+        '<path d="M64 154 A36 36 0 0 1 136 154" stroke="#ffd54f" stroke-width="17"/>' +
+        '<path d="M81 154 A19 19 0 0 1 119 154" stroke="#66bb6a" stroke-width="17"/></g>' +
+        '<g fill="#eef4ff"><circle cx="34" cy="158" r="17"/><circle cx="54" cy="165" r="12"/><circle cx="16" cy="170" r="10"/>' +
+        '<circle cx="166" cy="158" r="17"/><circle cx="146" cy="165" r="12"/><circle cx="184" cy="170" r="10"/></g>'
+    }
+  ];
+
+  function puzzleFullSVG(i) {
+    return '<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' + PUZZLES[i].svg + '</svg>';
+  }
+
+  function puzzlePieceSVG(i, q) {
+    var x = (q % 2) * 100;
+    var y = Math.floor(q / 2) * 100;
+    return '<svg viewBox="' + x + ' ' + y + ' 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+      PUZZLES[i].svg + '</svg>';
+  }
+
+  function puzzleCount() {
+    var n = 0;
+    for (var i = 0; i < 4; i++) if (ART.puzzle.placed[i]) n++;
+    return n;
+  }
+
+  function shuffled(arr) {
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  function setPzMsg(text, cls) {
+    var el = $('pzMsg');
+    if (!el) return;
+    el.textContent = text;
+    el.className = 'pz-msg' + (cls ? ' ' + cls : '');
+  }
+
+  function startPuzzle(setIndex) {
+    ART.puzzle.set = ((setIndex % PUZZLES.length) + PUZZLES.length) % PUZZLES.length;
+    ART.puzzle.placed = [false, false, false, false];
+    ART.puzzle.tray = shuffled([0, 1, 2, 3]);
+    ART.puzzle.selected = null;
+    ART.puzzle.started = true;
+    ART.puzzle.solved = false;
+    renderPuzzle();
+    setPzMsg('조각을 하나 골라 같은 자리에 놓아 봐요.');
+  }
+
+  function renderPuzzle() {
+    var set = ART.puzzle.set;
+    $('pzTitle').textContent = PUZZLES[set].title;
+    $('pzCount').textContent = puzzleCount() + ' / 4 조각';
+
+    var board = $('puzzleBoard');
+    var html = '<div class="pz-ghost" aria-hidden="true">' + puzzleFullSVG(set) + '</div>';
+    for (var q = 0; q < 4; q++) {
+      var filled = ART.puzzle.placed[q];
+      html += '<button class="pz-slot' + (filled ? ' filled' : '') + '" type="button" data-slot="' + q + '"' +
+        ' aria-label="' + (q + 1) + '번째 자리' + (filled ? ' 완성' : '') + '">' +
+        (filled ? puzzlePieceSVG(set, q) : '') + '</button>';
+    }
+    board.innerHTML = html;
+
+    var tray = $('pzTray');
+    var thtml = '';
+    for (var i = 0; i < ART.puzzle.tray.length; i++) {
+      var pq = ART.puzzle.tray[i];
+      thtml += '<button class="pz-piece' + (ART.puzzle.selected === pq ? ' sel' : '') + '" type="button" data-piece="' + pq + '" aria-label="퍼즐 조각">' +
+        puzzlePieceSVG(set, pq) + '</button>';
+    }
+    tray.innerHTML = thtml;
+    tray.hidden = ART.puzzle.tray.length === 0;
+
+    $('pzNext').hidden = !ART.puzzle.solved;
+    $('quizCounter').textContent = puzzleCount() + ' / 4';
+  }
+
+  $('pzTray').addEventListener('click', function (e) {
+    var btn = e.target && e.target.closest ? e.target.closest('.pz-piece') : null;
+    if (!btn) return;
+    var q = Number(btn.getAttribute('data-piece'));
+    ART.puzzle.selected = q;
+    renderPuzzle();
+    setPzMsg('조각을 들었어요. 위에서 알맞은 자리를 눌러 봐요.', 'ok');
+  });
+
+  $('puzzleBoard').addEventListener('click', function (e) {
+    var slot = e.target && e.target.closest ? e.target.closest('.pz-slot') : null;
+    if (!slot) return;
+    var q = Number(slot.getAttribute('data-slot'));
+    if (ART.puzzle.placed[q]) return;
+    if (ART.puzzle.selected == null) {
+      setPzMsg('먼저 아래에서 조각을 하나 골라 봐요.', 'warn');
+      return;
+    }
+    if (ART.puzzle.selected === q) {
+      ART.puzzle.placed[q] = true;
+      ART.puzzle.tray = ART.puzzle.tray.filter(function (x) { return x !== q; });
+      ART.puzzle.selected = null;
+      renderPuzzle();
+      var n = puzzleCount();
+      if (n >= 4) {
+        completePuzzle();
+      } else {
+        setPzMsg('쏙 들어갔어요! ' + n + ' / 4 · 잘하고 있어요.', 'ok');
+        speak('쏙! 잘했어요!');
+      }
+    } else {
+      slot.classList.add('shake');
+      setTimeout(function () { slot.classList.remove('shake'); }, 430);
+      setPzMsg('여기는 아니야! 다시 한 번 찾아봐요.', 'warn');
+      speak('여기는 아니야. 다시 찾아보자!');
+    }
+  });
+
+  function confettiBurst() {
+    var card = document.querySelector('.puzzle-card');
+    if (!card) return;
+    var cols = ['#ef4b4b', '#f59e22', '#ffd54f', '#23b26d', '#3b82f6', '#a259f7'];
+    var box = make('div', 'pz-confetti');
+    box.setAttribute('aria-hidden', 'true');
+    for (var i = 0; i < 20; i++) {
+      var s = make('i');
+      s.style.left = (4 + Math.random() * 92) + '%';
+      s.style.background = cols[i % cols.length];
+      s.style.animationDelay = (Math.random() * 0.4).toFixed(2) + 's';
+      box.appendChild(s);
+    }
+    card.appendChild(box);
+    setTimeout(function () { if (box.parentNode) box.parentNode.removeChild(box); }, 2200);
+  }
+
+  function completePuzzle() {
+    ART.puzzle.solved = true;
+    ART.puzzle.selected = null;
+    renderPuzzle();
+    setPzMsg('짝짝짝! 퍼즐을 다 맞췄어요! 🎉', 'ok');
+    confettiBurst();
+    speak('와! 퍼즐을 다 맞췄어요! 정말 잘했어요!');
+    setTimeout(function () {
+      if (ART.mode !== 'puzzle' || $('quizSheet').hidden) return;
+      $('pzNext').hidden = false;
+      showCelebrate('🎉', '퍼즐 완성!', PUZZLES[ART.puzzle.set].title + ' 그림을 다 맞췄어요! 정말 잘했어요!', false);
+    }, 700);
+  }
+
+  $('pzShuffle').addEventListener('click', function () {
+    if (ART.puzzle.solved) { startPuzzle(ART.puzzle.set); return; }
+    ART.puzzle.tray = shuffled(ART.puzzle.tray);
+    ART.puzzle.selected = null;
+    renderPuzzle();
+    setPzMsg('조각을 다시 섞었어요. 하나 골라 보아요.');
+  });
+
+  $('pzNext').addEventListener('click', function () {
+    startPuzzle(ART.puzzle.set + 1);
+    $('quizSheet').scrollTop = 0;
+  });
+
+  var drawResizeTimer = null;
+  if (window.ResizeObserver) {
+    var ro = new ResizeObserver(function () {
+      if ($('drawBody').hidden) return;
+      if (drawResizeTimer) clearTimeout(drawResizeTimer);
+      drawResizeTimer = setTimeout(ensureDrawArea, 90);
+    });
+    ro.observe($('drawStage'));
   }
 
   /* ── Esc 로 닫기 ───────────────────────────────────── */

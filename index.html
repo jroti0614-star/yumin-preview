@@ -2030,14 +2030,16 @@ function qPattern() {
   ]);
   return { type: '규칙 찾기', art: p[0], q: '규칙을 찾아 물음표에 올 것을 골라요!', opts: curShuffle(p[2]), a: p[1] };
 }
+var CLOCK_HOUR = ['🕐','🕑','🕒','🕓','🕔','🕕','🕖','🕗','🕘','🕙','🕚','🕛'];
+var CLOCK_HALF = ['🕜','🕝','🕞','🕟','🕠','🕡','🕢','🕣','🕤','🕥','🕦','🕧'];
 function qClock(half) {
   var h = 1 + curRnd(12);
   var next = h === 12 ? 1 : h + 1;
   var prev = h === 1 ? 12 : h - 1;
   if (half) {
-    return { type: '시계 보기', art: '🕞 ' + h + '시 30분', q: '짧은바늘이 ' + h + '와 ' + next + ' 사이, 긴바늘이 6을 가리키면 몇 시 몇 분일까요?', opts: threeOpts(h + '시 30분', [h + '시', next + '시 30분', prev + '시 30분']), a: h + '시 30분' };
+    return { type: '시계 보기', art: CLOCK_HALF[h - 1] + ' ' + h + '시 30분', q: '짧은바늘이 ' + h + '와 ' + next + ' 사이, 긴바늘이 6을 가리키면 몇 시 몇 분일까요?', opts: threeOpts(h + '시 30분', [h + '시', next + '시 30분', prev + '시 30분']), a: h + '시 30분' };
   }
-  return { type: '시계 보기', art: '🕒 ' + h + '시', q: '짧은바늘이 ' + h + ', 긴바늘이 12를 가리키면 몇 시일까요?', opts: threeOpts(h + '시', [next + '시', prev + '시', '12시']), a: h + '시' };
+  return { type: '시계 보기', art: CLOCK_HOUR[h - 1] + ' ' + h + '시', q: '짧은바늘이 ' + h + ', 긴바늘이 12를 가리키면 몇 시일까요?', opts: threeOpts(h + '시', [next + '시', prev + '시', '12시']), a: h + '시' };
 }
 function qStory(lv) {
   var max = 5 + lvNum(lv) * 5;
@@ -5357,7 +5359,7 @@ var ART_ORDER = [
     '💾':'floppy_disk', '📏':'straight_ruler', '📐':'triangular_ruler', '📖':'open_book', '📚':'books', '📤':'outbox_tray',
     '📦':'package', '🔊':'speaker_high_volume', '🔎':'magnifying_glass_tilted_right', '🔑':'key', '🔒':'locked', '🔓':'unlocked',
     '🔔':'bell', '🔢':'input_numbers', '🔤':'input_latin_letters', '🔥':'fire', '🔦':'flashlight', '🔴':'red_circle',
-    '🔵':'blue_circle', '🔺':'red_triangle', '🕒':'three_oclock', '🕞':'three-thirty', '🕯':'candle', '🖍':'crayon',
+    '🔵':'blue_circle', '🔺':'red_triangle', '🕒':'three_oclock', '🕐':'one_oclock', '🕑':'two_oclock', '🕓':'four_oclock', '🕔':'five_oclock', '🕕':'six_oclock', '🕖':'seven_oclock', '🕗':'eight_oclock', '🕘':'nine_oclock', '🕙':'ten_oclock', '🕚':'eleven_oclock', '🕛':'twelve_oclock', '🕜':'one-thirty', '🕝':'two-thirty', '🕟':'four-thirty', '🕠':'five-thirty', '🕡':'six-thirty', '🕢':'seven-thirty', '🕣':'eight-thirty', '🕤':'nine-thirty', '🕥':'ten-thirty', '🕦':'eleven-thirty', '🕧':'twelve-thirty', '🕞':'three-thirty', '🕯':'candle', '🖍':'crayon',
     '🗑':'wastebasket', '🗣':'speaking_head', '😊':'smiling_face_with_smiling_eyes', '😠':'angry_face', '😡':'pouting_face', '😢':'crying_face',
     '😴':'sleeping_face', '🚀':'rocket', '🚁':'helicopter', '🚂':'locomotive', '🚌':'bus', '🚐':'minibus',
     '🚓':'police_car', '🚕':'taxi', '🚗':'automobile', '🚚':'delivery_truck', '🚢':'ship', '🚪':'door',

@@ -988,6 +988,34 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
   .sc-foot{gap:6px}
   .sc-stage{font-size:10.8px;letter-spacing:-.2px}
 }
+
+/* ── 3D 이모지 일러스트 (Fluent Emoji 3D) ────────────── */
+.emoji-3d{
+  display:inline-block;width:1.15em;height:1.15em;
+  vertical-align:-.21em;object-fit:contain;
+  -webkit-user-select:none;user-select:none;pointer-events:none;
+  filter:drop-shadow(0 1px 1.5px rgba(24,20,50,.14));
+}
+.emo-run{
+  display:inline-flex;flex-wrap:wrap;justify-content:center;align-items:center;
+  gap:.06em;max-width:100%;vertical-align:-.21em;
+}
+.emo-run .emoji-3d{display:block;vertical-align:baseline}
+.brand-mark .emoji-3d{width:26px;height:26px;vertical-align:middle}
+.sc-icon .emoji-3d{width:33px;height:33px;vertical-align:middle}
+.celeb-emoji .emoji-3d,
+.q-art .emoji-3d{width:1em;height:1em;vertical-align:middle}
+.q-art .emo-run{vertical-align:middle}
+.opt.pic .emoji-3d{width:1.05em;height:1.05em}
+.hero-star .emoji-3d,
+.map-moon .emoji-3d,
+.tab span .emoji-3d,
+.chip .emoji-3d,
+.star-pill .emoji-3d,
+.btn .emoji-3d{
+  vertical-align:middle;
+}
+.star-pill .emoji-3d{width:16px;height:16px}
 </style>
 </head>
 <body>
@@ -2637,7 +2665,7 @@ var ART_ORDER = [
   };
 
   var SUBJECTS = [
-    { id: 'hangul', emoji: '🇰🇷', title: '한글 별', desc: '글자 퀴즈 · 24자 따라쓰기', hero: '글자를 만나 볼까?', cls: 'hangul', praise: '한글 별에 도착! 글자가 술술 읽힐 거야!' },
+    { id: 'hangul', emoji: '✏️', title: '한글 별', desc: '글자 퀴즈 · 24자 따라쓰기', hero: '글자를 만나 볼까?', cls: 'hangul', praise: '한글 별에 도착! 글자가 술술 읽힐 거야!' },
     { id: 'math', emoji: '🔢', title: '수학 별', desc: '숫자 퀴즈 · 그림퍼즐', hero: '숫자를 세어 볼까?', cls: 'math', praise: '수학 별에 도착! 숫자가 재미있어!' },
     { id: 'english', emoji: '🔤', title: '영어 별', desc: '알파벳 퀴즈 · 짝 맞추기', hero: '알파벳을 만나 볼까?', cls: 'english', praise: '영어 별에 도착! 알파벳을 만나 보자!' },
     { id: 'art', emoji: '🎨', title: '그림 별', desc: '색과 모양을 살펴봐요', hero: '색과 모양을 살펴볼까?', cls: 'art', praise: '그림 별에 도착! 눈으로 잘 살펴보자!' }
@@ -3540,7 +3568,7 @@ var ART_ORDER = [
       SUBJECTS.forEach(function (sub, i) {
         var o = document.createElement('option');
         o.value = String(i);
-        o.textContent = sub.emoji + ' ' + sub.title;
+        o.textContent = sub.title;
         sel.appendChild(o);
       });
       var noSel = $('jumpNo');
@@ -5296,11 +5324,151 @@ var ART_ORDER = [
     animState: function () { return document.body.dataset.anim || 'idle'; }
   };
 
+
+  /* ─────────────────────────────────────────────────────
+     3D 이모지 일러스트 (Microsoft Fluent Emoji 3D · MIT)
+     앱의 모든 이모지를 assets/3d/<이름>.webp 그림으로 바꾼다.
+     화면이 새로 그려질 때마다(MutationObserver) 새 글자도 자동 변환.
+     ───────────────────────────────────────────────────── */
+  var ASSET_3D = 'assets/3d/';
+  var ASSET_3D_DATA = {};   /* build.py가 단일 파일용으로 data URI를 채운다 */
+  var EMOJI_3D = {
+    '⏰':'alarm_clock', '⏹':'stop_button', '▶':'play_button', '●':'red_circle', '☀':'sun', '☁':'cloud',
+    '☂':'umbrella', '⚪':'white_circle', '⚫':'black_circle', '⚽':'soccer_ball', '⚾':'baseball', '⛄':'snowman_without_snow',
+    '⛵':'sailboat', '⛷':'skier', '✂':'scissors', '✅':'check_mark_button', '✈':'airplane', '✍':'writing_hand',
+    '✏':'pencil', '✨':'sparkles', '❄':'snowflake', '❓':'red_question_mark', '⬛':'black_large_square', '⬜':'white_large_square',
+    '⭐':'star', '🃏':'joker', '🌈':'rainbow', '🌉':'bridge_at_night', '🌊':'water_wave', '🌙':'crescent_moon',
+    '🌟':'glowing_star', '🌤':'sun_behind_small_cloud', '🌧':'cloud_with_rain', '🌬':'wind_face', '🌰':'chestnut', '🌱':'seedling',
+    '🌳':'deciduous_tree', '🌴':'palm_tree', '🌸':'cherry_blossom', '🌻':'sunflower', '🌼':'blossom', '🌾':'sheaf_of_rice',
+    '🌿':'herb', '🍁':'maple_leaf', '🍂':'fallen_leaf', '🍇':'grapes', '🍉':'watermelon', '🍊':'tangerine',
+    '🍌':'banana', '🍎':'red_apple', '🍓':'strawberry', '🍜':'steaming_bowl', '🍞':'bread', '🍠':'roasted_sweet_potato',
+    '🍦':'soft_ice_cream', '🍩':'doughnut', '🍪':'cookie', '🍬':'candy', '🍰':'shortcake', '🍲':'pot_of_food',
+    '🍳':'cooking', '🍽':'fork_and_knife_with_plate', '🎀':'ribbon', '🎁':'wrapped_gift', '🎄':'christmas_tree', '🎈':'balloon',
+    '🎉':'party_popper', '🎒':'backpack', '🎙':'studio_microphone', '🎟':'admission_tickets', '🎡':'ferris_wheel', '🎣':'fishing_pole',
+    '🎨':'artist_palette', '🎲':'game_die', '🎷':'saxophone', '🎸':'guitar', '🎹':'musical_keyboard', '🎺':'trumpet',
+    '🎻':'violin', '🏆':'trophy', '🏖':'beach_with_umbrella', '🏞':'national_park', '🏠':'house', '🏫':'school',
+    '🐍':'snake', '🐎':'horse', '🐑':'ewe', '🐕':'dog', '🐘':'elephant', '🐛':'bug',
+    '🐜':'ant', '🐞':'lady_beetle', '🐟':'fish', '🐢':'turtle', '🐣':'hatching_chick', '🐤':'baby_chick',
+    '🐥':'front-facing_baby_chick', '🐦':'bird', '🐭':'mouse_face', '🐯':'tiger_face', '🐰':'rabbit_face', '🐱':'cat_face',
+    '🐳':'spouting_whale', '🐶':'dog_face', '🐷':'pig_face', '🐸':'frog', '🐻':'bear', '🐿':'chipmunk',
+    '👃':'nose', '👋':'waving_hand', '👏':'clapping_hands', '👑':'crown', '👒':'womans_hat', '👕':'t-shirt',
+    '👦':'boy', '👧':'girl', '👨':'man', '👩':'woman', '👴':'old_man', '👵':'old_woman',
+    '👶':'baby', '💌':'love_letter', '💕':'two_hearts', '💧':'droplet', '💪':'flexed_biceps', '💬':'speech_balloon',
+    '💾':'floppy_disk', '📏':'straight_ruler', '📐':'triangular_ruler', '📖':'open_book', '📚':'books', '📤':'outbox_tray',
+    '📦':'package', '🔊':'speaker_high_volume', '🔎':'magnifying_glass_tilted_right', '🔑':'key', '🔒':'locked', '🔓':'unlocked',
+    '🔔':'bell', '🔢':'input_numbers', '🔤':'input_latin_letters', '🔥':'fire', '🔦':'flashlight', '🔴':'red_circle',
+    '🔵':'blue_circle', '🔺':'red_triangle', '🕒':'three_oclock', '🕞':'three-thirty', '🕯':'candle', '🖍':'crayon',
+    '🗑':'wastebasket', '🗣':'speaking_head', '😊':'smiling_face_with_smiling_eyes', '😠':'angry_face', '😡':'pouting_face', '😢':'crying_face',
+    '😴':'sleeping_face', '🚀':'rocket', '🚁':'helicopter', '🚂':'locomotive', '🚌':'bus', '🚐':'minibus',
+    '🚓':'police_car', '🚕':'taxi', '🚗':'automobile', '🚚':'delivery_truck', '🚢':'ship', '🚪':'door',
+    '🚲':'bicycle', '🛏':'bed', '🛴':'kick_scooter', '🟠':'orange_circle', '🟡':'yellow_circle', '🟢':'green_circle',
+    '🟣':'purple_circle', '🟤':'brown_circle', '🟥':'red_square', '🟦':'blue_square', '🟨':'yellow_square', '🟩':'green_square',
+    '🟪':'purple_square', '🤖':'robot', '🥁':'drum', '🥄':'spoon', '🥚':'egg', '🥛':'glass_of_milk',
+    '🥝':'kiwi_fruit', '🥢':'chopsticks', '🥤':'cup_with_straw', '🥵':'hot_face', '🥶':'cold_face', '🦁':'lion',
+    '🦆':'duck', '🦊':'fox', '🦋':'butterfly', '🦓':'zebra', '🦛':'hippopotamus', '🦩':'flamingo',
+    '🦵':'leg', '🧀':'cheese_wedge', '🧁':'cupcake', '🧃':'beverage_box', '🧊':'ice', '🧢':'billed_cap',
+    '🧤':'gloves', '🧩':'puzzle_piece', '🧸':'teddy_bear', '🧹':'broom', '🧻':'roll_of_paper', '🧽':'sponge',
+    '🩷':'pink_heart', '🪀':'yo-yo', '🪘':'long_drum', '🪢':'knot', '🪥':'toothbrush',
+  };
+  var EMOJI_SRC = '(?:' + Object.keys(EMOJI_3D).sort(function (a, b) { return b.length - a.length; }).join('|') + ')\uFE0F?';
+  var EMOJI_TEST = new RegExp(EMOJI_SRC);
+  var EMOJI_SKIP = {
+    SCRIPT: 1, STYLE: 1, TEXTAREA: 1, TITLE: 1, OPTION: 1, SELECT: 1,
+    CANVAS: 1, SVG: 1, NOSCRIPT: 1, INPUT: 1, TEMPLATE: 1
+  };
+
+  function emojiImg(slug) {
+    var img = document.createElement('img');
+    img.className = 'emoji-3d';
+    img.src = ASSET_3D_DATA[slug] || (ASSET_3D + slug + '.webp');
+    img.alt = '';
+    img.draggable = false;
+    img.setAttribute('aria-hidden', 'true');
+    return img;
+  }
+
+  /* 한 글자 안의 이모지를 그림으로 바꾼 조각 (붙어 있는 이모지는 한 줄로 묶는다) */
+  function emojiFragment(text) {
+    var re = new RegExp(EMOJI_SRC, 'g');
+    var frag = document.createDocumentFragment();
+    var last = 0, m;
+    while ((m = re.exec(text)) !== null) {
+      if (m.index > last) frag.appendChild(document.createTextNode(text.slice(last, m.index)));
+      var run = [m[0]];
+      var pos = m.index + m[0].length;
+      while (pos < text.length) {
+        re.lastIndex = pos;
+        var m2 = re.exec(text);
+        if (!m2 || m2.index !== pos) break;
+        run.push(m2[0]);
+        pos = m2.index + m2[0].length;
+      }
+      if (run.length > 1) {
+        var box = document.createElement('span');
+        box.className = 'emo-run';
+        run.forEach(function (ch) {
+          var slug = EMOJI_3D[ch.replace(/\ufe0f/g, '')];
+          if (slug) box.appendChild(emojiImg(slug));
+        });
+        frag.appendChild(box);
+      } else {
+        frag.appendChild(emojiImg(EMOJI_3D[run[0].replace(/\ufe0f/g, '')]));
+      }
+      last = pos;
+      re.lastIndex = pos;
+    }
+    if (last < text.length) frag.appendChild(document.createTextNode(text.slice(last)));
+    return frag;
+  }
+
+  function hydrateEmojis(root) {
+    if (!root || !document.createTreeWalker) return;
+    var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode: function (node) {
+        if (!node.nodeValue || !EMOJI_TEST.test(node.nodeValue)) return NodeFilter.FILTER_REJECT;
+        var p = node.parentNode;
+        while (p && p.nodeType === 1) {
+          if (EMOJI_SKIP[p.tagName]) return NodeFilter.FILTER_REJECT;
+          if (p.className && String(p.className).indexOf('no-emoji') >= 0) return NodeFilter.FILTER_REJECT;
+          if (p === root) break;
+          p = p.parentNode;
+        }
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    });
+    var targets = [], n;
+    while ((n = walker.nextNode())) targets.push(n);
+    targets.forEach(function (node) {
+      if (node.parentNode) node.parentNode.replaceChild(emojiFragment(node.nodeValue), node);
+    });
+  }
+
+  var emojiMo = null, emojiQueued = false;
+  function emojiSweep() {
+    emojiQueued = false;
+    if (emojiMo) emojiMo.disconnect();
+    hydrateEmojis(document.body);
+    if (emojiMo) emojiMo.observe(document.body, { childList: true, subtree: true, characterData: true });
+  }
+  function queueEmojiSweep() {
+    if (emojiQueued) return;
+    emojiQueued = true;
+    if (window.requestAnimationFrame) window.requestAnimationFrame(emojiSweep);
+    else setTimeout(emojiSweep, 16);
+  }
+  function startEmoji3D() {
+    hydrateEmojis(document.body);
+    if (!window.MutationObserver) return;
+    emojiMo = new MutationObserver(queueEmojiSweep);
+    emojiMo.observe(document.body, { childList: true, subtree: true, characterData: true });
+  }
+
   /* ── 시작 ──────────────────────────────────────────── */
   loadState();
   renderAll();
   switchTab('home');
   window.scrollTo(0, 0);
+  startEmoji3D();
 })();
 </script>
 </body>

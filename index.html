@@ -768,33 +768,21 @@ h1,h2,h3,p{margin:0}
 .step-chip.on{background:var(--purple);border-color:var(--purple);color:#fff;font-weight:700}
 .step-chip.done{background:#eafaf1;border-color:#c9ecd9;color:#0e7a4b}
 
-/* ── 24강 커리큘럼 ─────────────────────────────────── */
-.cur-card{padding:20px 22px}
-.cur-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
-.cur-info strong{display:block;font-family:var(--display);font-size:20px;font-weight:400}
-.cur-info small{font-size:12.5px;color:var(--muted)}
-.cur-preview{flex:0 0 auto;padding:9px 14px;border-radius:999px;border:1.5px solid var(--line);background:#fff;font-size:12.5px;color:#4a4e63}
-.cur-preview.on{background:var(--purple-soft);border-color:var(--purple);color:var(--purple-d);font-weight:700}
-.cur-bar{height:8px;border-radius:99px;background:#ececf6;margin:14px 0 18px;overflow:hidden}
-.cur-bar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#7d5cff,#a58cff);transition:width .3s ease}
-.cur-group + .cur-group{margin-top:16px}
-.cur-group-name{font-size:12px;color:#8b90a3;font-weight:700;margin-bottom:8px}
-.cur-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
-.cur-chip{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:11px 12px;border-radius:14px;border:1.5px solid var(--line);background:#fff;text-align:left;min-height:60px}
-.cur-chip b{font-family:var(--display);font-size:16px;font-weight:400;color:#2c3048}
-.cur-chip span{font-size:11.5px;color:#6c6889;line-height:1.25}
-.cur-chip i{position:absolute;right:8px;top:8px;font-style:normal;font-size:12px}
-.cur-chip.done{background:#f5fbf7;border-color:#c9ecd9}
-.cur-chip.now{border-color:var(--purple);box-shadow:0 0 0 3px rgba(122,92,245,.12)}
-.cur-chip.lock{opacity:.55}
-.cur-chip:active{transform:scale(.98)}
-
 /* ── 획순 미니 애니메이션 ───────────────────────────── */
+.learn-page{display:flex;flex-direction:column;gap:14px}
 .anim-card{padding:18px 18px 16px;background:linear-gradient(160deg,#f7f4ff,#ffffff 70%);border-color:#e8e3ff}
 .anim-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .anim-head strong{font-family:var(--display);font-size:17px;font-weight:400}
-.anim-btn{padding:8px 14px;border-radius:999px;border:1.5px solid #e1daff;background:#fff;color:var(--purple-d);font-size:12.5px;font-weight:700}
-.anim-btn:active{transform:scale(.97)}
+.anim-badge{padding:6px 12px;border-radius:999px;background:var(--purple-soft);color:var(--purple-d);font-size:11.5px;font-weight:700;white-space:nowrap}
+.anim-card.solo{padding:22px 20px 18px}
+.anim-card.solo .anim-head{justify-content:center;flex-wrap:wrap;gap:8px}
+.anim-card.solo .anim-head strong{font-size:19px}
+.anim-card.solo .anim-stage{width:min(420px,74vw);margin:16px auto 12px;border-radius:24px}
+.anim-card.solo .anim-word{font-size:21px}
+.anim-card.solo .anim-hint{font-size:12.5px;margin-top:6px}
+.anim-next{max-width:420px;margin:0 auto}
+.anim-next.ready{animation:nextPulse 1.15s ease-in-out infinite}
+@keyframes nextPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}
 .anim-stage{position:relative;width:min(270px,62vw);aspect-ratio:1/1;margin:14px auto 8px;border-radius:20px;background:#fff;border:1.5px solid #e8e3ff;box-shadow:0 14px 30px -26px rgba(60,40,150,.8);overflow:hidden}
 .anim-stage canvas{display:block;width:100%;height:100%}
 .anim-word{text-align:center;font-family:var(--display);font-size:17px;color:#4a3f7a;cursor:pointer}
@@ -943,12 +931,10 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
   .opt{min-height:62px;font-size:18px;padding:13px 14px}
   .opt.pic{font-size:34px}
   .q-art{font-size:56px}
-  .cur-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
-  .cur-card{padding:16px}
-  .cur-chip{padding:9px;min-height:54px}
-  .cur-chip b{font-size:15px}
-  .cur-chip span{font-size:10.5px}
   .anim-stage{width:min(240px,66vw)}
+  .anim-card.solo .anim-stage{width:min(300px,80vw)}
+  .anim-card.solo .anim-head strong{font-size:17px}
+  .anim-card.solo .anim-word{font-size:19px}
   .anim-head strong{font-size:15px}
   .step-chip{font-size:11.5px;padding:6px 11px}
 }
@@ -1069,7 +1055,7 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
 
     <div class="section-head">
       <h2>어떤 별로 떠나 볼까?</h2>
-      <p>과목을 고르면 1강부터 24강까지 이어서 배워요</p>
+      <p>과목을 고르면 지금 하던 강이 바로 열려요</p>
     </div>
 
     <div class="subject-grid" id="subjectGrid"></div>
@@ -1166,7 +1152,7 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
 <!-- ══════════════ 수업(강) ══════════════ -->
 <div class="sheet" id="quizSheet" role="dialog" aria-modal="true" aria-labelledby="quizTitle" hidden>
   <div class="sheet-top">
-    <button class="icon-btn" id="quizHome" type="button" aria-label="강 목록으로">←</button>
+    <button class="icon-btn" id="quizHome" type="button" aria-label="홈으로">←</button>
     <div class="sheet-top-text">
       <strong id="quizTitle">한글 별</strong>
       <small id="quizSub">기초 · 1강</small>
@@ -1177,27 +1163,12 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
   <div class="step-bar" id="stepBar" hidden></div>
   <div class="progress" id="quizProgress"><i id="quizBar"></i></div>
 
-  <!-- 24강 커리큘럼 -->
-  <div class="sheet-body" id="lessonBody" hidden>
-    <div class="card cur-card">
-      <div class="cur-top">
-        <div class="cur-info">
-          <strong id="curTitle">한글 별 · 기초</strong>
-          <small id="curSub">0 / 24강 완료</small>
-        </div>
-        <button class="cur-preview" id="curPreview" type="button">🔓 모든 강 열기</button>
-      </div>
-      <div class="cur-bar"><i id="curBar"></i></div>
-      <div class="cur-groups" id="curGroups"></div>
-    </div>
-  </div>
-
-  <!-- 학습(획순 애니메이션 + 퀴즈) -->
-  <div class="sheet-body" id="learnBody" hidden>
-    <div class="card anim-card" id="animCard">
+  <!-- 학습 1페이지: 글자 배우기(획순) -->
+  <div class="sheet-body learn-page" id="animPage" hidden>
+    <div class="card anim-card solo" id="animCard">
       <div class="anim-head">
         <strong id="animTitle">✏️ ㄱ 기역 획순</strong>
-        <button class="anim-btn" id="strokePlay" type="button">▶️ 다시 보기</button>
+        <span class="anim-badge">✍️ 1획부터 순서대로</span>
       </div>
       <div class="anim-stage" id="animStage">
         <canvas id="animCanvas"></canvas>
@@ -1205,7 +1176,11 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
       <p class="anim-word" id="animWord">✂️ 가위의 ㄱ</p>
       <p class="anim-hint" id="animHint">별이 1획부터 순서대로 그려 줘요.</p>
     </div>
+    <button class="btn primary wide anim-next" id="animNext" type="button">문제 풀러 가기 ▶</button>
+  </div>
 
+  <!-- 학습 2페이지: 퀴즈 -->
+  <div class="sheet-body learn-page" id="quizPage" hidden>
     <div class="card q-card">
       <div class="q-top">
         <span class="type-badge" id="quizBadge">따라 말하기</span>
@@ -3279,93 +3254,45 @@ ART_LESSONS.forEach(function (row, i) {
   $('celebNext').addEventListener('click', function () {
     var n = Number(this.getAttribute('data-next')) || 0;
     closeCelebrate();
-    if (n) { SESSION.step = 'learn'; openSubject(SESSION.sub); startLesson(n); }
+    if (n) { openSubject(SESSION.sub, n); }
   });
 
   /* ══════════════════════════════════════════════════════
      강 세션
      ══════════════════════════════════════════════════════ */
-  var SESSION = { sub: 0, no: 1, step: 'lessons', ready: false, holdSpeak: false };
+  var SESSION = { sub: 0, no: 1, step: 'idle', ready: false };
   var quiz = { index: 0, correct: 0, wrongs: 0, locked: false, list: [] };
 
-  function openSubject(subIndex) {
+  /* 과목을 누르면 1~24강 목록 없이 진행 중인 강이 곧바로 열린다 */
+  function openSubject(subIndex, lessonNo) {
+    var sub = SUBJECTS[subIndex] || SUBJECTS[0];
     SESSION.sub = subIndex;
-    SESSION.step = 'lessons';
-    var sub = SUBJECTS[subIndex];
     $('quizTitle').textContent = sub.title;
     $('quizSub').textContent = LEVELS[state.level].short + ' · ' + AGES[state.age].name;
-    $('quizCounter').textContent = currentLesson(sub.id) + ' / ' + LESSON_MAX;
-    $('lessonBody').hidden = false;
-    $('learnBody').hidden = true;
-    $('practiceBody').hidden = true;
     $('quizSheet').hidden = false;
     document.body.style.overflow = 'hidden';
     $('quizSheet').scrollTop = 0;
-    renderLessons();
-    renderSteps();
-    speak(sub.praise);
+    var no = Number(lessonNo) || currentLesson(sub.id);
+    startLesson(Math.max(1, Math.min(LESSON_MAX, no)), true);
   }
 
-  function renderLessons() {
-    var sub = SUBJECTS[SESSION.sub], id = sub.id;
-    var done = lessonDoneCount(id), cur = currentLesson(id);
-    $('curTitle').textContent = sub.title + ' · ' + LEVELS[state.level].short;
-    $('curSub').textContent = done + ' / ' + LESSON_MAX + '강 완료 · 다음 ' + cur + '강';
-    $('curBar').style.width = (done / LESSON_MAX * 100) + '%';
-    $('curPreview').textContent = state.preview ? '🔒 미리보기 끄기' : '🔓 모든 강 열기';
-    $('curPreview').classList.toggle('on', state.preview);
-    $('quizCounter').textContent = cur + ' / ' + LESSON_MAX;
-
-    var box = $('curGroups');
-    box.innerHTML = '';
-    var groups = [];
-    var defs = CURRICULUM[id] || [];
-    defs.forEach(function (d) {
-      var g = null;
-      for (var i = 0; i < groups.length; i++) if (groups[i].name === d.group) g = groups[i];
-      if (!g) { g = { name: d.group, items: [] }; groups.push(g); }
-      g.items.push(d);
-    });
-    groups.forEach(function (g) {
-      var wrap = make('div', 'cur-group');
-      wrap.appendChild(make('div', 'cur-group-name', g.name));
-      var grid = make('div', 'cur-grid');
-      g.items.forEach(function (d) {
-        var locked = lessonLocked(id, d.no);
-        var isDone = lessonDone(id, d.no);
-        var isNext = d.no === currentLesson(id) && !isDone;
-        var b = make('button', 'cur-chip' + (isDone ? ' done' : '') + (isNext ? ' now' : '') + (locked ? ' lock' : ''));
-        b.type = 'button';
-        b.setAttribute('data-lesson', d.no);
-        b.setAttribute('aria-label', d.no + '강 ' + d.detail + (isDone ? ' 완료' : locked ? ' 잠김' : ' 시작'));
-        b.innerHTML = '<b>' + d.no + '</b><span>' + (id === 'hangul' ? d.title : d.short) + '</span>' +
-          (isDone ? '<i aria-hidden="true">⭐</i>' : (locked ? '<i aria-hidden="true">🔒</i>' : ''));
-        b.addEventListener('click', function () {
-          if (lessonLocked(id, d.no)) {
-            toast(d.no + '강은 ' + (d.no - 1) + '강을 마치면 열려요!');
-            speak(d.no + '강은 ' + (d.no - 1) + '강을 마치면 열려요!');
-            return;
-          }
-          startLesson(d.no);
-        });
-        grid.appendChild(b);
-      });
-      wrap.appendChild(grid);
-      box.appendChild(wrap);
-    });
+  function setCounter() {
+    $('quizCounter').textContent = SESSION.no + ' / ' + LESSON_MAX + '강';
+    $('quizProgress').setAttribute('aria-label', SESSION.no + '강 / ' + LESSON_MAX + '강');
   }
 
   function renderSteps() {
     var id = SUBJECTS[SESSION.sub].id;
-    var steps = id === 'hangul' ? ['① 획순·퀴즈', '② 따라쓰기']
+    var steps = id === 'hangul' ? ['① 획순 배우기', '② 문제 풀기', '③ 따라쓰기']
       : id === 'math' ? ['① 수학 퀴즈', '② 그림퍼즐']
         : id === 'english' ? ['① 영어 퀴즈', '② 짝 맞추기']
           : ['① 그림 퀴즈'];
     var bar = $('stepBar');
     bar.innerHTML = '';
-    if (SESSION.step === 'lessons') { bar.hidden = true; return; }
     bar.hidden = false;
-    var active = SESSION.step === 'practice' ? 1 : 0;
+    var active = SESSION.step === 'anim' ? 0
+      : SESSION.step === 'practice' ? steps.length - 1
+        : (id === 'hangul' ? 1 : 0);
     steps.forEach(function (txt, i) {
       var s = make('span', 'step-chip' + (i === active ? ' on' : '') + (i < active ? ' done' : ''), txt);
       bar.appendChild(s);
@@ -3376,7 +3303,6 @@ ART_LESSONS.forEach(function (row, i) {
     var sub = SUBJECTS[SESSION.sub], id = sub.id;
     if (!force && lessonLocked(id, no)) { toast(no + '강은 아직 잠겨 있어요.'); return; }
     SESSION.no = no;
-    SESSION.step = 'learn';
     quiz.list = lessonQuestions(id, no);
     if (!quiz.list.length) { toast('이 강의 문제를 찾지 못했어요.'); return; }
     var saved = lessonPart(id, no);
@@ -3393,20 +3319,46 @@ ART_LESSONS.forEach(function (row, i) {
     ART.match.started = false;
     resetRecorder();
 
-    $('lessonBody').hidden = true;
-    $('learnBody').hidden = false;
+    clearAnimAdvance();
     $('practiceBody').hidden = true;
     $('quizSheet').scrollTop = 0;
+    setCounter();
+    $('quizBar').style.width = '0%';
     $('quizSub').textContent = LEVELS[state.level].short + ' · ' + no + '강 · ' + (lessonDef(id, no) || {}).detail;
 
-    $('animCard').hidden = id !== 'hangul';
-    SESSION.holdSpeak = id === 'hangul';
-    renderSteps();
-    renderQuestion();
     if (id === 'hangul') {
-      renderAnimCard();
-      setTimeout(function () { if (SESSION.step === 'learn') playStrokeAnim(); }, 320);
+      showAnimPage();
+    } else {
+      showQuizPage();
     }
+  }
+
+  /* ── 1페이지: 글자 배우기(획순) ────────────────────── */
+  function showAnimPage() {
+    SESSION.step = 'anim';
+    stopSpeak();
+    $('animPage').hidden = false;
+    $('quizPage').hidden = true;
+    $('practiceBody').hidden = true;
+    $('animNext').hidden = false;
+    $('animNext').classList.remove('ready');
+    renderSteps();
+    renderAnimCard();
+    $('quizSheet').scrollTop = 0;
+    setTimeout(function () { if (SESSION.step === 'anim') playStrokeAnim(); }, 300);
+  }
+
+  /* ── 2페이지: 퀴즈 ──────────────────────────────── */
+  function showQuizPage() {
+    clearAnimAdvance();
+    SESSION.step = 'learn';
+    $('animPage').hidden = true;
+    $('quizPage').hidden = false;
+    $('practiceBody').hidden = true;
+    renderSteps();
+    updateSpeakCard();
+    $('quizSheet').scrollTop = 0;
+    renderQuestion();
   }
 
   function renderQuestion() {
@@ -3414,7 +3366,7 @@ ART_LESSONS.forEach(function (row, i) {
     if (!q) return;
     quiz.locked = false;
     var id = SUBJECTS[SESSION.sub].id;
-    $('quizCounter').textContent = (quiz.index + 1) + ' / ' + quiz.list.length;
+    setCounter();
     $('quizBar').style.width = (quiz.index / quiz.list.length * 100) + '%';
     $('quizBadge').textContent = q.type || '문제';
     $('quizArt').textContent = q.art || '';
@@ -3438,7 +3390,7 @@ ART_LESSONS.forEach(function (row, i) {
     });
 
     updateSpeakCard();
-    if (SESSION.step === 'learn' && !SESSION.holdSpeak) {
+    if (SESSION.step === 'learn') {
       setTimeout(function () {
         if (SESSION.step !== 'learn') return;
         speak(q.q + '. ' + q.opts.join(', '));
@@ -3523,7 +3475,8 @@ ART_LESSONS.forEach(function (row, i) {
 
   function showPractice(kind) {
     SESSION.step = 'practice';
-    $('learnBody').hidden = true;
+    $('animPage').hidden = true;
+    $('quizPage').hidden = true;
     $('practiceBody').hidden = false;
     $('drawBlock').hidden = kind !== 'draw';
     $('puzzleBlock').hidden = kind !== 'puzzle';
@@ -3531,9 +3484,9 @@ ART_LESSONS.forEach(function (row, i) {
     renderSteps();
     updateSpeakCard();
     $('quizSheet').scrollTop = 0;
+    setCounter();
 
     if (kind === 'draw') {
-      $('quizCounter').textContent = ART.letter + 1 <= 24 ? (ART.letter + 1) + ' / 24' : String(ART.letter + 1);
       $('quizSub').textContent = LEVELS[state.level].short + ' · ' + SESSION.no + '강 · ✏️ 따라쓰기';
       ART.w = 0; ART.h = 0;
       ART.userPts = [];
@@ -3578,6 +3531,7 @@ ART_LESSONS.forEach(function (row, i) {
   }
 
   function closeQuiz(skipRender) {
+    clearAnimAdvance();
     stopRecording();
     cancelAnim();
     ART.drawing = false;
@@ -3585,28 +3539,12 @@ ART_LESSONS.forEach(function (row, i) {
     ART.match.locked = false;
     $('quizSheet').hidden = true;
     document.body.style.overflow = '';
-    SESSION.step = 'lessons';
+    SESSION.step = 'idle';
     if (!skipRender) renderAll();
   }
+  /* 뒤로 가기 = 홈으로 (강 목록은 보호자 탭의 '강 바로 열기'에서만) */
   $('quizHome').addEventListener('click', function () {
-    if (SESSION.step === 'lessons') { closeQuiz(); return; }
-    stopRecording();
-    cancelAnim();
-    SESSION.step = 'lessons';
-    $('learnBody').hidden = true;
-    $('practiceBody').hidden = true;
-    $('lessonBody').hidden = false;
-    $('quizSub').textContent = LEVELS[state.level].short + ' · ' + AGES[state.age].name;
-    renderLessons();
-    renderSteps();
-    $('quizSheet').scrollTop = 0;
-  });
-
-  $('curPreview').addEventListener('click', function () {
-    state.preview = !state.preview;
-    saveState();
-    renderLessons();
-    toast(state.preview ? '🔓 모든 강을 열었어요 (테스트용)' : '🔒 잠금 규칙으로 돌아갔어요');
+    closeQuiz();
   });
 
   /* ══════════════════════════════════════════════════════
@@ -3702,13 +3640,13 @@ ART_LESSONS.forEach(function (row, i) {
   }
 
   /* ── 획순 미니 애니메이션 ───────────────────────────── */
-  var ANIM = { raf: 0, running: false };
+  var ANIM = { raf: 0, running: false, next: 0 };
 
   function renderAnimCard() {
     var L = LETTERS[ART.letter];
     $('animTitle').textContent = '✏️ ' + L.glyph + ' ' + L.name + ' 획순';
     $('animWord').textContent = L.wordE + ' ' + L.word + '의 ' + L.glyph;
-    $('animHint').textContent = '별이 1획부터 순서대로 그려 줘요. 글자를 눌러 다시 들어 보세요.';
+    $('animHint').textContent = '별이 1획부터 순서대로 그려 줘요. 글자를 누르면 다시 그려요.';
     document.body.dataset.anim = 'idle';
   }
 
@@ -3830,19 +3768,30 @@ ART_LESSONS.forEach(function (row, i) {
         ANIM.running = false;
         ANIM.raf = 0;
         document.body.dataset.anim = 'done';
-        if (SESSION.step === 'learn' && SESSION.holdSpeak) {
-          SESSION.holdSpeak = false;
-          var qq = quiz.list[quiz.index];
-          if (qq) setTimeout(function () { speak(qq.q + '. ' + qq.opts.join(', ')); }, 220);
+        if (SESSION.step === 'anim') {
+          /* 다 그리면 '문제 풀러 가기' 버튼이 나타나고, 잠시 뒤 퀴즈 페이지로 넘어간다 */
+          $('animNext').hidden = false;
+          $('animNext').classList.add('ready');
+          clearAnimAdvance();
+          ANIM.next = setTimeout(function () {
+            if (SESSION.step === 'anim') showQuizPage();
+          }, 1300);
         }
       }
     }
     ANIM.raf = requestAnimationFrame(frame);
   }
 
-  $('strokePlay').addEventListener('click', function () { playStrokeAnim(); });
-  $('animCard').addEventListener('click', function (e) {
-    if (e.target && e.target.closest && e.target.closest('#strokePlay')) return;
+  function clearAnimAdvance() {
+    if (ANIM.next) { clearTimeout(ANIM.next); ANIM.next = 0; }
+  }
+  $('animNext').addEventListener('click', function () {
+    clearAnimAdvance();
+    showQuizPage();
+  });
+  $('animCard').addEventListener('click', function () {
+    if (SESSION.step !== 'anim') return;
+    $('animNext').classList.remove('ready');
     speak(LETTERSname());
     playStrokeAnim();
   });
@@ -4684,8 +4633,7 @@ ART_LESSONS.forEach(function (row, i) {
     var si = Number($('jumpSub').value) || 0;
     var no = Number($('jumpNo').value) || 1;
     closeGuardian();
-    openSubject(si);
-    startLesson(Math.max(1, Math.min(LESSON_MAX, no)), true);
+    openSubject(si, Math.max(1, Math.min(LESSON_MAX, no)));
   });
 
   /* ── 보호자: 초기화 ───────────────────────────────── */

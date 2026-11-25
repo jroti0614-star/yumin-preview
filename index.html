@@ -3801,7 +3801,7 @@ ART_LESSONS.forEach(function (row, i) {
     showQuizPage();
   });
   $('animCard').addEventListener('click', function () {
-    if (SESSION.step !== 'anim') return;
+    if (SESSION.step !== 'anim' || ANIM.running) return;
     clearAnimAdvance();
     speak(LETTERSname());
     playStrokeAnim();

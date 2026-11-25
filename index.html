@@ -3658,7 +3658,7 @@ ART_LESSONS.forEach(function (row, i) {
     var L = LETTERS[ART.letter];
     $('animTitle').textContent = '✏️ ' + L.glyph + ' ' + L.name + ' 획순';
     $('animWord').textContent = L.wordE + ' ' + L.word + '의 ' + L.glyph;
-    $('animHint').textContent = '별이 1획부터 순서대로 그려 줘요. 글자를 누르면 다시 그려요.';
+    $('animHint').textContent = '별이 한 획씩 천천히 그려 줘요. 다 본 뒤 '문제 풀러 가기'를 눌러 주세요. 글자를 누르면 다시 볼 수 있어요.';
     document.body.dataset.anim = 'idle';
   }
 
@@ -3696,9 +3696,9 @@ ART_LESSONS.forEach(function (row, i) {
     var strokes = letterScreenStrokes(L, g).map(function (pts) { return { pts: pts, len: polyLen(pts) }; });
     var totalLen = strokes.reduce(function (a, s) { return a + s.len; }, 0) || 1;
 
-    var base = Math.max(420, Math.min(1150, totalLen * 7));
-    var durs = strokes.map(function (s) { return Math.max(260, base * (s.len / totalLen)); });
-    var gap = 120;
+    var base = Math.max(1500, Math.min(2600, totalLen * 15));
+    var durs = strokes.map(function (s) { return Math.max(900, base * (s.len / totalLen)); });
+    var gap = 650;
     var totalTime = durs.reduce(function (a, d) { return a + d + gap; }, 0);
 
     speak(L.name + '! ' + L.word + '의 ' + L.glyph);
@@ -3781,13 +3781,10 @@ ART_LESSONS.forEach(function (row, i) {
         ANIM.raf = 0;
         document.body.dataset.anim = 'done';
         if (SESSION.step === 'anim') {
-          /* 다 그리면 '문제 풀러 가기' 버튼이 나타나고, 잠시 뒤 퀴즈 페이지로 넘어간다 */
+          /* 다 그린 뒤에는 자동으로 넘어가지 않고, 아이가 준비되면 직접 누른다 */
           $('animNext').hidden = false;
           $('animNext').classList.add('ready');
           clearAnimAdvance();
-          ANIM.next = setTimeout(function () {
-            if (SESSION.step === 'anim') showQuizPage();
-          }, 1300);
         }
       }
     }

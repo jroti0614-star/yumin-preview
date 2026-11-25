@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -7,42 +6,56 @@
 <title>별별 구조대 01 - 사라진 아기 토끼</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#eaf7ff;color:#29445b;font-family:system-ui,sans-serif}
-header{text-align:center;padding:18px}
-h1{font-size:27px;margin:6px}
+body{margin:0;background:#eaf7ff;color:#29445b;font-family:system-ui,-apple-system,sans-serif}
+header{text-align:center;padding:16px 12px 8px}
+header .brand{font-size:13px;font-weight:800;letter-spacing:1px;color:#54798d}
+h1{font-size:25px;margin:5px}
 .progress{height:9px;background:#d4e7ef;border-radius:20px;max-width:560px;margin:12px auto;overflow:hidden}
 .bar{height:100%;background:#77c8a0;width:0;transition:.3s}
-main{max-width:650px;margin:auto;padding:8px 16px 28px}
-.scene{background:#fffdf5;border:2px solid #d9edf2;border-radius:25px;padding:20px 16px;text-align:center;min-height:420px;box-shadow:0 7px #d7e9ed}
-.picture{height:170px;border-radius:18px;background:linear-gradient(#dff3ff 0 68%,#d9f0d1 68%);display:grid;place-items:center;font-size:75px}
-h2{font-size:24px}
-p{font-size:17px;line-height:1.6}
-.choices{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:20px 0}
-.choice{background:white;border:2px solid #d7e9ed;border-radius:17px;padding:12px 4px;font-size:16px;font-weight:bold;color:#29445b}
-.choice span{display:block;font-size:36px;margin-bottom:5px}
+main{max-width:650px;margin:auto;padding:8px 14px 28px}
+.scene{background:#fffdf5;border:2px solid #d9edf2;border-radius:25px;padding:16px;text-align:center;min-height:490px;box-shadow:0 7px #d7e9ed}
+.chapter{display:inline-block;padding:5px 12px;border-radius:20px;background:#eaf4ff;color:#4d7189;font-size:13px;font-weight:800}
+.picture{height:185px;border-radius:18px;background:linear-gradient(#dff3ff 0 68%,#d9f0d1 68%);display:grid;place-items:center;font-size:76px;margin:10px 0;overflow:hidden}
+.picture .scene-art{filter:drop-shadow(0 5px 3px #9ab5c4)}
+h2{font-size:23px;margin:12px 0 8px}
+.story{font-size:16px;line-height:1.55;margin:8px 2px 12px;min-height:50px}
+.dialogue{display:flex;align-items:flex-start;gap:10px;text-align:left;background:#f0f8ff;border:1px solid #d8eaf3;border-radius:17px;padding:11px 13px;margin:12px 0 14px;min-height:66px}
+.avatar{font-size:30px;flex:0 0 38px}
+.speaker{font-size:12px;font-weight:800;color:#59829a;margin-bottom:3px}
+.say{font-size:15px;line-height:1.45}
+.choices{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:16px 0}
+.choice{background:white;border:2px solid #d7e9ed;border-radius:17px;padding:10px 4px;font-size:15px;font-weight:bold;color:#29445b;min-height:88px}
+.choice span{display:block;font-size:34px;margin-bottom:4px}
 button{cursor:pointer;font:inherit}
 .choice.correct{background:#effbf2;border-color:#70c59a}
 .choice.wrong{background:#fff0f0;border-color:#e9a2a2}
-.primary,.secondary{border:0;border-radius:30px;padding:12px 20px;margin:5px;font-weight:bold}
+.primary,.secondary{border:0;border-radius:30px;padding:12px 18px;margin:5px;font-weight:bold}
 .primary{background:#70c49b;color:#173e32}
 .secondary{background:#e5f1f5;color:#34566a}
-.feedback{min-height:28px;color:#41845f;font-weight:bold}
-canvas{width:100%;height:160px;border:2px dashed #b9d5df;border-radius:15px;background:white;touch-action:none}
+.feedback{min-height:28px;color:#41845f;font-weight:bold;font-size:14px}
+canvas{width:100%;height:150px;border:2px dashed #b9d5df;border-radius:15px;background:white;touch-action:none}
 .hint{font-size:13px;color:#668292}
+.story-note{font-size:12px;color:#78909c;margin-top:10px}
+@media(max-width:380px){.scene{padding:12px}.picture{height:160px}.choices{gap:6px}.choice{font-size:13px}}
 </style>
 </head>
 <body>
 <header>
-<div>⭐ YUMIN'S STAR RESCUE TEAM</div>
+<div class="brand">⭐ YUMIN'S STAR RESCUE TEAM</div>
 <h1>별별 구조대 01</h1>
 <div>사라진 아기 토끼</div>
 <div class="progress"><div class="bar" id="bar"></div></div>
 </header>
 <main>
 <section class="scene">
-<div class="picture" id="picture">🚓</div>
+<div class="chapter" id="chapter">숲속 마을 · 긴급 신고</div>
+<div class="picture" id="picture"><span class="scene-art">🚓 🚒</span></div>
 <h2 id="heading">긴급 출동!</h2>
-<p id="story">숲속 마을에서 아기 토끼가 사라졌대요. 별별 구조대, 출동 준비!</p>
+<p class="story" id="story"></p>
+<div class="dialogue">
+<div class="avatar" id="avatar">🐿️</div>
+<div><div class="speaker" id="speaker">다람쥐 대장</div><div class="say" id="dialogueText"></div></div>
+</div>
 <div id="task"></div>
 <div class="feedback" id="feedback"></div>
 <div>
@@ -50,188 +63,78 @@ canvas{width:100%;height:160px;border:2px dashed #b9d5df;border-radius:15px;back
 <button class="secondary" id="repeat">다시 듣기</button>
 <button class="primary" id="next">🚨 출동하기</button>
 </div>
+<div class="story-note">이야기를 읽고 미션을 해결하면 다음 장면으로 이어져요.</div>
 </section>
 </main>
 <script>
 const scenes=[
-{emoji:"🚓",title:"긴급 출동!",text:"숲속 마을에서 아기 토끼가 사라졌대요. 별별 구조대, 출동 준비!",button:"🚨 출동하기"},
-{emoji:"🚂 🍎 🍌",title:"ㄱ을 찾아라!",text:"기역 소리가 나는 그림을 찾아볼까요? 기차, 사과, 바나나 중에서 골라요.",type:"pick"},
-{emoji:"🗣️",title:"ㄱ 소리 말하기",text:"기역! 입으로 천천히 말해 보세요. 듣고 따라 해도 괜찮아요.",type:"say"},
-{emoji:"✏️",title:"ㄱ 따라 쓰기",text:"손가락이나 펜으로 ㄱ을 그려 보세요. 위에서 오른쪽으로, 아래로 내려와요.",type:"draw"},
-{emoji:"🌳 🐰",title:"아기 토끼를 찾아라!",text:"풀숲에 누가 숨어 있을까요? 아기 토끼를 찾아 눌러 주세요.",type:"animal"},
-{emoji:"🐰 ⭐",title:"구조 성공!",text:"아기 토끼를 무사히 찾았어요! 별별 구조대가 임무를 완수했어요.",type:"done"}
+{emoji:"🚓 🚒",chapter:"숲속 마을 · 긴급 신고",title:"긴급 출동!",text:"평화롭던 숲속 마을에 긴급 신고가 들어왔어요. 아기 토끼가 보이지 않는대요!",speaker:"다람쥐 대장",avatar:"🐿️",line:"구조대 친구들! 아기 토끼가 사라졌어. 단서를 찾아 함께 구해 주자!",button:"🚨 구조대 출동!",type:"intro"},
+{emoji:"🚂 🍎 🍌",chapter:"첫 번째 단서 · 기차",title:"첫 번째 단서, ㄱ 찾기",text:"경찰차가 숲길을 달리다 작은 기차역에 도착했어요. 역 앞에는 그림 세 장이 놓여 있었어요.",speaker:"경찰차 삐뽀",avatar:"🚓",line:"기차 이름을 천천히 말해 봐. 기차의 첫소리와 같은 소리가 나는 글자는 무엇일까?",type:"pick"},
+{emoji:"🗣️",chapter:"두 번째 단서 · 기역 소리",title:"두 번째 단서, 기역 말하기",text:"기차표 뒷면에서 이상한 글자를 발견했어요. 바로 ㄱ이에요. 이 글자의 이름을 알아야 다음 장소를 찾을 수 있어요.",speaker:"꼬마 구조대원",avatar:"👧",line:"이 글자는 기역이야! 우리 같이 천천히 '기역'이라고 말해 보자.",type:"say"},
+{emoji:"✏️",chapter:"세 번째 단서 · 암호 쓰기",title:"세 번째 단서, ㄱ 따라 쓰기",text:"기차역 안내판에 ㄱ 모양의 암호가 나타났어요. 암호를 따라 쓰면 토끼가 숨은 곳을 알 수 있대요.",speaker:"소방차 씽씽",avatar:"🚒",line:"위에서 오른쪽으로 쭉, 그리고 아래로 내려와! 손가락으로 ㄱ을 그려 보자.",type:"draw"},
+{emoji:"🌳 🐰",chapter:"네 번째 단서 · 숲속 수색",title:"아기 토끼를 찾아라!",text:"암호를 풀자 숲속 큰 나무 아래에 도착했어요. 여우와 부엉이, 토끼 친구들이 모여 있네요.",speaker:"경찰차 삐뽀",avatar:"🚓",line:"친구들 사이에 아기 토끼가 숨어 있어. 자세히 살펴보고 토끼를 찾아 줘!",type:"animal"},
+{emoji:"🐰 ⭐",chapter:"마지막 장면 · 구조 성공",title:"구조 성공!",text:"찾았다! 아기 토끼가 풀숲에서 기다리고 있었어요. 구조대가 무사히 토끼를 가족에게 데려다주었어요.",speaker:"아기 토끼",avatar:"🐰",line:"구해 줘서 고마워! 유민이와 별별 구조대가 최고야!",type:"done"}
 ];
-
 let step=Number(localStorage.getItem("rescue01-step")||0);
 if(step<0||step>5)step=0;
 let voiceOn=true;
 let earned=localStorage.getItem("rescue01-earned")==="yes";
-
 const el=id=>document.getElementById(id);
-
 function speak(){
 if(!voiceOn||!("speechSynthesis"in window))return;
 speechSynthesis.cancel();
-speechSynthesis.speak(new SpeechSynthesisUtterance(scenes[step].title+". "+scenes[step].text));
+const msg=new SpeechSynthesisUtterance(scenes[step].title+". "+scenes[step].text+" "+scenes[step].speaker+". "+scenes[step].line);
+msg.lang="ko-KR";speechSynthesis.speak(msg);
 }
-
 function choices(items){
-const wrap=document.createElement("div");
-wrap.className="choices";
+const wrap=document.createElement("div");wrap.className="choices";
 items.forEach(([emoji,label,correct])=>{
-const b=document.createElement("button");
-b.className="choice";
+const b=document.createElement("button");b.className="choice";
 b.innerHTML="<span>"+emoji+"</span>"+label;
 b.onclick=()=>{
-if(correct){
-b.classList.add("correct");
-el("feedback").textContent="정답이에요! 잘 찾았어요.";
-setTimeout(advance,650);
-}else{
-b.classList.add("wrong");
-el("feedback").textContent="괜찮아요. 다시 살펴봐요!";
-}
+if(correct){b.classList.add("correct");el("feedback").textContent="정답이야! 새로운 단서를 찾았어.";setTimeout(advance,850);}
+else{b.classList.add("wrong");el("feedback").textContent="아직 아니야. 그림을 다시 살펴보자!";}
 };
 wrap.appendChild(b);
-});
-el("task").appendChild(wrap);
+});el("task").appendChild(wrap);
 }
-
 function drawing(){
-const c=el("pad"),ctx=c.getContext("2d");
-ctx.strokeStyle="#315b70";
-ctx.lineWidth=10;
-ctx.lineCap="round";
+const c=el("pad"),ctx=c.getContext("2d");ctx.strokeStyle="#315b70";ctx.lineWidth=10;ctx.lineCap="round";
 let down=false,last=null;
-
-function pos(e){
-const r=c.getBoundingClientRect();
-return{
-x:(e.clientX-r.left)*c.width/r.width,
-y:(e.clientY-r.top)*c.height/r.height
-};
-}
-
-c.onpointerdown=e=>{
-down=true;
-last=pos(e);
-c.setPointerCapture(e.pointerId);
-};
-
-c.onpointermove=e=>{
-if(!down)return;
-let p=pos(e);
-ctx.beginPath();
-ctx.moveTo(last.x,last.y);
-ctx.lineTo(p.x,p.y);
-ctx.stroke();
-last=p;
-};
-
-c.onpointerup=()=>down=false;
-c.onpointercancel=()=>down=false;
-
+function pos(e){const r=c.getBoundingClientRect();return{x:(e.clientX-r.left)*c.width/r.width,y:(e.clientY-r.top)*c.height/r.height};}
+c.onpointerdown=e=>{down=true;last=pos(e);c.setPointerCapture(e.pointerId);};
+c.onpointermove=e=>{if(!down)return;let p=pos(e);ctx.beginPath();ctx.moveTo(last.x,last.y);ctx.lineTo(p.x,p.y);ctx.stroke();last=p;};
+c.onpointerup=()=>down=false;c.onpointercancel=()=>down=false;
 el("clear").onclick=()=>ctx.clearRect(0,0,c.width,c.height);
 }
-
 function render(){
-const s=scenes[step];
-
-if("speechSynthesis"in window)speechSynthesis.cancel();
-
-el("picture").textContent=s.emoji;
-el("heading").textContent=s.title;
-el("story").textContent=s.text;
-el("bar").style.width=((step+1)/6*100)+"%";
-el("feedback").textContent="";
-el("task").innerHTML="";
-
-el("next").textContent=s.button||"다음 단계";
-el("next").style.display=["pick","animal","draw"].includes(s.type)?"none":"inline-block";
-
-if(s.type==="pick"){
-choices([
-["🚂","기차",true],
-["🍎","사과",false],
-["🍌","바나나",false]
-]);
-}
-
-if(s.type==="animal"){
-choices([
-["🦊","여우",false],
-["🐰","토끼",true],
-["🦉","부엉이",false]
-]);
-}
-
+const s=scenes[step];if("speechSynthesis"in window)speechSynthesis.cancel();
+el("picture").innerHTML='<span class="scene-art">'+s.emoji+'</span>';
+el("chapter").textContent=s.chapter;el("heading").textContent=s.title;el("story").textContent=s.text;
+el("speaker").textContent=s.speaker;el("avatar").textContent=s.avatar;el("dialogueText").textContent=s.line;
+el("bar").style.width=((step+1)/6*100)+"%";el("feedback").textContent="";el("task").innerHTML="";
+el("next").textContent=s.button||"다음 장면";el("next").style.display=["pick","animal","draw"].includes(s.type)?"none":"inline-block";
+if(s.type==="pick")choices([["🚂","기차",true],["🍎","사과",false],["🍌","바나나",false]]);
+if(s.type==="animal")choices([["🦊","여우",false],["🐰","토끼",true],["🦉","부엉이",false]]);
 if(s.type==="say"){
-el("task").innerHTML='<button class="secondary" id="listen">🔈 기역 듣기</button><p class="hint">마이크 없이도 진행할 수 있어요.</p>';
-el("listen").onclick=()=>{
-if("speechSynthesis"in window){
-speechSynthesis.cancel();
-speechSynthesis.speak(new SpeechSynthesisUtterance("기역"));
+el("task").innerHTML='<button class="secondary" id="listen">🔈 기역 소리 듣기</button><p class="hint">준비가 되면 아래 다음 장면을 눌러 주세요.</p>';
+el("listen").onclick=()=>{if("speechSynthesis"in window){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance("기역");u.lang="ko-KR";speechSynthesis.speak(u);}};
 }
-};
-}
-
 if(s.type==="draw"){
-el("task").innerHTML=
-'<canvas id="pad" width="600" height="220"></canvas>'+
-'<p class="hint">손가락으로 ㄱ을 써 보세요.</p>'+
-'<button class="secondary" id="clear">지우기</button>'+
-'<button class="primary" id="drawDone">다 썼어요! 다음으로</button>';
-
-drawing();
-el("drawDone").onclick=advance;
+el("task").innerHTML='<canvas id="pad" width="600" height="220"></canvas><p class="hint">손가락으로 ㄱ을 써 보세요.</p><button class="secondary" id="clear">다시 쓰기</button><button class="primary" id="drawDone">암호 완성!</button>';
+drawing();el("drawDone").onclick=advance;
 }
-
 if(s.type==="done"){
-if(!earned){
-localStorage.setItem("rescue01-earned","yes");
-earned=true;
-el("feedback").textContent="🌟 첫 구조 완료! 별 1개 획득!";
-}else{
-el("feedback").textContent="🐰 구조 성공! 다시 한번 임무를 완수했어요!";
+if(!earned){localStorage.setItem("rescue01-earned","yes");earned=true;el("feedback").textContent="🌟 첫 구조 완료! 구조대 별 1개를 획득했어요!";}
+else el("feedback").textContent="🐰 다시 만나서 반가워! 구조대 임무를 완료했어요.";
+el("next").textContent="이야기 처음부터 다시 보기";
 }
-el("next").textContent="처음부터 다시 보기";
-}
-
 speak();
 }
-
-function advance(){
-if(step<5){
-step++;
-localStorage.setItem("rescue01-step",step);
-render();
-}else{
-step=0;
-localStorage.setItem("rescue01-step",0);
-render();
-}
-}
-
-el("next").onclick=()=>{
-if(step===5){
-step=0;
-localStorage.setItem("rescue01-step",0);
-render();
-}else{
-advance();
-}
-};
-
+function advance(){if(step<5){step++;localStorage.setItem("rescue01-step",step);render();}}
+el("next").onclick=()=>{if(step===5){step=0;localStorage.setItem("rescue01-step",0);render();}else advance();};
 el("repeat").onclick=speak;
-
-el("voice").onclick=()=>{
-voiceOn=!voiceOn;
-el("voice").textContent=voiceOn?"🔊 음성 켜짐":"🔇 음성 꺼짐";
-if(!voiceOn&&"speechSynthesis"in window){
-speechSynthesis.cancel();
-}
-};
-
+el("voice").onclick=()=>{voiceOn=!voiceOn;el("voice").textContent=voiceOn?"🔊 음성 켜짐":"🔇 음성 꺼짐";if(!voiceOn&&"speechSynthesis"in window)speechSynthesis.cancel();};
 render();
 </script>
 </body>

@@ -61,16 +61,20 @@ const scenes=[
 {emoji:"🌳 🐰",title:"아기 토끼를 찾아라!",text:"풀숲에 누가 숨어 있을까요? 아기 토끼를 찾아 눌러 주세요.",type:"animal"},
 {emoji:"🐰 ⭐",title:"구조 성공!",text:"아기 토끼를 무사히 찾았어요! 별별 구조대가 임무를 완수했어요.",type:"done"}
 ];
+
 let step=Number(localStorage.getItem("rescue01-step")||0);
 if(step<0||step>5)step=0;
 let voiceOn=true;
 let earned=localStorage.getItem("rescue01-earned")==="yes";
+
 const el=id=>document.getElementById(id);
+
 function speak(){
 if(!voiceOn||!("speechSynthesis"in window))return;
 speechSynthesis.cancel();
 speechSynthesis.speak(new SpeechSynthesisUtterance(scenes[step].title+". "+scenes[step].text));
 }
+
 function choices(items){
 const wrap=document.createElement("div");
 wrap.className="choices";
@@ -92,66 +96,143 @@ wrap.appendChild(b);
 });
 el("task").appendChild(wrap);
 }
+
 function drawing(){
 const c=el("pad"),ctx=c.getContext("2d");
-ctx.strokeStyle="#315b70";ctx.lineWidth=10;ctx.lineCap="round";
+ctx.strokeStyle="#315b70";
+ctx.lineWidth=10;
+ctx.lineCap="round";
 let down=false,last=null;
+
 function pos(e){
 const r=c.getBoundingClientRect();
-return{x:(e.clientX-r.left)*c.width/r.width,y:(e.clientY-r.top)*c.height/r.height};
+return{
+x:(e.clientX-r.left)*c.width/r.width,
+y:(e.clientY-r.top)*c.height/r.height
+};
 }
-c.onpointerdown=e=>{down=true;last=pos(e);c.setPointerCapture(e.pointerId)};
+
+c.onpointerdown=e=>{
+down=true;
+last=pos(e);
+c.setPointerCapture(e.pointerId);
+};
+
 c.onpointermove=e=>{
 if(!down)return;
 let p=pos(e);
-ctx.beginPath();ctx.moveTo(last.x,last.y);ctx.lineTo(p.x,p.y);ctx.stroke();last=p;
+ctx.beginPath();
+ctx.moveTo(last.x,last.y);
+ctx.lineTo(p.x,p.y);
+ctx.stroke();
+last=p;
 };
+
 c.onpointerup=()=>down=false;
+c.onpointercancel=()=>down=false;
+
 el("clear").onclick=()=>ctx.clearRect(0,0,c.width,c.height);
 }
+
 function render(){
 const s=scenes[step];
+
+if("speechSynthesis"in window)speechSynthesis.cancel();
+
 el("picture").textContent=s.emoji;
 el("heading").textContent=s.title;
 el("story").textContent=s.text;
 el("bar").style.width=((step+1)/6*100)+"%";
 el("feedback").textContent="";
 el("task").innerHTML="";
+
 el("next").textContent=s.button||"다음 단계";
 el("next").style.display=["pick","animal","draw"].includes(s.type)?"none":"inline-block";
-if(s.type==="pick")choices([["🚂","기차",true],["🍎","사과",false],["🍌","바나나",false]]);
-if(s.type==="animal")choices([["🦊","여우",false],["🐰","토끼",true],["🦉","부엉이",false]]);
+
+if(s.type==="pick"){
+choices([
+["🚂","기차",true],
+["🍎","사과",false],
+["🍌","바나나",false]
+]);
+}
+
+if(s.type==="animal"){
+choices([
+["🦊","여우",false],
+["🐰","토끼",true],
+["🦉","부엉이",false]
+]);
+}
+
 if(s.type==="say"){
 el("task").innerHTML='<button class="secondary" id="listen">🔈 기역 듣기</button><p class="hint">마이크 없이도 진행할 수 있어요.</p>';
-el("listen").onclick=()=>{if("speechSynthesis"in window)speechSynthesis.speak(new SpeechSynthesisUtterance("기역"))};
+el("listen").onclick=()=>{
+if("speechSynthesis"in window){
+speechSynthesis.cancel();
+speechSynthesis.speak(new SpeechSynthesisUtterance("기역"));
 }
+};
+}
+
 if(s.type==="draw"){
-el("task").innerHTML='<canvas id="pad" width="600" height="220"></canvas><p class="hint">손가락으로 ㄱ을 써 보세요.</p><button class="secondary" id="clear">지우기</button>';
+el("task").innerHTML=
+'<canvas id="pad" width="600" height="220"></canvas>'+
+'<p class="hint">손가락으로 ㄱ을 써 보세요.</p>'+
+'<button class="secondary" id="clear">지우기</button>'+
+'<button class="primary" id="drawDone">다 썼어요! 다음으로</button>';
+
 drawing();
+el("drawDone").onclick=advance;
 }
+
 if(s.type==="done"){
-if(!earned){localStorage.setItem("rescue01-earned","yes");earned=true}
+if(!earned){
+localStorage.setItem("rescue01-earned","yes");
+earned=true;
 el("feedback").textContent="🌟 첫 구조 완료! 별 1개 획득!";
+}else{
+el("feedback").textContent="🐰 구조 성공! 다시 한번 임무를 완수했어요!";
+}
 el("next").textContent="처음부터 다시 보기";
 }
+
 speak();
 }
+
 function advance(){
-if(step<5){step++;localStorage.setItem("rescue01-step",step);render()}
-else{step=0;localStorage.setItem("rescue01-step",0);render()}
+if(step<5){
+step++;
+localStorage.setItem("rescue01-step",step);
+render();
+}else{
+step=0;
+localStorage.setItem("rescue01-step",0);
+render();
 }
+}
+
 el("next").onclick=()=>{
-if(step===5){step=0;localStorage.setItem("rescue01-step",0);render()}
-else advance();
+if(step===5){
+step=0;
+localStorage.setItem("rescue01-step",0);
+render();
+}else{
+advance();
+}
 };
+
 el("repeat").onclick=speak;
+
 el("voice").onclick=()=>{
 voiceOn=!voiceOn;
 el("voice").textContent=voiceOn?"🔊 음성 켜짐":"🔇 음성 꺼짐";
-if(!voiceOn&&"speechSynthesis"in window)speechSynthesis.cancel();
+if(!voiceOn&&"speechSynthesis"in window){
+speechSynthesis.cancel();
+}
 };
+
 render();
 </script>
 </body>
 </html>
-

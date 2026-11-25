@@ -988,6 +988,14 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
   .shape-chip{flex:0 0 40px;height:36px}
   .draw-stage{width:min(330px,38vh)}
 }
+.sc-foot .sc-track{min-width:44px}
+.sc-stage{white-space:nowrap}
+.sc-foot{flex-wrap:wrap;row-gap:5px}
+.sc-foot .sc-track{min-width:36px;flex:1 1 60px}
+@media (max-width:640px){
+  .sc-foot{gap:6px}
+  .sc-stage{font-size:10.8px;letter-spacing:-.2px}
+}
 </style>
 </head>
 <body>
@@ -3277,7 +3285,7 @@ ART_LESSONS.forEach(function (row, i) {
   /* ══════════════════════════════════════════════════════
      강 세션
      ══════════════════════════════════════════════════════ */
-  var SESSION = { sub: 0, no: 1, step: 'lessons', ready: false };
+  var SESSION = { sub: 0, no: 1, step: 'lessons', ready: false, holdSpeak: false };
   var quiz = { index: 0, correct: 0, wrongs: 0, locked: false, list: [] };
 
   function openSubject(subIndex) {
@@ -3364,9 +3372,9 @@ ART_LESSONS.forEach(function (row, i) {
     });
   }
 
-  function startLesson(no) {
+  function startLesson(no, force) {
     var sub = SUBJECTS[SESSION.sub], id = sub.id;
-    if (lessonLocked(id, no)) { toast(no + '강은 아직 잠겨 있어요.'); return; }
+    if (!force && lessonLocked(id, no)) { toast(no + '강은 아직 잠겨 있어요.'); return; }
     SESSION.no = no;
     SESSION.step = 'learn';
     quiz.list = lessonQuestions(id, no);
@@ -3392,6 +3400,7 @@ ART_LESSONS.forEach(function (row, i) {
     $('quizSub').textContent = LEVELS[state.level].short + ' · ' + no + '강 · ' + (lessonDef(id, no) || {}).detail;
 
     $('animCard').hidden = id !== 'hangul';
+    SESSION.holdSpeak = id === 'hangul';
     renderSteps();
     renderQuestion();
     if (id === 'hangul') {
@@ -3429,7 +3438,7 @@ ART_LESSONS.forEach(function (row, i) {
     });
 
     updateSpeakCard();
-    if (SESSION.step === 'learn') {
+    if (SESSION.step === 'learn' && !SESSION.holdSpeak) {
       setTimeout(function () {
         if (SESSION.step !== 'learn') return;
         speak(q.q + '. ' + q.opts.join(', '));
@@ -3821,6 +3830,11 @@ ART_LESSONS.forEach(function (row, i) {
         ANIM.running = false;
         ANIM.raf = 0;
         document.body.dataset.anim = 'done';
+        if (SESSION.step === 'learn' && SESSION.holdSpeak) {
+          SESSION.holdSpeak = false;
+          var qq = quiz.list[quiz.index];
+          if (qq) setTimeout(function () { speak(qq.q + '. ' + qq.opts.join(', ')); }, 220);
+        }
       }
     }
     ANIM.raf = requestAnimationFrame(frame);
@@ -4671,7 +4685,7 @@ ART_LESSONS.forEach(function (row, i) {
     var no = Number($('jumpNo').value) || 1;
     closeGuardian();
     openSubject(si);
-    startLesson(Math.max(1, Math.min(LESSON_MAX, no)));
+    startLesson(Math.max(1, Math.min(LESSON_MAX, no)), true);
   });
 
   /* ── 보호자: 초기화 ───────────────────────────────── */

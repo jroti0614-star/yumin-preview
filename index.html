@@ -3352,7 +3352,7 @@ ART_LESSONS.forEach(function (row, i) {
     $('animPage').hidden = false;
     $('quizPage').hidden = true;
     $('practiceBody').hidden = true;
-    $('animNext').hidden = false;
+    $('animNext').hidden = true;
     $('animNext').classList.remove('ready');
     renderSteps();
     renderAnimCard();
@@ -3696,9 +3696,9 @@ ART_LESSONS.forEach(function (row, i) {
     var strokes = letterScreenStrokes(L, g).map(function (pts) { return { pts: pts, len: polyLen(pts) }; });
     var totalLen = strokes.reduce(function (a, s) { return a + s.len; }, 0) || 1;
 
-    var base = Math.max(1500, Math.min(2600, totalLen * 15));
-    var durs = strokes.map(function (s) { return Math.max(900, base * (s.len / totalLen)); });
-    var gap = 650;
+    var base = Math.max(3400, Math.min(5000, totalLen * 28));
+    var durs = strokes.map(function (s) { return Math.max(1800, base * (s.len / totalLen)); });
+    var gap = 900;
     var totalTime = durs.reduce(function (a, d) { return a + d + gap; }, 0);
 
     speak(L.name + '! ' + L.word + '의 ' + L.glyph);
@@ -3781,10 +3781,12 @@ ART_LESSONS.forEach(function (row, i) {
         ANIM.raf = 0;
         document.body.dataset.anim = 'done';
         if (SESSION.step === 'anim') {
-          /* 다 그린 뒤에는 자동으로 넘어가지 않고, 아이가 준비되면 직접 누른다 */
-          $('animNext').hidden = false;
-          $('animNext').classList.add('ready');
+          /* 글자를 다 보여준 뒤 3초 쉬고 자동으로 다음 단계로 이동 */
           clearAnimAdvance();
+          ANIM.next = setTimeout(function () {
+            ANIM.next = 0;
+            if (SESSION.step === 'anim') showQuizPage();
+          }, 3000);
         }
       }
     }
@@ -3800,7 +3802,7 @@ ART_LESSONS.forEach(function (row, i) {
   });
   $('animCard').addEventListener('click', function () {
     if (SESSION.step !== 'anim') return;
-    $('animNext').classList.remove('ready');
+    clearAnimAdvance();
     speak(LETTERSname());
     playStrokeAnim();
   });

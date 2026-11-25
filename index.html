@@ -1797,7 +1797,8 @@ var HANGUL_LETTERS = [
 function hangulQuestions(i) {
   var L = HANGUL_LETTERS[i];
   var vowel = i >= 14;
-  var others = curShuffle(HANGUL_LETTERS.filter(function (x) { return x.g !== L.g; }));
+  var groupLetters = HANGUL_LETTERS.slice(vowel ? 14 : 0, vowel ? HANGUL_LETTERS.length : 14);
+  var others = curShuffle(groupLetters.filter(function (x) { return x.g !== L.g; }));
   var d1 = others[0], d2 = others[1], d3 = others[2];
 
   function safeWord(letter, idx) {

@@ -35,8 +35,11 @@
   --amber-ink:#8a5b00;
   --green:#22b573;
   --red:#e5615f;
-  --display:'Jua','JuaEmbed',-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif;
-  --body:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Pretendard','Malgun Gothic','Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif;
+  /* 이모지는 3D 그림으로 바꿔 넣으므로 글꼴 목록에 이모지 폰트를 두지 않는다.
+     (이모지 폰트의 U+0020 공백 폭이 1.25em이라 한글 폰트가 없는 환경에서
+      모든 띄어쓰기가 넓게 벌어지는 문제가 있었다) */
+  --display:'Jua','JuaEmbed','Pretendard',-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Noto Sans CJK KR',sans-serif;
+  --body:'Pretendard',-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR','Noto Sans CJK KR',sans-serif;
   --shadow:0 10px 26px -18px rgba(23,24,40,.35);
 }
 
@@ -48,6 +51,9 @@ body{
   font-family:var(--body);
   font-size:15px;
   line-height:1.5;
+  /* 한국어는 어절(단어) 단위로 줄바꿈한다 — '연습해/요'처럼 낱말 중간에서 끊기지 않게 */
+  word-break:keep-all;
+  overflow-wrap:break-word;
   -webkit-font-smoothing:antialiased;
   padding-bottom:88px;
 }

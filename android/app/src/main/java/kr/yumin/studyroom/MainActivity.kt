@@ -1,23 +1,37 @@
 package kr.yumin.studyroom
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.app.ActivityManager
+import android.app.admin.DevicePolicyManager
 import android.content.ActivityNotFoundException
+import android.content.ComponentName
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import android.webkit.JavascriptInterface
-import android.webkit.SafeBrowsingResponse
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
-import android.app.Activity
 
 class MainActivity : Activity() {
     private lateinit var webView: WebView
+
+    private val devicePolicyManager by lazy {
+        getSystemService(DEVICE_POLICY_SERVICE) as DevicePolicyManager
+    }
+    private val adminComponent by lazy {
+        ComponentName(this, YuminDeviceAdminReceiver::class.java)
+    }
+
+    // Add only child-safe apps that are installed on the tablet.
+    // These packages are included in Android Lock Task Mode's allowlist.
+    private val approvedChildPackages = setOf(
+        "com.google.android.apps.youtube.kids"
+    )
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,13 +59,9 @@ class MainActivity : Activity() {
             ): Boolean {
                 val uri = request.url
                 return when (uri.scheme) {
-                    "https", "http" -> false
+                    "https" -> uri.host != "jroti0614-star.github.io"
                     else -> {
-                        try {
-                            startActivity(Intent(Intent.ACTION_VIEW, uri))
-                        } catch (_: ActivityNotFoundException) {
-                            Toast.makeText(this@MainActivity, "열 수 있는 앱이 없어요.", Toast.LENGTH_SHORT).show()
-                        }
+                        Toast.makeText(this@MainActivity, "허용되지 않은 연결이에요.", Toast.LENGTH_SHORT).show()
                         true
                     }
                 }
@@ -63,6 +73,38 @@ class MainActivity : Activity() {
             webView.loadUrl("https://jroti0614-star.github.io/yumin-preview/")
         } else {
             webView.restoreState(savedInstanceState)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        enterKioskModeIfProvisioned()
+    }
+
+    private fun enterKioskModeIfProvisioned() {
+        if (!devicePolicyManager.isDeviceOwnerApp(packageName)) return
+
+        try {
+            val installedApprovedPackages = approvedChildPackages.filter { pkg ->
+                packageManager.getLaunchIntentForPackage(pkg) != null
+            }
+            devicePolicyManager.setLockTaskPackages(
+                adminComponent,
+                (installedApprovedPackages + packageName).toTypedArray()
+            )
+            devicePolicyManager.setLockTaskFeatures(
+                adminComponent,
+                DevicePolicyManager.LOCK_TASK_FEATURE_NONE
+            )
+
+            val activityManager = getSystemService(ACTIVITY_SERVICE) as ActivityManager
+            if (activityManager.lockTaskModeState != ActivityManager.LOCK_TASK_MODE_LOCKED) {
+                startLockTask()
+            }
+        } catch (e: SecurityException) {
+            Toast.makeText(this, "기기 잠금 설정 권한을 확인해 주세요.", Toast.LENGTH_LONG).show()
+        } catch (e: IllegalArgumentException) {
+            Toast.makeText(this, "허용 앱 설정을 확인해 주세요.", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -89,10 +131,13 @@ class MainActivity : Activity() {
     }
 
     override fun onBackPressed() {
+        val activityManager = getSystemService(ACTIVITY_SERVICE) as ActivityManager
+        val locked = activityManager.lockTaskModeState == ActivityManager.LOCK_TASK_MODE_LOCKED
+        if (locked) return
+
         if (::webView.isInitialized && webView.canGoBack()) {
             webView.goBack()
         } else {
-            // As a Home app, Back should not close the study room.
             moveTaskToBack(true)
         }
     }
@@ -101,6 +146,10 @@ class MainActivity : Activity() {
         @JavascriptInterface
         fun launchApp(packageName: String, appName: String) {
             runOnUiThread {
+                if (packageName !in approvedChildPackages) {
+                    Toast.makeText(this@MainActivity, "$appName 앱은 보호자 허용 목록에 없어요.", Toast.LENGTH_SHORT).show()
+                    return@runOnUiThread
+                }
                 try {
                     val launchIntent = packageManager.getLaunchIntentForPackage(packageName)
                     if (launchIntent == null) {
@@ -109,8 +158,10 @@ class MainActivity : Activity() {
                         launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                         startActivity(launchIntent)
                     }
-                } catch (_: Exception) {
+                } catch (_: ActivityNotFoundException) {
                     Toast.makeText(this@MainActivity, "$appName 앱을 실행하지 못했어요.", Toast.LENGTH_SHORT).show()
+                } catch (_: SecurityException) {
+                    Toast.makeText(this@MainActivity, "$appName 앱 실행이 차단됐어요.", Toast.LENGTH_SHORT).show()
                 }
             }
         }

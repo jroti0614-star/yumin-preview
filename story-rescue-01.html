@@ -27,6 +27,7 @@ h2{font-size:23px;margin:12px 0 8px}.story{font-size:16px;line-height:1.55;margi
 .hint{font-size:13px;color:#668292}.story-note{font-size:12px;color:#78909c;margin-top:10px}
 @media(max-width:380px){.scene{padding:10px}.choices{gap:6px}.choice{font-size:13px}}
 </style>
+<link rel="stylesheet" href="assets/3d/emoji-3d.css">
 </head>
 <body>
 <header><div class="brand">⭐ YUMIN'S STAR RESCUE TEAM</div><h1>별별 구조대 01</h1><div>사라진 아기 토끼</div><div class="progress"><div class="bar" id="bar"></div></div></header>
@@ -64,4 +65,5 @@ if(s.type==="draw"){el("task").innerHTML='<canvas id="pad" width="600" height="2
 if(s.type==="done"){if(!earned){localStorage.setItem("rescue01-earned","yes");earned=true;el("feedback").textContent="🌟 첫 구조 완료! 구조대 별 1개를 획득했어요!"}else el("feedback").textContent="🐰 다시 만나서 반가워! 구조대 임무를 완료했어요.";el("next").textContent="이야기 처음부터 다시 보기"}speak()}
 el("next").onclick=()=>{if(step===5){step=0;localStorage.setItem("rescue01-step",0);render()}else advance()};
 el("repeat").onclick=speak;el("voice").onclick=()=>{voiceOn=!voiceOn;el("voice").textContent=voiceOn?"🔊 음성 켜짐":"🔇 음성 꺼짐";if(!voiceOn&&"speechSynthesis"in window)speechSynthesis.cancel()};render();
-</script></body></html>
+</script><script src="assets/3d/emoji-3d.js" defer></script>
+</body></html>

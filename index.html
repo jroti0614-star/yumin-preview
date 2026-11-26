@@ -96,11 +96,6 @@ h1,h2,h3,p{margin:0}
 .star-pill b{font-family:var(--display);font-weight:400;font-size:16px}
 .star-pill .unit{font-size:12px}
 .star-pill.pop{transform:scale(1.12)}
-.ghost-btn{
-  padding:9px 13px;border-radius:999px;border:1px solid var(--line);
-  background:#fff;font-size:13px;color:#41465c;white-space:nowrap;
-}
-.ghost-btn:hover{background:#fafaff;border-color:#d9daea}
 
 /* ── 본문 ───────────────────────────────────────────── */
 .wrap{max-width:1040px;margin:0 auto;padding:18px 20px 26px}
@@ -526,7 +521,6 @@ h1,h2,h3,p{margin:0}
   .brand-text small{font-size:10.5px}
   .star-pill{padding:7px 11px;font-size:12px}
   .star-pill b{font-size:15px}
-  .ghost-btn{padding:8px 11px;font-size:12px}
   .wrap{padding:14px 14px 22px}
   .hero{padding:20px 18px 18px;border-radius:22px}
   .hero-title{font-size:25px;margin:10px 0 6px}
@@ -1122,6 +1116,46 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
   background:#eef0f7;color:#767c92;white-space:nowrap;
 }
 .la-row.connected .la-state{background:#dcf5e9;color:#22795a}
+
+/* 설치된 앱 목록에서 고르기 (안드로이드 앱) */
+.la-pick{margin-top:10px;border:1px solid #e2e3f2;border-radius:14px;background:#fff;padding:9px 11px}
+.la-pick-head{display:flex;align-items:center;gap:7px;flex-wrap:wrap;cursor:pointer;list-style:none}
+.la-pick-head::-webkit-details-marker{display:none}
+.la-pick-head::before{content:'▸';color:#9a9fb5;font-size:11px}
+.la-pick[open] .la-pick-head::before{content:'▾'}
+.la-pick-title{font-size:12.5px;font-weight:700;color:#3a3f55}
+.la-pick-count{font-size:11px;color:#7d829a;background:#f2f3fa;border-radius:999px;padding:3px 8px}
+.la-pick-body{margin-top:8px}
+.la-pick-foot{display:flex;justify-content:flex-end;margin-top:8px}
+.la-reload{
+  font-size:11px;padding:4px 9px;border-radius:999px;
+  border:1px solid #dcdcf0;background:#fff;color:#4a4f66;
+}
+.la-reload:hover{background:#f4f1ff;border-color:#c9befa}
+.la-search{
+  width:100%;padding:8px 11px;border-radius:10px;
+  border:1px solid #dfe0ee;background:#fbfbff;font-size:12.5px;color:#2a2f45;
+}
+.la-search:focus{outline:none;border-color:#b9a8fa;background:#fff}
+.la-applist{
+  margin-top:8px;max-height:216px;overflow-y:auto;overscroll-behavior:contain;
+  display:flex;flex-direction:column;gap:6px;padding-right:2px;
+}
+.la-app-option{
+  display:flex;flex-direction:column;gap:2px;text-align:left;width:100%;
+  padding:8px 10px;border-radius:11px;border:1px solid #e6e6f4;background:#fff;
+}
+.la-app-option b{font-size:13px;font-weight:600;color:#2a2f45}
+.la-app-option small{font-size:10.5px;color:#8b90a3;word-break:break-all}
+.la-app-option:hover{background:#f6f3ff;border-color:#cdc0fb}
+.la-app-option.on{background:#f1fbf6;border-color:#9fdcbe}
+.la-app-option.on b{color:#22795a}
+.la-empty{margin-top:8px;font-size:11.5px;color:#8b90a3;text-align:center}
+.la-manual{margin-top:9px}
+.la-manual>summary{cursor:pointer;font-size:11.5px;color:#5b6080;padding:5px 2px;list-style:none}
+.la-manual>summary::-webkit-details-marker{display:none}
+.la-manual>summary::before{content:'▸ ';color:#9a9fb5}
+.la-manual[open]>summary::before{content:'▾ '}
 .la-presets{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
 .la-preset{
   font-size:11.5px;padding:5px 10px;border-radius:999px;
@@ -1180,7 +1214,6 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
       <div class="star-pill" id="starPill" title="지금 쓸 수 있는 별">
         <span aria-hidden="true">⭐</span><b id="starCount">0</b><span class="unit">개</span>
       </div>
-      <button class="ghost-btn" id="parentBtn" type="button">🔒 보호자</button>
     </div>
   </div>
 </header>
@@ -1528,7 +1561,7 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
 
     <div class="card g-card" id="launcherAdminCard">
       <h3>런처 앱 연결</h3>
-      <p class="g-hint">홈 화면의 <b>한글 · 수학 · 언어 · 도서관</b> 칸에 열 앱을 연결해요. 안드로이드 태블릿에서는 연결한 앱이 바로 열려요.</p>
+      <p class="g-hint">홈 화면의 <b>한글 · 수학 · 언어 · 도서관</b> 칸에 열 앱을 연결해요. 안드로이드 태블릿에서는 설치된 앱 목록에서 골라 한 번에 연결하고, 연결한 앱이 바로 열려요.</p>
       <div class="launch-admin" id="launchAdmin"></div>
     </div>
 
@@ -3412,11 +3445,156 @@ var ART_ORDER = [
     showLaunchModal(slot, app);
   }
 
+  /* ── 보호자: 태블릿에 설치된 앱 목록 ─────────────────── */
+  /* 안드로이드 앱에서 열면 YuminLauncherBridge.getInstalledApps() 로
+     태블릿에 설치된 실행 앱 목록을 받아 한 번 눌러 연결할 수 있게 한다.
+     일반 브라우저에는 브리지가 없으니 프리셋·직접 입력만 보여 준다. */
+  var installedApps = null;   // null = 아직 안 불러옴
+  var installedErr = '';
+  var adminQuery = {};        // 칸별 검색어 (다시 그려도 유지)
+
+  function bridgeInstalledApps() {
+    var bridge = window.YuminLauncherBridge;
+    return (bridge && typeof bridge.getInstalledApps === 'function') ? bridge : null;
+  }
+
+  function koreanCompare(a, b) {
+    try { return String(a).localeCompare(String(b), 'ko'); }
+    catch (e) { return a < b ? -1 : (a > b ? 1 : 0); }
+  }
+
+  /* 브리지가 준 값(JSON 문자열 또는 배열)을 이름·패키지명 목록으로 다듬는다 */
+  function normalizeApps(raw) {
+    var list = [];
+    if (typeof raw === 'string') {
+      try { list = JSON.parse(raw); } catch (e) { return []; }
+    } else if (Object.prototype.toString.call(raw) === '[object Array]') {
+      list = raw;
+    }
+    if (!list || typeof list.forEach !== 'function') return [];
+    var out = [], seen = {};
+    list.forEach(function (it) {
+      if (!it || typeof it !== 'object') return;
+      var pkg = String(it.packageName || it.pkg || '').trim();
+      var label = String(it.label || it.name || '').trim();
+      if (!pkg || !label) return;
+      if (pkg === 'com.yumin.launcher' || pkg === 'com.yumin.launcher.debug') return; // 런처 자신은 뺀다
+      if (seen[pkg]) return;
+      seen[pkg] = 1;
+      out.push({ pkg: pkg, label: label });
+    });
+    out.sort(function (a, b) { return koreanCompare(a.label, b.label); });
+    return out;
+  }
+
+  function loadInstalledApps(force) {
+    var bridge = bridgeInstalledApps();
+    if (!bridge) { installedApps = null; installedErr = ''; return []; }
+    if (installedApps && !force) return installedApps;
+    installedErr = '';
+    try {
+      installedApps = normalizeApps(bridge.getInstalledApps());
+    } catch (e) {
+      installedApps = [];
+      installedErr = '설치된 앱 목록을 불러오지 못했어요.';
+    }
+    if (!installedApps.length && !installedErr) installedErr = '태블릿에서 실행할 수 있는 앱을 찾지 못했어요.';
+    return installedApps;
+  }
+
+  function connectLaunchApp(slot, app) {
+    state.launcher[slot.key] = { name: app.label.slice(0, 24), pkg: app.pkg.slice(0, 80) };
+    saveState();
+    renderLauncher();
+    renderLaunchAdmin();
+    var fresh = document.querySelector('#launchAdmin .la-row[data-la="' + slot.key + '"] .la-msg');
+    if (fresh) fresh.textContent = app.label + ' 연결했어요 ✓';
+    toast(slot.title + ' 칸에 ' + app.label + particleEul(app.label) + ' 연결했어요.');
+  }
+
+  function buildAppPicker(slot, cfg) {
+    var box = make('details', 'la-pick');
+
+    var head = make('summary', 'la-pick-head');
+    head.appendChild(make('span', 'la-pick-title', '설치된 앱에서 고르기'));
+    var count = make('span', 'la-pick-count');
+    head.appendChild(count);
+    box.appendChild(head);
+
+    var body = make('div', 'la-pick-body');
+
+    var search = make('input', 'la-search');
+    search.type = 'search';
+    search.placeholder = '앱 이름으로 찾기 (예: 한글)';
+    search.value = adminQuery[slot.key] || '';
+    search.setAttribute('aria-label', slot.title + ' 칸에 연결할 앱 검색');
+    body.appendChild(search);
+
+    var list = make('div', 'la-applist');
+    list.setAttribute('role', 'listbox');
+    list.setAttribute('aria-label', slot.title + ' 칸에 연결할 앱 목록');
+    body.appendChild(list);
+
+    var empty = make('p', 'la-empty');
+    empty.hidden = true;
+    body.appendChild(empty);
+
+    var foot = make('div', 'la-pick-foot');
+    var reload = make('button', 'la-reload', '↻ 새로 불러오기');
+    reload.type = 'button';
+    foot.appendChild(reload);
+    body.appendChild(foot);
+    box.appendChild(body);
+
+    function paint() {
+      var apps = loadInstalledApps(false);
+      count.textContent = apps.length ? '앱 ' + apps.length + '개' : '';
+      adminQuery[slot.key] = search.value;
+      var q = search.value.trim().toLowerCase();
+      list.innerHTML = '';
+      var shown = 0;
+      apps.forEach(function (app) {
+        if (q && app.label.toLowerCase().indexOf(q) < 0 && app.pkg.toLowerCase().indexOf(q) < 0) return;
+        var on = cfg.pkg === app.pkg;
+        var opt = make('button', 'la-app-option' + (on ? ' on' : ''));
+        opt.type = 'button';
+        opt.setAttribute('role', 'option');
+        opt.setAttribute('data-pkg', app.pkg);
+        opt.setAttribute('data-label', app.label);
+        opt.setAttribute('aria-selected', on ? 'true' : 'false');
+        opt.appendChild(make('b', null, app.label));
+        opt.appendChild(make('small', null, app.pkg));
+        opt.addEventListener('click', function () { connectLaunchApp(slot, app); });
+        list.appendChild(opt);
+        shown++;
+      });
+      list.hidden = shown === 0;
+      empty.hidden = shown !== 0;
+      if (shown === 0) {
+        var typed = search.value.trim();
+        empty.textContent = installedErr || ('"' + typed + '" 가 들어간 앱이 없어요.');
+      }
+    }
+
+    search.addEventListener('input', paint);
+    reload.addEventListener('click', function () {
+      loadInstalledApps(true);
+      paint();
+      toast('설치된 앱 목록을 새로 불러왔어요.');
+    });
+    box.addEventListener('toggle', function () { if (box.open) paint(); });
+
+    paint();
+    return box;
+  }
+
   /* ── 보호자: 런처 앱 연결 ───────────────────────────── */
   function renderLaunchAdmin() {
     var box = $('launchAdmin');
     if (!box) return;
     box.innerHTML = '';
+    var bridge = bridgeInstalledApps();
+    if (bridge) loadInstalledApps(false);
     LAUNCH_SLOTS.forEach(function (slot) {
       var cfg = slotConfig(slot.key);
       var connected = !!(cfg.name || '').trim();
@@ -3466,8 +3644,16 @@ var ART_ORDER = [
 
       fields.appendChild(nameLab);
       fields.appendChild(pkgLab);
-      row.appendChild(presets);
-      row.appendChild(fields);
+
+      /* 태블릿(안드로이드 앱)에서는 설치된 앱 목록을 먼저 보여 준다 */
+      if (bridge) row.appendChild(buildAppPicker(slot, cfg));
+
+      var manual = make('details', 'la-manual');
+      if (!bridge) manual.open = true;   // 브라우저에서는 예전처럼 펼쳐 둔다
+      manual.appendChild(make('summary', null, '직접 입력 · 추천 앱'));
+      manual.appendChild(presets);
+      manual.appendChild(fields);
+      row.appendChild(manual);
 
       var btns = make('div', 'la-btns');
       var msg = make('span', 'la-msg');
@@ -5764,7 +5950,9 @@ var ART_ORDER = [
     setTimeout(function () { $('pinInput').focus(); }, 60);
   }
   function closePin() { $('pinModal').hidden = true; }
-  $('parentBtn').addEventListener('click', openPin);
+  /* 상단 '보호자' 버튼은 하단 탭과 겹쳐 없앴다. 남아 있는 예전 화면이면 그대로 연결한다. */
+  var headerParentBtn = $('parentBtn');
+  if (headerParentBtn) headerParentBtn.addEventListener('click', openPin);
   $('pinCancel').addEventListener('click', closePin);
   $('pinInput').addEventListener('input', function () {
     this.value = this.value.replace(/[^0-9]/g, '').slice(0, 4);

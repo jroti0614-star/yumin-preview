@@ -2,9 +2,9 @@
   "versionCode": 6,
   "versionName": "0.6.0",
   "apkUrl": "https://github.com/jroti0614-star/yumin-preview/releases/download/v0.6.0/yumin-launcher-0.6.0-debug.apk",
-  "sha256": "b671c2b3a4661dae37b48d9db4750dd3f0562cb6608e0c3f8b816599e3b5a94a",
-  "sizeBytes": 12321260,
-  "publishedAt": "2026-11-27T08:09:23+09:00",
+  "sha256": "ccd1a54e8dabaed3447dba1b1c04b34fba2954849a22f8f9c8a8fcf56916e6a2",
+  "sizeBytes": 12321544,
+  "publishedAt": "2026-11-27T08:13:23+09:00",
   "notes": "온라인 최신 웹 반영 · 오프라인 폴백 · 앱 업데이트 확인 · 화면 고정",
   "releasePage": "https://github.com/jroti0614-star/yumin-preview/releases/tag/v0.6.0"
 }

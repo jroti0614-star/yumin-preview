@@ -3307,6 +3307,15 @@ var ART_ORDER = [
     });
   }
 
+  /* 받침 유무에 따라 '을/를'을 고른다 (밀리의서재를 · 토도한글을) */
+  function particleEul(word) {
+    var t = String(word || '').trim();
+    if (!t) return '를';
+    var code = t.charCodeAt(t.length - 1);
+    if (code < 0xAC00 || code > 0xD7A3) return '를';
+    return ((code - 0xAC00) % 28) ? '을' : '를';
+  }
+
   /* ── 홈 런처 ────────────────────────────────────────── */
   function slotConfig(key) {
     return state.launcher[key] || { name: '', pkg: '' };
@@ -3474,7 +3483,7 @@ var ART_ORDER = [
         renderLaunchAdmin();
         var fresh = box.querySelector('.la-row[data-la="' + slot.key + '"] .la-msg');
         if (fresh) fresh.textContent = '연결했어요 ✓';
-        toast(slot.title + ' 칸에 ' + name + '을(를) 연결했어요.');
+        toast(slot.title + ' 칸에 ' + name + particleEul(name) + ' 연결했어요.');
       });
       btns.appendChild(save);
 

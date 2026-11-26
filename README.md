@@ -19,7 +19,10 @@
   연결된 앱이 없으면 보호자 탭에서 고르라는 안내가 나옵니다.
 - **학습**: 과목 카드(한글·수학·영어·그림)를 누르면 1~24강 목록 없이 지금 진행 중인 강이 곧바로 열립니다.
   한글 강은 ① 획순 배우기 → ② 문제 풀기 → ③ 따라쓰기 순서이고, 따라쓰기는 손을 떼는 순간 자동 판정합니다.
-- **보호자**: 아이 정보·난이도, 진도, **런처 앱 연결**(프리셋 또는 직접 입력), 별 선물, 소원 쿠폰, 따라 말하기 녹음(최근 30건, IndexedDB 저장).
+- **보호자**: 아이 정보·난이도, 진도, **런처 앱 연결**(프리셋 또는 직접 입력), **앱 업데이트 · 화면 고정**, 별 선물, 소원 쿠폰, 따라 말하기 녹음(최근 30건, IndexedDB 저장).
+  앱 업데이트 · 화면 고정 카드는 안드로이드 앱(WebView 브리지)에서만 동작하고, 브라우저에서는 안내만 보여 줍니다.
+  - `앱 업데이트 확인` → `YuminLauncherBridge.checkForUpdate()` → `version.json`(또는 Releases API) 확인 → 새 버전이면 `installUpdate(apkUrl, sha256)`
+  - `화면 고정` → `setScreenPinning(true/false)`. 기본 꺼짐, 기기 소유자가 아니면 안드로이드 확인 창이 한 번 뜹니다.
 - 3단계(도전)의 🗣️ 따라 말하기 녹음은 IndexedDB에 저장되어 새로고침해도 보호자 탭에서 다시 듣고 하나씩 지울 수 있습니다.
 
 ## 만든 방식
@@ -28,6 +31,13 @@
 한 파일로 합쳐 `downloads/yumin-launcher-preview.html`을 만들고, 그 파일을 `index.html`로 올린 정적 페이지입니다.
 `build.py`는 같은 `EMOJI_3D` 표로 `assets/3d/emoji-3d.js` · `emoji-3d.css`도 만듭니다.
 별도 페이지에 공용 두 줄을 넣을 때는 `python3 work/byeol2/apply_pages_3d.py <폴더>`를 씁니다.
+
+## 앱 업데이트(OTA) 파일
+
+- `version.json` — 안드로이드 앱의 `checkForUpdate()` 가 읽는 최신 버전 정보.
+  `{ versionCode, versionName, apkUrl, sha256, sizeBytes, publishedAt, notes }`
+- `web-build.json` — 배포본 지문(`{ build, builtAt }`). 앱이 실행할 때 이 값을 비교해, 바뀐 경우에만 WebView 캐시를 비웁니다.
+- APK 는 이 저장소(공개)의 **Releases** 에 `yumin-launcher-<버전>-debug.apk` 로 올립니다. `apkUrl` 은 그 내려받기 주소입니다.
 
 ## 배포
 

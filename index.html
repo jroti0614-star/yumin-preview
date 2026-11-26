@@ -1258,6 +1258,14 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
 .ad-empty{margin:12px 0 2px;font-size:12px;color:#8b90a3;text-align:center;grid-column:1/-1}
 .ad-note{margin-top:10px;font-size:11.5px;line-height:1.5;color:#8b90a3}
 
+/* ── 보호자: 앱 업데이트 · 화면 고정 ──────────────────── */
+.upd-line{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.upd-ver{font-family:var(--display);font-size:13.5px;line-height:1.4;color:#2a2f45}
+.upd-ver small{display:block;font-family:inherit;font-size:11.5px;font-weight:400;color:#8b90a3}
+.upd-sep{height:1px;background:#ececf6;margin:15px 0 13px}
+#appUpdateState{margin-top:9px}
+#appUpdateState:empty{display:none}
+
 @media (max-width:899px){
   .card.home-welcome{display:none}
 }
@@ -1745,6 +1753,25 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
       </div>
       <div class="ad-grid" id="appDrawerGrid"></div>
       <p class="ad-note" id="appDrawerNote">앱을 누르면 기본 런처를 거치지 않고 바로 열려요.</p>
+    </div>
+
+    <div class="card g-card" id="appUpdateCard">
+      <h3>앱 업데이트 · 화면 고정</h3>
+      <p class="g-hint">태블릿에 깔린 앱 버전을 확인하고, 새 버전이 있으면 여기서 바로 내려받아 설치해요.</p>
+      <div class="upd-line">
+        <span class="upd-ver" id="appVersionLabel">앱 버전 확인 중…</span>
+        <button class="btn" id="appUpdateCheck" type="button">앱 업데이트 확인</button>
+      </div>
+      <p class="g-state" id="appUpdateState" role="status"></p>
+      <div class="g-actions" id="appUpdateActions" hidden>
+        <button class="btn primary" id="appUpdateInstall" type="button">지금 설치</button>
+      </div>
+      <div class="upd-sep" aria-hidden="true"></div>
+      <div class="upd-line">
+        <span class="upd-ver">화면 고정<small id="pinStateLabel">태블릿 앱에서만 켤 수 있어요</small></span>
+        <button class="btn" id="pinToggle" type="button" disabled>켜기</button>
+      </div>
+      <p class="g-hint">켜면 유민이 화면이 런처에 묶여 다른 앱이나 설정으로 나가지 못해요. 학습 앱을 열어 줘야 할 때는 꺼 주세요. 기본은 꺼짐이에요.</p>
     </div>
 
     <div class="card g-card">
@@ -6327,6 +6354,7 @@ var ART_ORDER = [
   function openGuardian() {
     resetGuardianDraft();
     renderGuardian();
+    updVersionLabel();
     $('guardianSheet').hidden = false;
     document.body.style.overflow = 'hidden';
     $('guardianSheet').scrollTop = 0;
@@ -6437,6 +6465,157 @@ var ART_ORDER = [
     var no = Number($('jumpNo').value) || 1;
     closeGuardian();
     openSubject(si, Math.max(1, Math.min(LESSON_MAX, no)));
+  });
+
+  /* ── 보호자: 앱 업데이트 · 화면 고정 ───────────────── */
+  /* 안드로이드 앱에서만 동작한다. 일반 브라우저에는 브리지가 없으니 안내만 보여 준다.
+     - checkForUpdate(): 새 버전이 있으면 window.YuminUpdate.onCheckResult(JSON) 로 알린다
+     - installUpdate(url, sha256): 내려받아 설치 화면을 띄운다
+     - setScreenPinning(true/false): 런처 화면을 고정한다(기본은 꺼짐) */
+  var UPD = { info: null, latest: null, checking: false, pinOn: false };
+
+  window.YuminUpdate = {
+    onCheckResult: function (raw) { updReceive(raw); },
+    onInstallState: function (raw) { updInstall(raw); },
+    onPinState: function (raw) { updPin(raw); }
+  };
+
+  function updBridge() {
+    var b = window.YuminLauncherBridge;
+    return (b && typeof b.checkForUpdate === 'function') ? b : null;
+  }
+  function updSay(text) {
+    var el = $('appUpdateState');
+    if (el) el.textContent = text || '';
+  }
+  function updParse(raw) {
+    if (!raw) return null;
+    if (typeof raw === 'object') return raw;
+    try { return JSON.parse(String(raw)); } catch (e) { return null; }
+  }
+  function updPinButton() {
+    var btn = $('pinToggle');
+    if (!btn) return;
+    var b = window.YuminLauncherBridge;
+    var can = !!(b && typeof b.setScreenPinning === 'function');
+    btn.disabled = !can;
+    btn.textContent = UPD.pinOn ? '끄기' : '켜기';
+    btn.className = UPD.pinOn ? 'btn primary' : 'btn';
+    var label = $('pinStateLabel');
+    if (label) label.textContent = !can ? '태블릿 앱에서만 켤 수 있어요' : (UPD.pinOn ? '켜짐 · 런처에 묶여 있어요' : '꺼짐');
+  }
+  function updVersionLabel() {
+    var el = $('appVersionLabel');
+    if (!el) return;
+    var b = window.YuminLauncherBridge;
+    if (b && typeof b.getAppInfo === 'function') {
+      var info = updParse(b.getAppInfo());
+      if (info) {
+        UPD.info = info;
+        UPD.pinOn = !!info.screenPinned;
+        el.innerHTML = '설치된 버전 v' + String(info.versionName || '') +
+          '<small>버전 번호 ' + String(info.versionCode || '') + '</small>';
+        updPinButton();
+        return;
+      }
+    }
+    el.innerHTML = '지금은 웹 미리보기예요<small>태블릿 앱에서 열면 버전을 확인해요</small>';
+    updPinButton();
+  }
+  function updReceive(raw) {
+    UPD.checking = false;
+    var btn = $('appUpdateCheck');
+    if (btn) { btn.disabled = false; btn.textContent = '앱 업데이트 확인'; }
+    var res = updParse(raw);
+    if (!res) { updSay('업데이트 정보를 읽지 못했어요. 잠시 뒤 다시 확인해 주세요.'); return; }
+    if (!res.ok) {
+      updSay(res.error || '업데이트를 확인하지 못했어요. 인터넷 연결을 확인해 주세요.');
+      return;
+    }
+    UPD.latest = res;
+    var cur = String(res.currentVersionName || '');
+    if (res.hasUpdate) {
+      var name = String(res.latestVersionName || '');
+      updSay('새 버전 v' + name + '이 있어요. (지금 v' + cur + ')' + (res.notes ? ' · ' + String(res.notes) : ''));
+      $('appUpdateActions').hidden = false;
+      var ib = $('appUpdateInstall');
+      if (ib) ib.textContent = 'v' + name + ' 설치';
+    } else {
+      updSay('지금이 최신 버전이에요. (v' + cur + ')');
+      $('appUpdateActions').hidden = true;
+    }
+  }
+  function updInstall(raw) {
+    var res = updParse(raw) || {};
+    var phase = String(res.phase || '');
+    if (phase === 'downloading') {
+      var pct = Number(res.percent);
+      updSay(isNaN(pct) ? '새 버전을 내려받는 중이에요…' : '새 버전을 내려받는 중이에요… ' + pct + '%');
+    } else if (phase === 'ready') {
+      updSay('설치 화면을 열었어요. 화면 안내에 따라 설치해 주세요.');
+    } else if (phase === 'permission') {
+      updSay('설정에서 이 앱의 ‘알 수 없는 앱 설치’를 허용한 뒤 다시 눌러 주세요.');
+    } else if (phase === 'error') {
+      updSay(res.message || '설치 파일을 준비하지 못했어요.');
+    } else if (phase === 'checking') {
+      updSay('설치 파일을 준비하고 있어요…');
+    }
+  }
+  function updPin(raw) {
+    var res = updParse(raw) || {};
+    if (typeof res.pinned === 'boolean') UPD.pinOn = res.pinned;
+    if (res.ok === false) updSay(res.message || '화면 고정을 바꾸지 못했어요.');
+    else updSay(UPD.pinOn ? '화면 고정을 켰어요. 끄려면 여기서 다시 눌러 주세요.' : '화면 고정을 껐어요.');
+    updPinButton();
+  }
+
+  var updCheckBtn = $('appUpdateCheck');
+  if (updCheckBtn) updCheckBtn.addEventListener('click', function () {
+    var b = updBridge();
+    if (!b) { updSay('웹 미리보기에서는 업데이트를 확인할 수 없어요. 태블릿 앱에서 열어 주세요.'); return; }
+    if (UPD.checking) return;
+    UPD.checking = true;
+    this.disabled = true;
+    this.textContent = '확인 중…';
+    $('appUpdateActions').hidden = true;
+    updSay('');
+    try {
+      if (b.checkForUpdate() === false) {
+        UPD.checking = false;
+        this.disabled = false;
+        this.textContent = '앱 업데이트 확인';
+        updSay('지금은 확인할 수 없어요.');
+      }
+    } catch (e) {
+      UPD.checking = false;
+      this.disabled = false;
+      this.textContent = '앱 업데이트 확인';
+      updSay('업데이트 확인 중 문제가 생겼어요.');
+    }
+  });
+
+  var updInstallBtn = $('appUpdateInstall');
+  if (updInstallBtn) updInstallBtn.addEventListener('click', function () {
+    var b = window.YuminLauncherBridge;
+    var info = UPD.latest;
+    if (!b || !info || !info.apkUrl || typeof b.installUpdate !== 'function') {
+      updSay('지금은 설치할 수 없어요.');
+      return;
+    }
+    this.disabled = true;
+    updSay('설치 파일을 준비하고 있어요…');
+    try { b.installUpdate(String(info.apkUrl), String(info.sha256 || '')); }
+    catch (e) { updSay('설치 파일을 준비하지 못했어요.'); }
+    var btn = this;
+    setTimeout(function () { btn.disabled = false; }, 4000);
+  });
+
+  var pinBtn = $('pinToggle');
+  if (pinBtn) pinBtn.addEventListener('click', function () {
+    var b = window.YuminLauncherBridge;
+    if (!b || typeof b.setScreenPinning !== 'function') return;
+    try { b.setScreenPinning(!UPD.pinOn); }
+    catch (e) { updSay('화면 고정을 바꾸지 못했어요.'); }
   });
 
   /* ── 보호자: 초기화 ───────────────────────────────── */

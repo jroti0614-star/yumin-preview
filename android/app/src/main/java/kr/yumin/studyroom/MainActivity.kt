@@ -8,6 +8,7 @@ import android.content.ActivityNotFoundException
 import android.content.ComponentName
 import android.content.Intent
 import android.os.Bundle
+import android.os.Build
 import android.view.View
 import android.view.WindowManager
 import android.webkit.JavascriptInterface
@@ -92,10 +93,12 @@ class MainActivity : Activity() {
                 adminComponent,
                 (installedApprovedPackages + packageName).toTypedArray()
             )
-            devicePolicyManager.setLockTaskFeatures(
-                adminComponent,
-                DevicePolicyManager.LOCK_TASK_FEATURE_NONE
-            )
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                devicePolicyManager.setLockTaskFeatures(
+                    adminComponent,
+                    DevicePolicyManager.LOCK_TASK_FEATURE_NONE
+                )
+            }
 
             val activityManager = getSystemService(ACTIVITY_SERVICE) as ActivityManager
             if (activityManager.lockTaskModeState != ActivityManager.LOCK_TASK_MODE_LOCKED) {

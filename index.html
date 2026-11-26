@@ -1025,11 +1025,17 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
 }
 .star-pill .emoji-3d{width:16px;height:16px}
 
-/* ── 홈 런처 ────────────────────────────────────────── */
+/* ── 홈 런처 · 태블릿 대시보드 ─────────────────────── */
+.home-dash{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;align-items:stretch}
+.home-main{display:flex;flex-direction:column;min-width:0}
+.home-side{display:flex;flex-direction:column;gap:14px;min-width:0}
+.home-side>.card{min-width:0}
+
 .launch-hero{
-  display:flex;align-items:flex-end;justify-content:space-between;gap:14px;
-  margin:6px 2px 16px;
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+  margin:2px 2px 14px;
 }
+.lh-copy{min-width:0}
 .launch-title{font-family:var(--display);font-size:27px;line-height:1.2;letter-spacing:-.3px}
 .launch-sub{margin-top:4px;font-size:13px;color:var(--muted)}
 .launch-time{
@@ -1046,6 +1052,7 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
   transition:transform .16s ease, box-shadow .16s ease;
   overflow:hidden;min-height:158px;
 }
+.launch-tile.has-app{border-color:#cfe8da}
 .launch-tile:before{
   content:"";position:absolute;inset:0;border-radius:inherit;
   background:linear-gradient(160deg,var(--lt-a),var(--lt-b));
@@ -1072,23 +1079,68 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
 .launch-tile[data-slot="lang"]{--lt-a:#e6f7f1;--lt-b:#f4fdf9}
 .launch-tile[data-slot="library"]{--lt-a:#ffe9f0;--lt-b:#fff6f9}
 
-.launch-today{
-  margin-top:16px;padding:16px 18px;
-  display:flex;flex-direction:column;gap:12px;
+/* 홈: 오늘의 학습 한 줄 요약 */
+.home-today-line{
+  display:flex;align-items:center;gap:9px;flex-wrap:wrap;
+  margin-top:14px;padding:11px 15px;border-radius:16px;
   background:linear-gradient(120deg,#f7f4ff,#ffffff);
-  border-color:#e4defb;
+  border:1px solid #e4defb;
 }
-.lt-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px}
-.lt-badge{
-  font-size:11.5px;padding:4px 9px;border-radius:999px;
-  background:#ece7ff;color:#5b3fd0;font-weight:600;
+.htl-badge{font-size:11.5px;color:#5b3fd0;font-weight:600;white-space:nowrap}
+.home-today-line strong{font-family:var(--display);font-size:15px;font-weight:400;white-space:nowrap}
+.home-today-line small{font-size:12px;color:var(--muted)}
+.htl-go{
+  margin-left:auto;flex:0 0 auto;border:0;background:none;padding:4px 2px;
+  font-family:var(--display);font-size:13px;color:#6a4bf5;
 }
-.lt-head strong{font-family:var(--display);font-size:17px;font-weight:400}
-.lt-head small{font-size:12.5px;color:var(--muted)}
-.lt-foot{display:flex;align-items:center;justify-content:space-between;gap:10px}
-.lt-stars{font-size:13px;color:var(--amber-ink);background:var(--amber-soft);border:1px solid #f6e2b2;border-radius:999px;padding:6px 12px}
-.lt-stars b{font-family:var(--display);font-size:15px;font-weight:400}
-.lt-foot .btn{padding:10px 16px;font-size:13.5px}
+
+/* 홈 위젯: 환영 · 오늘 모은 별 · 응원 한마디 */
+.card.home-welcome{
+  position:relative;overflow:hidden;
+  display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:14px;
+  padding:16px 18px;
+  background:linear-gradient(140deg,#eef0ff,#fdfbff 65%,#ffffff);
+  border-color:#e2e2f8;
+}
+.hw-art{
+  width:64px;height:64px;flex:0 0 auto;border-radius:22px;display:grid;place-items:center;
+  background:#ffffff;border:1px solid #e8e6fb;font-size:32px;
+  box-shadow:0 10px 22px -16px rgba(80,60,200,.6);
+}
+.hw-body{display:flex;flex-direction:column;gap:1px;min-width:0}
+.hw-date{font-size:12.5px;color:var(--muted)}
+.hw-clock{
+  font-family:var(--display);font-size:38px;line-height:1.05;letter-spacing:-1px;color:#2a2f45;
+  font-variant-numeric:tabular-nums;
+}
+.hw-greet{margin-top:5px;font-size:12.8px;line-height:1.45;color:#5d6478}
+
+.card.home-stars{
+  display:flex;flex-direction:column;gap:9px;
+  padding:15px 18px;
+  background:linear-gradient(120deg,#fffaf0,#ffffff 70%);
+  border-color:#f7e7bf;
+}
+.hs-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.hs-title{font-size:12.5px;font-weight:600;color:#8a5b00}
+.hs-head strong{font-family:var(--display);font-size:20px;font-weight:400;color:#8a5b00;font-variant-numeric:tabular-nums}
+.hs-bar{height:10px;border-radius:999px;background:#f2e4c6;overflow:hidden}
+.hs-bar i{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#ffd977,#f7b733);transition:width .45s ease}
+.hs-next{margin:0;font-size:12.3px;color:#7a6a4a}
+.hs-next b{color:#8a5b00;font-weight:700}
+
+.card.home-cheer{
+  display:flex;flex-direction:column;gap:8px;justify-content:center;
+  padding:16px 18px;
+  background:linear-gradient(130deg,#f6f1ff,#ffffff 75%);
+  border-color:#e6dff9;
+}
+.hc-badge{
+  align-self:flex-start;font-size:11.5px;font-weight:600;color:#5b3fd0;
+  background:#efecff;border-radius:999px;padding:4px 10px;
+}
+.hc-line{font-family:var(--display);font-size:18.5px;line-height:1.45;color:#3a2f66}
+.hc-from{font-size:11.8px;color:#8b90a3}
 
 .stories-link{
   display:block;margin:20px 0;padding:18px;
@@ -1172,11 +1224,49 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
 .la-btns .btn{padding:8px 13px;font-size:12.5px;border-radius:11px}
 .la-btns .la-msg{font-size:11.5px;color:#2c7a5b;margin-left:2px}
 
+/* ── 보호자: 앱 서랍 (어른이 잠깐 쓰는 전체 앱) ─────── */
+.ad-tools{display:flex;align-items:center;gap:8px;margin-top:12px}
+.ad-search{
+  flex:1 1 auto;min-width:0;padding:9px 12px;border-radius:11px;
+  border:1px solid #dfe0ee;background:#fbfbff;font-size:13px;color:#2a2f45;
+}
+.ad-search:focus{outline:none;border-color:#b9a8fa;background:#fff}
+.ad-count{
+  flex:0 0 auto;font-size:11.5px;color:#7d829a;background:#f2f3fa;
+  border-radius:999px;padding:4px 9px;white-space:nowrap;
+}
+.ad-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(94px,1fr));gap:9px;
+  margin-top:11px;max-height:360px;overflow-y:auto;overscroll-behavior:contain;padding:2px;
+}
+.ad-app{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  padding:11px 6px 9px;border-radius:15px;border:1px solid #ececf6;background:#fff;
+  transition:background .15s ease,border-color .15s ease,transform .12s ease;
+}
+.ad-app:hover,.ad-app:focus-visible{background:#f7f4ff;border-color:#cdc0fb;outline:none;transform:translateY(-1px)}
+.ad-app:active{transform:translateY(0) scale(.98)}
+.ad-icon{
+  width:42px;height:42px;border-radius:14px;display:grid;place-items:center;
+  font-family:var(--display);font-size:18px;
+  background:#eef0ff;color:#4a3fb0;border:1px solid #e2e4f8;
+}
+.ad-name{
+  width:100%;font-size:11.5px;line-height:1.3;color:#2a2f45;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.ad-empty{margin:12px 0 2px;font-size:12px;color:#8b90a3;text-align:center;grid-column:1/-1}
+.ad-note{margin-top:10px;font-size:11.5px;line-height:1.5;color:#8b90a3}
+
+@media (max-width:899px){
+  .card.home-welcome{display:none}
+}
 @media (max-width:860px){
   .launch-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
   .launch-tile{min-height:150px}
 }
 @media (max-width:640px){
+  .launch-hero{margin-bottom:12px}
   .launch-title{font-size:23px}
   .launch-sub{font-size:12px}
   .launch-time{font-size:18px;padding:5px 10px;border-radius:12px}
@@ -1186,9 +1276,14 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
   .lt-name{font-size:18px}
   .lt-app{font-size:11px}
   .lt-go{font-size:11.5px}
-  .launch-today{padding:14px;border-radius:18px}
-  .lt-head strong{font-size:15.5px}
-  .lt-foot .btn{padding:9px 13px;font-size:12.5px}
+  .home-today-line{padding:10px 13px;border-radius:14px;gap:7px}
+  .home-today-line strong{font-size:14px}
+  .home-today-line small{font-size:11.5px}
+  .htl-go{font-size:12.5px}
+  .card.home-stars{padding:13px 15px}
+  .card.home-cheer{padding:14px 15px}
+  .hc-line{font-size:16.5px}
+  .ad-grid{grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px;max-height:300px}
   .stories-link{padding:15px;font-size:16px;margin:16px 0}
   .la-fields{grid-template-columns:1fr}
 }
@@ -1196,6 +1291,55 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
   .lt-name{font-size:16.5px}
   .lt-icon{width:46px;height:46px;border-radius:15px;font-size:23px}
   .launch-tile{min-height:134px}
+}
+
+/* ── 태블릿 가로(넓은 화면): 좌우 2단 대시보드 ──────── */
+
+/* 세로 태블릿(700~899px): 1단이지만 환영 카드와 넉넉한 타일로 빈 공간을 줄인다 */
+@media (min-width:700px) and (max-width:899px){
+  .card.home-welcome{display:grid}
+  .launch-tile{min-height:186px}
+  .hw-clock{font-size:42px}
+  .card.home-cheer .hc-line{font-size:19px}
+}
+@media (min-width:900px){
+  .home-dash{
+    grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);
+    gap:18px;
+    min-height:calc(100vh - 212px);
+    min-height:calc(100dvh - 212px);
+  }
+  .launch-hero{margin:0 2px 13px}
+  .launch-title{font-size:31px}
+  .launch-sub{font-size:13.5px;margin-top:5px}
+  .launch-time{display:none}
+  .launch-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    grid-template-rows:repeat(2,minmax(0,1fr));
+    gap:14px;flex:1 1 auto;min-height:0;
+  }
+  .launch-tile{min-height:0;padding:20px 22px 16px;border-radius:26px;gap:8px}
+  .launch-tile:hover{transform:translateY(-4px)}
+  .lt-icon{width:88px;height:88px;border-radius:27px;font-size:44px}
+  .lt-name{font-size:27px}
+  .lt-app{font-size:13.5px;min-height:18px}
+  .lt-go{font-size:13.5px}
+  .home-today-line{margin-top:13px;padding:12px 17px}
+  .home-today-line strong{font-size:16px}
+  .home-side{display:grid;grid-template-rows:1.05fr 1fr 1.15fr;gap:16px}
+  .card.home-welcome{padding:20px 20px;gap:16px}
+  .hw-art{width:86px;height:86px;border-radius:28px;font-size:44px}
+  .hw-clock{font-size:46px}
+  .hw-date{font-size:13px}
+  .hw-greet{font-size:13.5px}
+  .card.home-stars{padding:18px 20px;gap:11px;justify-content:center}
+  .hs-head strong{font-size:24px}
+  .hs-title{font-size:13px}
+  .hs-bar{height:12px}
+  .hs-next{font-size:12.8px}
+  .card.home-cheer{padding:18px 20px;gap:9px}
+  .hc-line{font-size:20px;line-height:1.5}
+  .hc-from{font-size:12px}
 }
 </style>
 </head>
@@ -1232,29 +1376,56 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
       <span class="gift-go">받기</span>
     </button>
 
-    <div class="launch-hero">
-      <div>
-        <h1 class="launch-title" id="launchHello">안녕, 유민아!</h1>
-        <p class="launch-sub">오늘 열고 싶은 앱을 콕 눌러 봐요</p>
+    <!-- 태블릿(넓은 화면)에서는 좌우 2단 대시보드, 좁은 화면에서는 위아래 1단 -->
+    <div class="home-dash">
+
+      <div class="home-main">
+        <div class="launch-hero">
+          <div class="lh-copy">
+            <h1 class="launch-title" id="launchHello">안녕, 유민아!</h1>
+            <p class="launch-sub" id="launchSub">오늘 열고 싶은 앱을 콕 눌러 봐요</p>
+          </div>
+          <span class="launch-time" id="launchClock" aria-hidden="true">--:--</span>
+        </div>
+
+        <div class="launch-grid" id="launchGrid"></div>
+
+        <div class="home-today-line">
+          <span class="htl-badge" aria-hidden="true">✨ 오늘의 학습</span>
+          <strong id="launchTodayTitle">한글 별 1강</strong>
+          <small id="launchTodaySub">글자를 만나 볼까?</small>
+          <button class="htl-go" id="launchTodayGo" type="button">학습 열기 ›</button>
+        </div>
       </div>
-      <span class="launch-time" id="launchClock" aria-hidden="true">--:--</span>
+
+      <aside class="home-side" aria-label="오늘의 위젯">
+
+        <section class="card home-welcome" id="homeWelcome">
+          <div class="hw-art" id="homeArt" aria-hidden="true">☀</div>
+          <div class="hw-body">
+            <span class="hw-date" id="homeDate">오늘</span>
+            <span class="hw-clock" id="homeClockBig" aria-hidden="true">--:--</span>
+            <p class="hw-greet" id="homeGreet">오늘도 신나게 시작해 볼까?</p>
+          </div>
+        </section>
+
+        <section class="card home-stars" id="homeStars">
+          <div class="hs-head">
+            <span class="hs-title"><span aria-hidden="true">⭐</span> 오늘 모은 별</span>
+            <strong id="hsToday">0 / 2개</strong>
+          </div>
+          <div class="hs-bar" aria-hidden="true"><i id="hsBar"></i></div>
+          <p class="hs-next" id="hsNext">소원 쿠폰까지 14개</p>
+        </section>
+
+        <section class="card home-cheer" id="homeCheer">
+          <span class="hc-badge"><span aria-hidden="true">💬</span> 유민이 응원 한마디</span>
+          <p class="hc-line" id="homeCheerLine">유민이는 오늘도 반짝반짝 빛나고 있어!</p>
+          <span class="hc-from">엄마 · 아빠가 응원해요</span>
+        </section>
+
+      </aside>
     </div>
-
-    <div class="launch-grid" id="launchGrid"></div>
-
-    <div class="card launch-today">
-      <div class="lt-head">
-        <span class="lt-badge">✨ 오늘의 학습</span>
-        <strong id="launchTodayTitle">한글 별 1강</strong>
-        <small id="launchTodaySub">글자를 만나 볼까?</small>
-      </div>
-      <div class="lt-foot">
-        <span class="lt-stars">⭐ <b id="launchTodayStars">0</b>개</span>
-        <button class="btn primary" id="launchTodayGo" type="button">학습 열기 ▶</button>
-      </div>
-    </div>
-
-    <p class="foot-note">앱을 누르면 안드로이드 태블릿에서 바로 열려요 · 별별 탐험대는 <b>학습</b> 탭에 있어요</p>
   </section>
 
   <!-- ══════════════ 학습 (별별 탐험대) ══════════════ -->
@@ -1563,6 +1734,17 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
       <h3>런처 앱 연결</h3>
       <p class="g-hint">홈 화면의 <b>한글 · 수학 · 언어 · 도서관</b> 칸에 열 앱을 연결해요. 안드로이드 태블릿에서는 설치된 앱 목록에서 골라 한 번에 연결하고, 연결한 앱이 바로 열려요.</p>
       <div class="launch-admin" id="launchAdmin"></div>
+    </div>
+
+    <div class="card g-card" id="appDrawerCard">
+      <h3>보호자 앱 서랍</h3>
+      <p class="g-hint">어른이 잠깐 다른 앱(설정·플레이스토어·브라우저 등)을 써야 할 때, <b>기본 런처로 나가지 않고</b> 여기서 바로 열어요. 위의 '런처 앱 연결'은 유민이 홈 4칸에 넣을 앱을 정하는 곳이고, 이 서랍은 어른이 쓰는 전체 앱 목록이에요.</p>
+      <div class="ad-tools">
+        <input class="ad-search" id="appDrawerSearch" type="search" placeholder="앱 이름으로 찾기 (예: 설정)" aria-label="보호자 앱 서랍 검색">
+        <span class="ad-count" id="appDrawerCount"></span>
+      </div>
+      <div class="ad-grid" id="appDrawerGrid"></div>
+      <p class="ad-note" id="appDrawerNote">앱을 누르면 기본 런처를 거치지 않고 바로 열려요.</p>
     </div>
 
     <div class="card g-card">
@@ -3356,16 +3538,101 @@ var ART_ORDER = [
 
   function padClock(n) { return (n < 10 ? '0' : '') + n; }
 
+  /* 시간대별 인사 · 환영 문구 · 응원 한마디 */
+  var DAY_PARTS = {
+    morning: {
+      hello: '좋은 아침이야', art: '☀',
+      card: '아침 햇살이 반짝! 오늘도 신나게 시작해 볼까?',
+      cheers: ['좋은 아침! 오늘도 유민이의 하루를 응원해!',
+        '아침에 스스로 일어난 유민이, 정말 멋져!',
+        '오늘은 어떤 신나는 걸 배워 볼까?']
+    },
+    day: {
+      hello: '즐거운 하루야', art: '🌤',
+      card: '맛있는 점심 먹고 힘차게 놀아 볼까?',
+      cheers: ['한 글자씩 배우는 유민이, 정말 멋져!',
+        '틀려도 괜찮아. 다시 해 보는 게 제일 용감한 거야!',
+        '잘 모르겠으면 다시 한 번! 유민이는 할 수 있어!']
+    },
+    evening: {
+      hello: '좋은 저녁이야', art: '🌙',
+      card: '오늘 하루도 참 잘했어, 이제 천천히 쉬어 볼까?',
+      cheers: ['오늘 하루도 참 잘했어, 유민아!',
+        '저녁엔 엄마 아빠랑 오늘 배운 걸 이야기해 볼까?',
+        '하루 동안 별을 모은 유민이, 자랑스러워!']
+    },
+    night: {
+      hello: '편안한 밤이야', art: '⭐',
+      card: '별이 총총, 푹 자고 내일 또 만나!',
+      cheers: ['오늘도 수고했어. 내일 또 만나!',
+        '잘 자, 유민아. 별이 유민이를 지켜 줄 거야!',
+        '푹 자고 내일은 더 반짝반짝!']
+    }
+  };
+  var WEEKDAY_KO = ['일', '월', '화', '수', '목', '금', '토'];
+
+  function dayPartOf(hour) {
+    if (hour >= 5 && hour < 11) return 'morning';
+    if (hour >= 11 && hour < 17) return 'day';
+    if (hour >= 17 && hour < 21) return 'evening';
+    return 'night';
+  }
+
   function renderClock() {
-    var box = $('launchClock');
-    if (!box) return;
     var d = new Date();
-    box.textContent = padClock(d.getHours()) + ':' + padClock(d.getMinutes());
+    var text = padClock(d.getHours()) + ':' + padClock(d.getMinutes());
+    var box = $('launchClock');
+    if (box) box.textContent = text;
+    var big = $('homeClockBig');
+    if (big) big.textContent = text;
   }
   setInterval(renderClock, 30000);
 
+  /* 홈 오른쪽 위젯: 환영 카드 · 오늘 모은 별 · 응원 한마디 */
+  function renderHomeWidgets() {
+    var d = new Date();
+    var part = dayPartOf(d.getHours());
+    var info = DAY_PARTS[part];
+
+    $('launchHello').textContent = info.hello + ', ' + vocative(state.name) + '!';
+
+    var date = $('homeDate');
+    if (date) date.textContent = (d.getMonth() + 1) + '월 ' + d.getDate() + '일 ' + WEEKDAY_KO[d.getDay()] + '요일';
+    var art = $('homeArt');
+    if (art) art.textContent = info.art;
+    var greet = $('homeGreet');
+    if (greet) greet.textContent = info.card;
+
+    var used = dailyUsed();
+    var cap = state.dailyCap;
+    var today = $('hsToday');
+    if (today) today.textContent = cap > 0 ? (used + ' / ' + cap + '개') : (used + '개 · 제한 없음');
+    var bar = $('hsBar');
+    if (bar) {
+      var pct = cap > 0 ? Math.min(100, Math.round(used / cap * 100)) : (used > 0 ? 100 : 0);
+      bar.style.width = pct + '%';
+    }
+    var next = $('hsNext');
+    if (next) {
+      var goal = CONFIG.stickerGoal;
+      var left = Math.max(0, goal - state.placed);
+      next.textContent = '';
+      next.appendChild(document.createTextNode('별 지도 ' + state.placed + ' / ' + goal + '칸 · '));
+      var b = make('b', null, left ? '소원 쿠폰까지 ' + left + '개' : '소원 쿠폰을 받았어!');
+      next.appendChild(b);
+    }
+
+    var cheer = $('homeCheerLine');
+    if (cheer) {
+      var list = info.cheers;
+      var dayNo = d.getFullYear() * 372 + d.getMonth() * 31 + d.getDate();
+      cheer.textContent = list[dayNo % list.length];
+    }
+
+    renderClock();
+  }
+
   function renderLauncher() {
-    $('launchHello').textContent = '안녕, ' + vocative(state.name) + '!';
     var grid = $('launchGrid');
     grid.innerHTML = '';
     LAUNCH_SLOTS.forEach(function (slot) {
@@ -3395,8 +3662,7 @@ var ART_ORDER = [
     var sub = SUBJECTS[idx];
     $('launchTodayTitle').textContent = sub.title + ' ' + currentLesson(sub.id) + '강';
     $('launchTodaySub').textContent = sub.hero;
-    $('launchTodayStars').textContent = availableStars();
-    renderClock();
+    renderHomeWidgets();
   }
 
   function launchSlotByKey(key) {
@@ -4082,6 +4348,97 @@ var ART_ORDER = [
     gDraft.dirty = false;
   }
 
+  /* ── 보호자: 앱 서랍 (어른이 잠깐 쓰는 전체 앱) ──────── */
+  /* 유민이 홈 4칸을 정하는 '런처 앱 연결'과는 다른, 어른용 전체 앱 목록이다.
+     안드로이드 앱에서는 설치된 앱 전체, 웹 브라우저에서는 대표 앱 예시로 보여 준다. */
+  var DRAWER_SAMPLES = [
+    { label: '설정', pkg: 'com.android.settings' },
+    { label: 'Chrome', pkg: 'com.android.chrome' },
+    { label: 'YouTube', pkg: 'com.google.android.youtube' },
+    { label: 'Play 스토어', pkg: 'com.android.vending' },
+    { label: '카메라', pkg: 'com.android.camera' },
+    { label: '계산기', pkg: 'com.android.calculator2' },
+    { label: '갤러리', pkg: 'com.android.gallery3d' },
+    { label: '시계', pkg: 'com.android.deskclock' },
+    { label: '윙크', pkg: 'com.wink.coin' },
+    { label: '토도한글', pkg: 'com.todotos.hangul' },
+    { label: '토도수학', pkg: 'com.todotos.math' },
+    { label: '밀리의서재', pkg: 'com.millie.themillie' }
+  ];
+  var drawerQuery = '';
+
+  function drawerHue(text) {
+    var n = 0;
+    for (var i = 0; i < text.length; i++) n = (n * 31 + text.charCodeAt(i)) % 360;
+    return n;
+  }
+
+  function renderAppDrawer() {
+    var grid = $('appDrawerGrid');
+    if (!grid) return;
+    var hasBridge = !!bridgeInstalledApps();
+    var all = hasBridge ? (loadInstalledApps() || []) : DRAWER_SAMPLES;
+    var q = (drawerQuery || '').trim().toLowerCase();
+    var list = all.filter(function (a) {
+      if (!q) return true;
+      return String(a.label).toLowerCase().indexOf(q) >= 0 || String(a.pkg || '').toLowerCase().indexOf(q) >= 0;
+    });
+
+    var count = $('appDrawerCount');
+    if (count) count.textContent = hasBridge ? (all.length + '개 앱') : ('예시 ' + all.length + '개');
+
+    grid.innerHTML = '';
+    if (!list.length) {
+      grid.appendChild(make('p', 'ad-empty', hasBridge
+        ? '그 이름의 앱을 찾지 못했어요.'
+        : '예시 목록에 없는 앱이에요. 태블릿 앱에서는 설치된 앱 전체에서 찾아요.'));
+    }
+    list.forEach(function (app) {
+      var btn = make('button', 'ad-app');
+      btn.type = 'button';
+      btn.setAttribute('data-pkg', app.pkg);
+      btn.setAttribute('aria-label', app.label + ' 열기');
+      var ic = make('span', 'ad-icon', String(app.label).charAt(0));
+      ic.setAttribute('aria-hidden', 'true');
+      var hue = drawerHue(String(app.label));
+      ic.style.background = 'hsl(' + hue + ' 82% 96%)';
+      ic.style.color = 'hsl(' + hue + ' 42% 38%)';
+      ic.style.borderColor = 'hsl(' + hue + ' 58% 89%)';
+      btn.appendChild(ic);
+      btn.appendChild(make('span', 'ad-name', app.label));
+      btn.addEventListener('click', function () { openDrawerApp(app); });
+      grid.appendChild(btn);
+    });
+
+    var note = $('appDrawerNote');
+    if (note) {
+      note.textContent = hasBridge
+        ? '앱을 누르면 기본 런처를 거치지 않고 이 런처 위에서 바로 열려요.'
+        : '지금은 웹 미리보기라 예시 앱만 보여요. 태블릿 앱에서 열면 설치된 앱 전체가 나오고, 누르면 바로 실행돼요.';
+    }
+  }
+
+  function openDrawerApp(app) {
+    var bridge = window.YuminLauncherBridge;
+    if (bridge && typeof bridge.launchApp === 'function') {
+      try {
+        bridge.launchApp(app.pkg, app.label);
+        toast(app.label + ' 실행 중...');
+        return;
+      } catch (e) { /* 브리지가 실패하면 미리보기 안내로 넘어간다 */ }
+    }
+    $('launchEmoji').textContent = '📦';
+    $('launchTitle').textContent = app.label + ' · 미리보기';
+    $('launchMsg').textContent = '안드로이드 태블릿 앱에서 열면 ' + app.label + ' 앱이 바로 실행돼요. 지금은 웹 미리보기라 실행되지 않아요.';
+    var acts = $('launchActions');
+    acts.innerHTML = '';
+    var ok = make('button', 'btn primary', '확인');
+    ok.type = 'button';
+    ok.addEventListener('click', closeLaunchModal);
+    acts.appendChild(ok);
+    $('launchModal').hidden = false;
+  }
+
   function renderGuardian() {
     $('childNameInput').value = gDraft.name;
     var ageChips = $('ageChips').querySelectorAll('[data-age]');
@@ -4102,6 +4459,7 @@ var ART_ORDER = [
 
     renderVoices();
     renderLaunchAdmin();
+    renderAppDrawer();
     renderProgressPanel();
     renderCouponAdmin();
   }
@@ -5982,6 +6340,15 @@ var ART_ORDER = [
     renderAll();
   }
   $('guardianClose').addEventListener('click', closeGuardian);
+
+  /* 보호자 앱 서랍 검색 */
+  var drawerSearchEl = $('appDrawerSearch');
+  if (drawerSearchEl) {
+    drawerSearchEl.addEventListener('input', function () {
+      drawerQuery = this.value || '';
+      renderAppDrawer();
+    });
+  }
 
   /* ── 보호자: 아이 정보 · 난이도 ─────────────────────── */
   var ageChips = $('ageChips').querySelectorAll('[data-age]');

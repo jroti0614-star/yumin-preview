@@ -1,0 +1,14 @@
+/* assets/3d/emoji-3d.css — 별별 탐험대 3D 이모지 공용 스타일 (build.py가 만든다) */
+.emoji-3d{
+  display:inline-block;width:1.15em;height:1.15em;
+  vertical-align:-.21em;object-fit:contain;
+  -webkit-user-select:none;user-select:none;pointer-events:none;
+  filter:drop-shadow(0 1px 1.5px rgba(24,20,50,.14));
+}
+.emo-run{
+  display:inline-flex;flex-wrap:wrap;justify-content:center;align-items:center;
+  gap:.06em;max-width:100%;vertical-align:-.21em;
+}
+.emo-run .emoji-3d{display:block;vertical-align:baseline}
+.avatar .emoji-3d,.brand .emoji-3d,.brand-mark .emoji-3d,.chapter .emoji-3d{vertical-align:middle}
+.picture .emoji-3d{width:1em;height:1em;vertical-align:middle}

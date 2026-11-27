@@ -1,11 +1,11 @@
 {
-  "versionCode": 18,
-  "versionName": "0.9.9",
-  "apkUrl": "https://jroti0614-star.github.io/yumin-preview/apk/yumin-launcher-v0.9.9-debug.apk",
-  "sha256": "d25064dbff9f21f13a8c919fdadf970cf9ddc57ef6b2894afb4f5196a9966ad4",
-  "sizeBytes": 13287584,
-  "publishedAt": "2026-11-28T07:00:09+09:00",
-  "notes": "키오스크 홈(●) 버튼 허용 — 외부 학습 앱(핑크퐁)에서 바로 별별 탐험대 홈으로 복귀 · 음성(TTS)·OTA·백그라운드 소리 정지·새 아이콘 유지",
-  "releasePage": "https://github.com/jroti0614-star/yumin-preview/releases/tag/v0.9.9",
-  "mirrorUrl": "https://github.com/jroti0614-star/yumin-preview/releases/download/v0.9.9/yumin-launcher-0.9.9-debug.apk"
+  "versionCode": 19,
+  "versionName": "0.9.10",
+  "apkUrl": "https://jroti0614-star.github.io/yumin-preview/apk/yumin-launcher-v0.9.10-debug.apk",
+  "sha256": "e996aec253d354597a0cf76f7e19071707d25c89118ce1466b3ce19cc2733b14",
+  "sizeBytes": 13288864,
+  "publishedAt": "2026-11-28T07:11:40+09:00",
+  "notes": "구글 TTS 엔진 직접 지정 — 샤오신 패드처럼 시스템 설정의 '텍스트 음성 변환 출력' 화면이 튕기는 기기에서도 한국어 음성이 나옵니다 · 초기화 실패·한국어 미지원 시 기존 기본 엔진으로 자동 폴백 · 키오스크 홈 버튼·OTA·백그라운드 소리 정지 유지",
+  "releasePage": "https://github.com/jroti0614-star/yumin-preview/releases/tag/v0.9.10",
+  "mirrorUrl": "https://github.com/jroti0614-star/yumin-preview/releases/download/v0.9.10/yumin-launcher-0.9.10-debug.apk"
 }

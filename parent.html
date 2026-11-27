@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#f4f1ff">
+<title>별별 탐험대 · 부모님</title>
+<style>
+:root{
+  --bg:#f5f3ff; --card:#ffffff; --ink:#2b2748; --sub:#6f6b8a; --line:#e7e2f6;
+  --accent:#6c5ce7; --accent-soft:#eeeaff; --good:#2f8a5b; --warn:#d1495b;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
+  font-family:'Pretendard',-apple-system,BlinkMacSystemFont,system-ui,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
+  -webkit-text-size-adjust:100%;}
+body{padding:18px 16px 40px;max-width:560px;margin:0 auto;}
+h1{font-size:20px;margin:0 0 2px;letter-spacing:-.02em;}
+.sub{font-size:13px;color:var(--sub);margin:0 0 16px;line-height:1.5;}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin:0 0 12px;
+  box-shadow:0 6px 18px rgba(80,60,160,.06);}
+.card h2{font-size:15px;margin:0 0 4px;letter-spacing:-.01em;}
+.card p.hint{font-size:12.5px;color:var(--sub);margin:4px 0 10px;line-height:1.5;}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 0;
+  border-top:1px solid #f1eefb;}
+.row:first-of-type{border-top:none;}
+.row .label{font-size:14px;font-weight:600;}
+.row .label small{display:block;font-weight:400;color:var(--sub);font-size:11.5px;margin-top:2px;}
+.stepper{display:flex;align-items:center;gap:6px;}
+.stepper b{min-width:64px;text-align:center;font-size:15px;}
+button{-webkit-appearance:none;appearance:none;font:inherit;cursor:pointer;}
+.rnd{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:#fff;
+  color:var(--accent);font-size:18px;font-weight:700;line-height:1;display:flex;align-items:center;justify-content:center;}
+.rnd:active{background:var(--accent-soft);}
+.rnd[disabled]{opacity:.4;}
+.btn{border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 14px;font-size:13.5px;
+  font-weight:700;color:var(--ink);}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;}
+.btn.soft{background:var(--accent-soft);border-color:#dcd6fb;color:#4b3fc0;}
+.btn.danger{background:#fff1f3;border-color:#f7cdd4;color:var(--warn);}
+.btn[disabled]{opacity:.5;}
+.btn.on{background:var(--accent);border-color:var(--accent);color:#fff;}
+.btns{display:flex;flex-wrap:wrap;gap:8px;}
+input[type=email],input[type=password],input[type=time]{width:100%;padding:11px 12px;border-radius:12px;
+  border:1.5px solid var(--line);font-size:16px;background:#fff;color:var(--ink);}
+label.field{display:block;margin:8px 0;}
+label.field span{display:block;font-size:12px;font-weight:700;color:var(--sub);margin-bottom:4px;}
+.summary{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+.tile{background:var(--accent-soft);border-radius:14px;padding:12px;}
+.tile b{display:block;font-size:20px;letter-spacing:-.02em;}
+.tile span{font-size:11.5px;color:var(--sub);}
+.state{font-size:12.5px;color:var(--sub);min-height:18px;margin-top:8px;}
+.state.ok{color:var(--good);}
+.state.err{color:var(--warn);}
+.toggle{position:relative;width:52px;height:30px;border-radius:999px;background:#d9d5ea;border:none;padding:0;flex:0 0 auto;}
+.toggle i{position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;
+  transition:left .18s;box-shadow:0 1px 3px rgba(0,0,0,.2);}
+.toggle[aria-pressed=true]{background:var(--accent);}
+.toggle[aria-pressed=true] i{left:25px;}
+.chiprow{display:flex;gap:6px;flex-wrap:wrap;}
+.chipbtn{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 12px;font-size:13px;font-weight:700;color:var(--sub);}
+.chipbtn.on{background:var(--accent);border-color:var(--accent);color:#fff;}
+.hide{display:none!important;}
+.foot{font-size:11.5px;color:#9a95b5;line-height:1.6;margin-top:6px;text-align:center;}
+</style>
+</head>
+<body>
+<h1>별별 탐험대 · 부모님</h1>
+<p class="sub" id="hi">부모님 계정으로 로그인하면 유민이의 별·기록을 보고, 유튜브 시청 시간과 잠금을 바꿀 수 있어요.</p>
+
+<!-- 로그인 -->
+<div class="card" id="loginCard">
+  <h2>부모님 로그인</h2>
+  <p class="hint">태블릿 '기기 설정 → 가족 동기화'와 같은 계정이에요.</p>
+  <label class="field"><span>이메일</span><input id="email" type="email" inputmode="email" autocomplete="username" placeholder="thskek11@naver.com"></label>
+  <label class="field"><span>비밀번호</span><input id="password" type="password" autocomplete="current-password" placeholder="부모 계정 비밀번호"></label>
+  <div class="btns" style="margin-top:10px;">
+    <button class="btn primary" id="loginBtn" style="flex:1;">로그인</button>
+  </div>
+  <p class="state" id="loginState"></p>
+</div>
+
+<!-- 요약 -->
+<div id="appBox" class="hide">
+  <div class="card">
+    <h2 id="kidTitle">유민이의 오늘</h2>
+    <p class="hint" id="syncLine">기록을 불러오는 중…</p>
+    <div class="summary">
+      <div class="tile"><b id="sumStars">0</b><span>모은 별</span></div>
+      <div class="tile"><b id="sumMap">0 / 14</b><span>별 지도</span></div>
+      <div class="tile"><b id="sumLearn">0회</b><span>오늘 마친 학습</span></div>
+      <div class="tile"><b id="sumCoupon">0장</b><span>소원 쿠폰</span></div>
+    </div>
+    <p class="hint" id="ytLine" style="margin-top:12px;"></p>
+    <div class="btns">
+      <button class="btn soft" id="refreshBtn">새로고침</button>
+      <button class="btn" id="logoutBtn">로그아웃</button>
+    </div>
+    <p class="state" id="saveState"></p>
+  </div>
+
+  <!-- 유튜브 키즈 -->
+  <div class="card">
+    <h2>유튜브 키즈</h2>
+    <p class="hint">학습을 마치면 열리는 보상이에요. 바꾼 값은 태블릿이 1분 안에 받아 가요.</p>
+    <div class="row">
+      <div class="label">한 번에 보는 시간<small>5분 단위로 조절</small></div>
+      <div class="stepper">
+        <button class="rnd" data-step="ytMinutes" data-delta="-5">−</button>
+        <b id="ytMinutesVal">20분</b>
+        <button class="rnd" data-step="ytMinutes" data-delta="5">+</button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="label">오늘만 연장<small>지금 보고 있으면 바로 늘어나요</small></div>
+      <div class="btns">
+        <button class="btn soft" data-bonus="10">+10분</button>
+        <button class="btn soft" data-bonus="20">+20분</button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="label">하루 시청 횟수<small>다 채우면 그날은 더 열리지 않아요</small></div>
+      <div class="chiprow" id="ytMaxChips">
+        <button class="chipbtn" data-ytmax="0">제한 없음</button>
+        <button class="chipbtn" data-ytmax="1">1회</button>
+        <button class="chipbtn" data-ytmax="2">2회</button>
+        <button class="chipbtn" data-ytmax="3">3회</button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="label">보상 조건<small>학습 몇 회를 마치면 열지</small></div>
+      <div class="stepper">
+        <button class="rnd" data-step="rewardNeed" data-delta="-1">−</button>
+        <b id="rewardNeedVal">2회</b>
+        <button class="rnd" data-step="rewardNeed" data-delta="1">+</button>
+      </div>
+    </div>
+    <p class="hint" id="todayBonus"></p>
+  </div>
+
+  <!-- 별 지도 -->
+  <div class="card">
+    <h2>별 지도</h2>
+    <div class="row">
+      <div class="label">하루에 붙일 수 있는 별<small>0이면 제한 없음</small></div>
+      <div class="stepper">
+        <button class="rnd" data-step="dailyCap" data-delta="-1">−</button>
+        <b id="dailyCapVal">2개</b>
+        <button class="rnd" data-step="dailyCap" data-delta="1">+</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 사용 시간 제한 -->
+  <div class="card">
+    <h2>사용 시간 제한</h2>
+    <p class="hint">정한 시간에는 태블릿에 잠금 화면이 떠서 학습·앱 실행이 막혀요.</p>
+    <div class="row">
+      <div class="label">시간 제한 켜기</div>
+      <button class="toggle" id="lockToggle" aria-pressed="false" aria-label="사용 시간 제한"><i></i></button>
+    </div>
+    <div class="row">
+      <div class="label">잠금 시작</div>
+      <input id="lockStart" type="time" style="width:130px;" value="21:00">
+    </div>
+    <div class="row">
+      <div class="label">잠금 끝</div>
+      <input id="lockEnd" type="time" style="width:130px;" value="07:00">
+    </div>
+    <div class="row">
+      <div class="label">지금 잠금<small>지금 바로 태블릿을 잠가요</small></div>
+      <button class="toggle" id="remoteToggle" aria-pressed="false" aria-label="지금 잠금"><i></i></button>
+    </div>
+  </div>
+
+  <p class="foot">바꾼 값은 태블릿이 화면에 떠 있는 동안 60초마다, 또는 앱을 다시 열 때 적용돼요.<br>태블릿이 꺼져 있어도 다음에 켜질 때 이 값으로 시작해요.</p>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════════════════
+   별별 탐험대 · 부모 폰 원격 제어 (parent.html)
+   같은 Supabase 가족 행(family_state)을 읽고 부모 설정(settings)을 씁니다.
+   ══════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+  var SUPABASE_URL = 'https://bwdawpcdqqurfjtdnvux.supabase.co';   /* sync.js 와 같은 값 */
+  var SUPABASE_ANON_KEY = 'sb_publishable_owTr_uL0zLT8pmG-3M_Nkg_sH_CjyMS';   /* 공개용 publishable key (secret 키 금지) */
+  var FAMILY_ID = 'family';
+  /* 주소를 바꿔 시험할 때만: parent.html?api=https://...&key=... */
+  try {
+    var qs = new URLSearchParams(location.search);
+    if (qs.get('api')) localStorage.setItem('byeol-family-api', qs.get('api'));
+    if (qs.get('key')) localStorage.setItem('byeol-family-key', qs.get('key'));
+    SUPABASE_URL = localStorage.getItem('byeol-family-api') || SUPABASE_URL;
+    SUPABASE_ANON_KEY = localStorage.getItem('byeol-family-key') || SUPABASE_ANON_KEY;
+  } catch (e) {}
+  var LS_KEY = 'byeol-parent-v1';
+
+  var cfg = { session: null, lastSync: 0, email: '' };
+  try {
+    var raw = localStorage.getItem(LS_KEY);
+    if (raw) {
+      var o = JSON.parse(raw);
+      if (o && typeof o === 'object') {
+        cfg.session = o.session || null;
+        cfg.lastSync = o.lastSync || 0;
+        cfg.email = o.email || '';
+      }
+    }
+  } catch (e) {}
+
+  function save() {
+    try { localStorage.setItem(LS_KEY, JSON.stringify(cfg)); } catch (e) {}
+  }
+
+  var settings = null;   /* 서버의 부모 설정 */
+  var book = null;       /* 아이 기록 */
+  var busy = false;
+
+  function $(id) { return document.getElementById(id); }
+  function p2(n) { return n < 10 ? '0' + n : '' + n; }
+  function todayStr() { var d = new Date(); return d.getFullYear() + '-' + p2(d.getMonth() + 1) + '-' + p2(d.getDate()); }
+  function clamp(n, a, b) { return Math.min(b, Math.max(a, Math.round(n))); }
+  function num(v, d) { return typeof v === 'number' && isFinite(v) ? v : d; }
+
+  function headers(extra) {
+    var h = { 'apikey': SUPABASE_ANON_KEY, 'Content-Type': 'application/json' };
+    if (cfg.session && cfg.session.access_token) h['Authorization'] = 'Bearer ' + cfg.session.access_token;
+    if (extra) for (var k in extra) if (Object.prototype.hasOwnProperty.call(extra, k)) h[k] = extra[k];
+    return h;
+  }
+
+  function req(method, path, body, extra) {
+    return fetch(SUPABASE_URL + path, {
+      method: method, headers: headers(extra), cache: 'no-store',
+      body: body == null ? undefined : JSON.stringify(body)
+    }).then(function (r) {
+      return r.text().then(function (t) {
+        var d = null;
+        try { d = t ? JSON.parse(t) : null; } catch (e) { d = t; }
+        if (!r.ok) { var err = new Error('HTTP ' + r.status); err.status = r.status; err.data = d; throw err; }
+        return d;
+      });
+    });
+  }
+
+  function setSession(tok) {
+    cfg.session = tok ? {
+      access_token: tok.access_token,
+      refresh_token: tok.refresh_token,
+      expires_at: Date.now() + (num(tok.expires_in, 3600) * 1000) - 30000,
+      user: tok.user ? { id: tok.user.id, email: tok.user.email } : null
+    } : null;
+    if (tok && tok.user && tok.user.email) cfg.email = tok.user.email;
+    save();
+  }
+
+  function ensureToken() {
+    if (!cfg.session) return Promise.reject(new Error('로그인이 필요해요'));
+    if (cfg.session.expires_at && cfg.session.expires_at > Date.now()) return Promise.resolve();
+    return req('POST', '/auth/v1/token?grant_type=refresh_token', { refresh_token: cfg.session.refresh_token })
+      .then(function (tok) { setSession(tok); return tok; })
+      .catch(function () { setSession(null); throw new Error('로그인이 만료됐어요'); });
+  }
+
+  function state(msg, kind) {
+    var el = $('saveState');
+    if (!el) return;
+    el.textContent = msg || '';
+    el.className = 'state' + (kind ? ' ' + kind : '');
+  }
+
+  function renderLogin() {
+    var on = !!cfg.session;
+    $('loginCard').classList.toggle('hide', on);
+    $('appBox').classList.toggle('hide', !on);
+    if (on) $('hi').textContent = (cfg.email || '부모 계정') + ' 로 로그인했어요.';
+  }
+
+  function render() {
+    if (!settings) return;
+    $('ytMinutesVal').textContent = settings.ytMinutes + '분';
+    $('rewardNeedVal').textContent = settings.rewardNeed + '회';
+    $('dailyCapVal').textContent = settings.dailyCap ? settings.dailyCap + '개' : '제한 없음';
+    $('lockStart').value = settings.lockStart;
+    $('lockEnd').value = settings.lockEnd;
+    setToggle($('lockToggle'), !!settings.lockOn);
+    setToggle($('remoteToggle'), !!settings.remoteLock);
+    var chips = document.querySelectorAll('#ytMaxChips [data-ytmax]');
+    for (var i = 0; i < chips.length; i++) {
+      chips[i].classList.toggle('on', Number(chips[i].getAttribute('data-ytmax')) === settings.ytDailySessions);
+    }
+    var bonusToday = settings.bonusDate === todayStr() ? settings.bonusMinutes : 0;
+    $('todayBonus').textContent = bonusToday ? '오늘 ' + bonusToday + '분 더 연장했어요.' : '오늘은 연장하지 않았어요.';
+  }
+
+  /* 성을 뺀 이름으로 부른다 (정유민 → 유민이) */
+  function given(name) {
+    var s = String(name || '').trim();
+    if (!s) return '유민';
+    for (var i = 0; i < s.length; i++) {
+      var c = s.charCodeAt(i);
+      if (c < 0xAC00 || c > 0xD7A3) return s;
+    }
+    if (s.length >= 3 && s.charAt(s.length - 1) === '이') s = s.slice(0, -1);
+    if (s.length <= 2) return s;
+    if (s.length >= 4 && ['남궁', '황보', '제갈', '선우'].indexOf(s.slice(0, 2)) >= 0) return s.slice(2);
+    return s.slice(1);
+  }
+
+  function renderBook() {
+    var b = book || {};
+    var name = (typeof b.name === 'string' && b.name.trim()) ? b.name.trim() : '유민이';
+    $('kidTitle').textContent = given(name) + '이의 오늘';
+    $('sumStars').textContent = num(b.stars, 0) + '개';
+    $('sumMap').textContent = num(b.placed, 0) + ' / 14';
+    var r = b.reward && typeof b.reward === 'object' ? b.reward : {};
+    var today = todayStr();
+    var lessons = (r.date === today) ? num(r.lessons, 0) : 0;
+    var sessions = (r.date === today) ? num(r.sessions, 0) : 0;
+    $('sumLearn').textContent = lessons + '회';
+    var tickets = num(b.tickets, 0);
+    var coupons = Array.isArray(b.coupons) ? b.coupons.length : 0;
+    $('sumCoupon').textContent = (tickets ? tickets + '장' : (coupons ? coupons + '장' : '0장'));
+    var running = num(r.endsAt, 0) > Date.now();
+    var maxS = settings ? settings.ytDailySessions : 0;
+    var line = '오늘 유튜브 키즈 ' + sessions + '회 봤어요';
+    if (maxS) line += ' / 하루 ' + maxS + '회';
+    if (running) {
+      var left = Math.ceil((num(r.endsAt, 0) - Date.now()) / 60000);
+      line += ' · 지금 보는 중 (약 ' + left + '분 남음)';
+    } else if (maxS && sessions >= maxS) {
+      line += ' · 오늘 몫을 다 마쳤어요';
+    }
+    if (settings && settings.remoteLock) line += ' · 🔒 지금 잠금 중';
+    $('ytLine').textContent = line;
+  }
+
+  function setToggle(btn, on) {
+    if (!btn) return;
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+  }
+
+  function timeLabel(ts) {
+    if (!ts) return '';
+    var d = new Date(ts);
+    return p2(d.getHours()) + ':' + p2(d.getMinutes());
+  }
+
+  function pull(silent) {
+    if (busy) return Promise.resolve();
+    if (!cfg.session) return Promise.resolve();
+    busy = true;
+    if (!silent) state('불러오는 중…');
+    return ensureToken()
+      .then(function () {
+        return req('GET', '/rest/v1/family_state?id=eq.' + encodeURIComponent(FAMILY_ID) + '&select=book,settings,settings_updated_at');
+      })
+      .then(function (rows) {
+        var row = rows && rows[0];
+        if (!row) { state('아직 태블릿이 동기화하지 않았어요.', 'err'); return; }
+        book = row.book || {};
+        settings = normalize(row.settings || {});
+        cfg.lastSync = Date.now();
+        save();
+        render();
+        renderBook();
+        $('syncLine').textContent = '마지막 확인 ' + timeLabel(cfg.lastSync) + ' · 태블릿 기록을 ' + timeLabel(num(row.settings_updated_at, 0)) + ' 기준으로 봤어요';
+        state('');
+        busy = false;
+      })
+      .catch(function (e) {
+        busy = false;
+        if (e && e.status === 401) { setSession(null); renderLogin(); state('로그인이 만료됐어요. 다시 로그인해 주세요.', 'err'); }
+        else state('불러오지 못했어요 (인터넷을 확인해 주세요).', 'err');
+      });
+  }
+
+  function normalize(s) {
+    var d = {
+      ytMinutes: 20, ytDailySessions: 0, rewardNeed: 2, dailyCap: 2,
+      lockOn: false, lockStart: '21:00', lockEnd: '07:00',
+      remoteLock: false, bonusDate: '', bonusMinutes: 0
+    };
+    if (!s || typeof s !== 'object') return d;
+    d.ytMinutes = clamp(num(s.ytMinutes, 20), 5, 180);
+    d.ytDailySessions = clamp(num(s.ytDailySessions, 0), 0, 9);
+    d.rewardNeed = clamp(num(s.rewardNeed, 2), 1, 5);
+    d.dailyCap = clamp(num(s.dailyCap, 2), 0, 10);
+    d.lockOn = !!s.lockOn;
+    d.lockStart = /^\d\d:\d\d$/.test(s.lockStart) ? s.lockStart : '21:00';
+    d.lockEnd = /^\d\d:\d\d$/.test(s.lockEnd) ? s.lockEnd : '07:00';
+    d.remoteLock = !!s.remoteLock;
+    d.bonusDate = typeof s.bonusDate === 'string' ? s.bonusDate : '';
+    d.bonusMinutes = clamp(num(s.bonusMinutes, 0), 0, 240);
+    return d;
+  }
+
+  function push(patch, okMsg) {
+    if (!settings) return Promise.resolve();
+    var next = normalize(Object.assign({}, settings, patch || {}));
+    next.syncedAt = Date.now();
+    settings = next;
+    render();
+    renderBook();
+    state('태블릿에 저장하는 중…');
+    return ensureToken()
+      .then(function () {
+        return req('PATCH', '/rest/v1/family_state?id=eq.' + encodeURIComponent(FAMILY_ID),
+          { settings: next, settings_updated_at: Date.now() },
+          { 'Prefer': 'return=representation' });
+      })
+      .then(function (rows) {
+        if (rows && rows.length === 0) {
+          /* 행이 없으면 만든다 */
+          return req('POST', '/rest/v1/family_state',
+            { id: FAMILY_ID, book: book || {}, settings: next, settings_updated_at: Date.now() },
+            { 'Prefer': 'return=minimal' });
+        }
+      })
+      .then(function () { state(okMsg || '저장했어요 · 태블릿이 1분 안에 받아 가요', 'ok'); })
+      .catch(function (e) {
+        if (e && e.status === 401) { setSession(null); renderLogin(); state('로그인이 만료됐어요.', 'err'); }
+        else state('저장하지 못했어요. 다시 눌러 주세요.', 'err');
+      });
+  }
+
+  /* ── 로그인 ─────────────────────────────────────────── */
+  $('loginBtn').addEventListener('click', function () {
+    var em = ($('email').value || '').trim();
+    var pw = $('password').value || '';
+    if (!em || !pw) { $('loginState').textContent = '이메일과 비밀번호를 입력해 주세요.'; return; }
+    $('loginBtn').disabled = true;
+    $('loginState').textContent = '로그인 중…';
+    req('POST', '/auth/v1/token?grant_type=password', { email: em, password: pw })
+      .then(function (tok) {
+        $('loginBtn').disabled = false;
+        $('password').value = '';
+        setSession(tok);
+        renderLogin();
+        pull(false);
+      })
+      .catch(function () {
+        $('loginBtn').disabled = false;
+        $('loginState').textContent = '이메일 또는 비밀번호가 맞지 않아요.';
+      });
+  });
+
+  $('logoutBtn').addEventListener('click', function () {
+    setSession(null);
+    settings = null; book = null;
+    renderLogin();
+    state('');
+  });
+  $('refreshBtn').addEventListener('click', function () { pull(false); });
+
+  /* ── 조절 버튼 ──────────────────────────────────────── */
+  var steps = document.querySelectorAll('[data-step]');
+  for (var i = 0; i < steps.length; i++) {
+    steps[i].addEventListener('click', function () {
+      if (!settings) return;
+      var key = this.getAttribute('data-step');
+      var d = Number(this.getAttribute('data-delta'));
+      var patch = {};
+      if (key === 'ytMinutes') patch.ytMinutes = clamp(settings.ytMinutes + d, 5, 180);
+      if (key === 'rewardNeed') patch.rewardNeed = clamp(settings.rewardNeed + d, 1, 5);
+      if (key === 'dailyCap') patch.dailyCap = clamp(settings.dailyCap + d, 0, 10);
+      push(patch, '저장했어요');
+    });
+  }
+
+  var chips = document.querySelectorAll('#ytMaxChips [data-ytmax]');
+  for (var c = 0; c < chips.length; c++) {
+    chips[c].addEventListener('click', function () {
+      var v = Number(this.getAttribute('data-ytmax')) || 0;
+      push({ ytDailySessions: v }, v ? '하루 ' + v + '회로 저장했어요' : '하루 횟수 제한을 풀었어요');
+    });
+  }
+
+  var bonusBtns = document.querySelectorAll('[data-bonus]');
+  for (var b = 0; b < bonusBtns.length; b++) {
+    bonusBtns[b].addEventListener('click', function () {
+      if (!settings) return;
+      var add = Number(this.getAttribute('data-bonus')) || 0;
+      var today = todayStr();
+      var base = settings.bonusDate === today ? settings.bonusMinutes : 0;
+      push({ bonusDate: today, bonusMinutes: clamp(base + add, 0, 240) }, '오늘 ' + (base + add) + '분으로 늘렸어요');
+    });
+  }
+
+  $('lockToggle').addEventListener('click', function () {
+    if (!settings) return;
+    push({ lockOn: !settings.lockOn }, settings.lockOn ? '시간 제한을 껐어요' : '시간 제한을 켰어요');
+  });
+  $('remoteToggle').addEventListener('click', function () {
+    if (!settings) return;
+    push({ remoteLock: !settings.remoteLock }, settings.remoteLock ? '잠금을 풀었어요' : '지금 태블릿을 잠갔어요');
+  });
+  $('lockStart').addEventListener('change', function () {
+    if (!settings) return;
+    push({ lockStart: this.value || settings.lockStart }, '잠금 시작 시각을 바꿨어요');
+  });
+  $('lockEnd').addEventListener('change', function () {
+    if (!settings) return;
+    push({ lockEnd: this.value || settings.lockEnd }, '잠금 끝 시각을 바꿨어요');
+  });
+
+  /* ── 시작 ───────────────────────────────────────────── */
+  if (cfg.email) $('email').value = cfg.email;
+  renderLogin();
+  if (cfg.session) {
+    pull(false);
+    setInterval(function () {
+      if (document.visibilityState === 'visible' && cfg.session) pull(true);
+    }, 20000);
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'visible' && cfg.session) pull(true);
+    });
+  }
+})();
+</script>
+</body>
+</html>

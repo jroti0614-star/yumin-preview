@@ -991,6 +991,71 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
   .mcard .mback i{width:38px;height:38px;font-size:22px}
 }
 
+/* ── 사용 시간 제한: 잠금 화면 ──────────────────────────── */
+/* 정해 둔 시간에는 모든 화면 위에 이 잠금 화면이 덮인다. */
+.sleep-lock{
+  position:fixed;inset:0;z-index:400;
+  display:flex;align-items:center;justify-content:center;padding:24px;
+  background:radial-gradient(125% 95% at 50% 0%,#33427b 0%,#1a2244 52%,#0b0f20 100%);
+  color:#fff;text-align:center;overflow:hidden;
+  animation:sleepIn .3s ease;
+}
+.sleep-lock[hidden]{display:none}
+@keyframes sleepIn{from{opacity:0}to{opacity:1}}
+.sleep-stars{
+  position:absolute;inset:0;pointer-events:none;opacity:.45;
+  background-image:
+    radial-gradient(#fff 1.2px,transparent 1.6px),
+    radial-gradient(#fff 1px,transparent 1.4px),
+    radial-gradient(#ffe9a8 1.4px,transparent 1.8px);
+  background-size:96px 96px,142px 142px,210px 210px;
+  background-position:0 0,44px 62px,88px 20px;
+  animation:sleepTwinkle 6s ease-in-out infinite;
+}
+@keyframes sleepTwinkle{0%,100%{opacity:.32}50%{opacity:.55}}
+.sleep-card{position:relative;max-width:440px;width:100%}
+.sleep-emoji{font-size:0;line-height:1;margin-bottom:8px}
+.sleep-emoji .emoji-3d{width:104px;height:104px;filter:drop-shadow(0 12px 20px rgba(0,0,0,.5))}
+.sleep-card h2{
+  font-family:var(--display);font-weight:400;font-size:clamp(24px,4.4vw,30px);
+  letter-spacing:-.5px;margin:0;color:#fff;
+}
+.sleep-msg{margin:12px 0 0;font-size:14.5px;line-height:1.65;color:#d7dfff}
+.sleep-rule{margin:8px 0 0;font-size:12px;line-height:1.6;color:#9aa6d4}
+.sleep-left{
+  display:inline-block;margin-top:20px;padding:10px 18px;border-radius:999px;
+  background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.18);
+  font-size:13.5px;color:#eef2ff;
+}
+.sleep-left b{font-family:var(--display);font-weight:400;font-size:17px;letter-spacing:.5px}
+.sleep-actions{display:flex;justify-content:center;gap:9px;margin-top:24px}
+.btn.sleep-btn{
+  background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.3);color:#fff;
+  font-size:13.5px;padding:12px 18px;
+}
+.btn.sleep-btn:hover{background:rgba(255,255,255,.24)}
+/* 잠금 화면 위에서 여는 어른 확인은 잠금 화면보다 더 위에 둔다 */
+#pinModal.pin-above-lock{z-index:500}
+
+/* ── 사용 시간 제한: 보호자 기기 설정 카드 ─────────────── */
+.sleep-row{display:flex;align-items:center;gap:10px;margin-top:13px}
+.sleep-now{flex:1 1 auto;min-width:0;font-size:12.5px;line-height:1.45;color:var(--muted)}
+.sleep-now b{display:block;font-size:13px;color:var(--ink);margin-bottom:2px}
+.sleep-times{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:13px}
+.sleep-times label{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted)}
+.sleep-times input[type=time]{
+  padding:9px 10px;border-radius:11px;border:1.5px solid var(--line);background:#fbfbfe;
+  font-family:var(--display);font-size:15px;color:var(--ink);min-width:104px;
+}
+.sleep-times input[type=time]:focus{outline:none;border-color:var(--purple);background:#fff}
+.sleep-state{margin:11px 0 0;font-size:12px;line-height:1.6;color:var(--muted)}
+.sleep-warn{
+  margin-top:11px;padding:10px 12px;border-radius:12px;font-size:11.5px;line-height:1.55;
+  background:#fff8ea;border:1px solid #f2ddb6;color:#8a5b00;
+}
+.sleep-warn.off{background:#f2fbf5;border-color:#cfe9d9;color:#0e7a4b}
+.sleep-warn[hidden]{display:none}
+
 /* ── 보호자 확장 ────────────────────────────────────── */
 .prog-rows{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
 .prog-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #f4f4fa}
@@ -2197,6 +2262,25 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
     </div>
 
     <div class="g-panel" id="gPanelDevice" data-gpanel="device" role="tabpanel" aria-labelledby="gTabDevice" hidden>
+    <div class="card g-card" id="sleepCard">
+      <h3>🌙 사용 시간 제한</h3>
+      <p class="g-hint">정한 시간에는 홈·학습·별 지도·소원 쿠폰·유튜브 키즈 보상이 모두 잠기고, <span class="kid-name">유민이</span> 화면에는 잠금 화면만 보여요. 잠금 중에는 학습 기록·별·쿠폰이 줄지 않아요.</p>
+      <div class="sleep-row">
+        <span class="sleep-now" id="sleepNow"><b>지금은 잠금 시간이 아니에요</b>켜 두면 정한 시간마다 잠겨요.</span>
+        <button class="btn" id="sleepToggle" type="button">켜기</button>
+      </div>
+      <div class="sleep-times">
+        <label>시작 <input type="time" id="sleepStart" value="21:00" step="600" aria-label="잠금 시작 시각"></label>
+        <label>끝 <input type="time" id="sleepEnd" value="07:00" step="600" aria-label="잠금 끝 시각"></label>
+      </div>
+      <p class="sleep-state" id="sleepState">매일 21:00 ~ 07:00에 잠겨요.</p>
+      <div class="sleep-warn" id="sleepPinNote" hidden></div>
+      <div class="g-actions">
+        <button class="btn" id="sleepPinBtn" type="button" hidden>화면 고정 함께 켜기</button>
+        <span class="g-state" id="sleepPinState" role="status"></span>
+      </div>
+    </div>
+
     <div class="card g-card" id="appUpdateCard">
       <h3>앱 업데이트 · 화면 고정</h3>
       <p class="g-hint">태블릿에 깔린 앱 버전을 확인하고, 새 버전이 있으면 여기서 바로 내려받아 설치해요.</p>
@@ -2244,6 +2328,21 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
       <button class="btn" id="celebOk" type="button">확인</button>
       <button class="btn" id="celebSticker" type="button">🌟 별 지도에 붙이러 가기</button>
       <button class="btn primary" id="celebNext" type="button" hidden>▶ 다음 강</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ 사용 시간 제한 (잠금 화면) ══════════════ -->
+<div class="sleep-lock" id="sleepLock" role="alertdialog" aria-modal="true" aria-labelledby="sleepTitle" aria-describedby="sleepMsg" hidden>
+  <div class="sleep-stars" aria-hidden="true"></div>
+  <div class="sleep-card">
+    <div class="sleep-emoji" aria-hidden="true">😴</div>
+    <h2 id="sleepTitle">지금은 자는 시간이야</h2>
+    <p class="sleep-msg" id="sleepMsg">오늘도 참 잘했어. 푹 자고 내일 또 만나!</p>
+    <p class="sleep-rule" id="sleepRule">매일 21:00 ~ 07:00에는 별별 탐험대가 잠겨요.</p>
+    <p class="sleep-left" id="sleepLeft">아침까지 <b>8시간</b> 남았어</p>
+    <div class="sleep-actions">
+      <button class="btn sleep-btn" id="sleepParent" type="button">보호자 해제</button>
     </div>
   </div>
 </div>
@@ -3526,6 +3625,7 @@ var ART_ORDER = [
     gift: null,
     voices: [],
     reward: { date: '', lessons: 0, sessions: 0, endsAt: 0 },   // 보상: 오늘 학습 횟수·본 횟수·끝나는 시각
+    lock: { on: false, start: '21:00', end: '07:00', days: [] },  // 사용 시간 제한(취침 잠금)
     launcher: emptyLauncher()
   };
 
@@ -3545,6 +3645,7 @@ var ART_ORDER = [
         coupons: state.coupons,
         requests: state.requests, gift: state.gift,
         reward: state.reward,
+        lock: state.lock,
         launcher: state.launcher
       }));
     } catch (e) { /* 저장을 못 해도 화면은 그대로 동작합니다 */ }
@@ -3581,6 +3682,15 @@ var ART_ORDER = [
           lessons: Math.max(0, Math.floor(s.reward.lessons || 0)),
           sessions: Math.max(0, Math.floor(s.reward.sessions || 0)),
           endsAt: Math.max(0, Number(s.reward.endsAt) || 0)
+        };
+      }
+      if (s.lock && typeof s.lock === 'object') {
+        /* 사용 시간 제한: 켜짐 여부 · 시작/끝 시각 · 요일(비어 있으면 매일) */
+        state.lock = {
+          on: !!s.lock.on,
+          start: /^\d{1,2}:\d{2}$/.test(String(s.lock.start || '')) ? String(s.lock.start) : '21:00',
+          end: /^\d{1,2}:\d{2}$/.test(String(s.lock.end || '')) ? String(s.lock.end) : '07:00',
+          days: Array.isArray(s.lock.days) ? s.lock.days.filter(function (d) { return d >= 0 && d <= 6; }) : []
         };
       }
       if (s.launcher && typeof s.launcher === 'object') {
@@ -4247,6 +4357,7 @@ var ART_ORDER = [
   }
 
   function launchSlot(key) {
+    if (sleepGuard()) return;            /* 사용 시간 제한: 잠금 중에는 앱을 열지 않는다 */
     var slot = launchSlotByKey(key);
     var cfg = slotConfig(key);
     var app = (cfg.name || '').trim();
@@ -4450,14 +4561,16 @@ var ART_ORDER = [
     }
     var go = $('rewardGo');
     if (go) {
-      go.hidden = !(info.unlocked || info.running);
-      go.textContent = info.running ? '그만 보기' : '유튜브 키즈 열기 (20분)';
+      /* 보는 중에는 열기 버튼을 감춘다 — 남은 시간과 '닫기'만 보여 준다 */
+      go.hidden = info.running || !info.unlocked;
+      go.textContent = '유튜브 키즈 열기 (20분)';
     }
     var hint = $('rewardHint');
     if (hint) hint.textContent = (info.unlocked || info.running) ? '' : '학습을 2번 마치면 저절로 열려요.';
   }
 
   function openRewardModal() {
+    if (sleepGuard()) return;            /* 잠금 중에는 보상도 열지 않는다 */
     rewardState();
     renderRewardModal();
     var info = rewardInfo();
@@ -4468,6 +4581,7 @@ var ART_ORDER = [
   function closeRewardModal() { $('rewardModal').hidden = true; }
 
   function startRewardSession() {
+    if (sleepGuard()) return;
     var info = rewardInfo();
     if (info.running || !info.unlocked) return;
     var r = rewardState();
@@ -4518,8 +4632,9 @@ var ART_ORDER = [
   if (rewardCloseBtn) rewardCloseBtn.addEventListener('click', closeRewardModal);
   var rewardGoBtn = $('rewardGo');
   if (rewardGoBtn) rewardGoBtn.addEventListener('click', function () {
-    if (rewardInfo().running) { rewardExpire(false); toast('유튜브 키즈 보기를 마쳤어요.'); }
-    else startRewardSession();
+    /* 보는 중에는 이 버튼이 숨겨진다. 누를 수 있는 때는 '열기' 한 가지뿐이다. */
+    if (rewardInfo().running) return;
+    startRewardSession();
   });
   var rewardModalEl = $('rewardModal');
   if (rewardModalEl) rewardModalEl.addEventListener('click', function (e) { if (e.target === this) closeRewardModal(); });
@@ -4913,6 +5028,7 @@ var ART_ORDER = [
   }
 
   function placeAt(nodeNo) {
+    if (sleepGuard()) return false;      /* 잠금 중에는 별을 붙이지 않는다(별 소모 없음) */
     var idx = nodeNo - 1;
     if (idx < state.placed) { toast('이미 붙인 별이에요!'); return false; }
     var need = idx - state.placed + 1;
@@ -4962,6 +5078,7 @@ var ART_ORDER = [
   });
 
   $('stickerAuto').addEventListener('click', function () {
+    if (sleepGuard()) return;
     var left = dailyLeft();
     if (left <= 0) {
       var msg = '오늘 붙일 별을 다 붙였어요! 내일 또 붙이러 와요 🌙 (' + dailyNote() + ')';
@@ -5236,6 +5353,7 @@ var ART_ORDER = [
   }
 
   function openDrawerApp(app) {
+    if (sleepGuard()) return;            /* 잠금 중에는 어른 앱 서랍도 열리지 않는다 */
     var bridge = window.YuminLauncherBridge;
     var hasBridge = !!(bridge && typeof bridge.launchApp === 'function');
     if (hasBridge) {
@@ -5258,6 +5376,7 @@ var ART_ORDER = [
   }
 
   function renderGuardian() {
+    if (typeof renderSleepCard === 'function') renderSleepCard();
     $('childNameInput').value = gDraft.name;
     $('childAgeInput').value = gDraft.childAge ? String(gDraft.childAge) : '';
     var ageChips = $('ageChips').querySelectorAll('[data-age]');
@@ -5486,6 +5605,7 @@ var ART_ORDER = [
 
   /* 과목을 누르면 1~24강 목록 없이 진행 중인 강이 곧바로 열린다 */
   function openSubject(subIndex, lessonNo) {
+    if (sleepGuard()) return;            /* 사용 시간 제한: 잠금 중에는 학습을 시작하지 않는다 */
     var sub = SUBJECTS[subIndex] || SUBJECTS[0];
     SESSION.sub = subIndex;
     $('quizTitle').textContent = sub.title;
@@ -5629,7 +5749,8 @@ var ART_ORDER = [
   }
 
   /* ── 입문 단계 힌트 화살표 ─────────────────────────────── */
-  var HINT_DELAY_MS = 8000;
+  /* 아이가 5초 동안 고르지 못하면 정답에 손가락을 띄운다(예전 8초는 너무 길었다). */
+  var HINT_DELAY_MS = 5000;
   var hintTimer = null;
   var hintOn = false;
 
@@ -5707,6 +5828,7 @@ var ART_ORDER = [
 
   function answer(val) {
     if (quiz.locked) return;
+    if (sleepBlocked()) return;         /* 잠금 중에는 문제를 더 풀지 않는다(기록·별 소모 없음) */
     clearHint();                       /* 보기를 누르면 힌트 타이머·화살표를 바로 정리한다 */
     var q = quiz.list[quiz.index];
     if (!q) return;
@@ -5746,12 +5868,16 @@ var ART_ORDER = [
       box.classList.remove('shake');
       void box.offsetWidth;
       box.classList.add('shake');
+      /* 한 번 틀리면 기다리지 않고 바로 손가락 힌트를 띄운다
+         (answer() 맨 위의 clearHint()가 예약된 힌트를 지우기 때문에 다시 걸어 줘야 한다) */
+      if (state.age === 0 && SESSION.step === 'learn') showHint();
     }
   }
 
   function nextQuestion() {
     clearHint();
     if ($('quizSheet').hidden) return;
+    if (sleepBlocked()) { closeQuiz(true); return; }
     quiz.index++;
     if (quiz.index >= quiz.list.length) { afterQuiz(); return; }
     renderQuestion();
@@ -5803,6 +5929,8 @@ var ART_ORDER = [
 
   function finishLesson() {
     if (SESSION.step === 'done') return;
+    /* 사용 시간 제한: 잠금 시간이 되면 별·기록을 남기지 않고 강을 닫는다 */
+    if (sleepBlocked()) { closeQuiz(true); return; }
     SESSION.step = 'done';
     var sub = SUBJECTS[SESSION.sub], id = sub.id, no = SESSION.no;
     var rec = curRec(id);
@@ -7205,6 +7333,7 @@ var ART_ORDER = [
   /* 비밀번호 대신 매번 새로 나오는 두 자리 덧셈·구구단 문제로 확인한다.
      유아는 읽고 계산하기 어려워 스스로 들어오기 힘들다. */
   var pinQuiz = null;
+  var pinAction = null;   // 잠금 해제처럼 '확인만 하고 다른 일을 하는' 용도
 
   function newPinQuiz() {
     var a, b;
@@ -7223,7 +7352,10 @@ var ART_ORDER = [
     }
   }
 
-  function openPin(reason) {
+  function openPin(reason, action) {
+    pinAction = typeof action === 'function' ? action : null;
+    /* 잠금 화면 위에서 열었을 때는 확인 창이 잠금 화면보다 위에 보여야 한다 */
+    $('pinModal').classList.toggle('pin-above-lock', !!pinAction);
     $('pinInput').value = '';
     $('pinError').textContent = '';
     var sub = $('pinSub');
@@ -7232,11 +7364,14 @@ var ART_ORDER = [
     $('pinModal').hidden = false;
     setTimeout(function () { $('pinInput').focus(); }, 60);
   }
-  function closePin() { $('pinModal').hidden = true; }
+  function closePin() {
+    $('pinModal').hidden = true;
+    $('pinModal').classList.remove('pin-above-lock');
+  }
   /* 상단 '보호자' 버튼은 하단 탭과 겹쳐 없앴다. 남아 있는 예전 화면이면 그대로 연결한다. */
   var headerParentBtn = $('parentBtn');
-  if (headerParentBtn) headerParentBtn.addEventListener('click', openPin);
-  $('pinCancel').addEventListener('click', function () { guardianJump = null; closePin(); });
+  if (headerParentBtn) headerParentBtn.addEventListener('click', function () { openPin(); });
+  $('pinCancel').addEventListener('click', function () { guardianJump = null; pinAction = null; closePin(); });
   $('pinInput').addEventListener('input', function () {
     this.value = this.value.replace(/[^0-9]/g, '').slice(0, 4);
     $('pinError').textContent = '';
@@ -7247,7 +7382,10 @@ var ART_ORDER = [
   $('pinConfirm').addEventListener('click', function () {
     if (pinQuiz && $('pinInput').value.trim() === String(pinQuiz.answer)) {
       var jump = guardianJump; guardianJump = null;
-      closePin(); openGuardian(jump);
+      var act = pinAction; pinAction = null;
+      closePin();
+      if (act) act();
+      else openGuardian(jump);
     }
     else {
       $('pinError').textContent = '정답이 아니에요. 새 문제로 다시 풀어 볼까요?';
@@ -7358,6 +7496,7 @@ var ART_ORDER = [
     $('guardianSheet').hidden = true;
     document.body.style.overflow = '';
     renderAll();
+    refreshSleep();   /* 보호자 화면을 닫으면 잠금 시간이면 잠금 화면이 다시 덮칩니다 */
   }
   $('guardianClose').addEventListener('click', closeGuardian);
 
@@ -7506,6 +7645,7 @@ var ART_ORDER = [
     btn.className = UPD.pinOn ? 'btn primary' : 'btn';
     var label = $('pinStateLabel');
     if (label) label.textContent = !can ? '태블릿 앱에서만 켤 수 있어요' : (UPD.pinOn ? '켜짐 · 런처에 묶여 있어요' : '꺼짐');
+    if (typeof renderSleepPinNote === 'function') renderSleepPinNote();
   }
   function updVersionLabel() {
     var el = $('appVersionLabel');
@@ -7519,6 +7659,7 @@ var ART_ORDER = [
         el.innerHTML = '설치된 버전 v' + String(info.versionName || '') +
           '<small>버전 번호 ' + String(info.versionCode || '') + '</small>';
         updPinButton();
+        renderSleepPinNote();
         return;
       }
     }
@@ -7570,6 +7711,7 @@ var ART_ORDER = [
     if (res.ok === false) updSay(res.message || '화면 고정을 바꾸지 못했어요.');
     else updSay(UPD.pinOn ? '화면 고정을 켰어요. 끄려면 여기서 다시 눌러 주세요.' : '화면 고정을 껐어요.');
     updPinButton();
+    renderSleepPinNote();
   }
 
   var updCheckBtn = $('appUpdateCheck');
@@ -7847,6 +7989,9 @@ var ART_ORDER = [
     },
     matchCards: function () { return ART.match.cards.map(function (c, i) { return { i: i, pair: c.pair, kind: c.kind, word: c.word, matched: c.matched }; }); },
     puzzleState: function () { return { placed: ART.puzzle.placed.slice(), count: puzzleCount() }; },
+    sleep: function () { return sleepApiState(); },
+    sleepConfig: function (patch) { return sleepApiConfig(patch); },
+    sleepRelock: function () { SLEEP.unlockedKey = ''; refreshSleep(); return sleepApiState(); },
     animState: function () { return document.body.dataset.anim || 'idle'; }
   };
 
@@ -7989,6 +8134,368 @@ var ART_ORDER = [
     emojiMo.observe(document.body, { childList: true, subtree: true, characterData: true });
   }
 
+  /* ══════════════════════════════════════════════════════
+     🌙 사용 시간 제한 (취침 · 사용 시간 잠금)
+     보호자 > 기기 설정에서 켜고 시작·끝 시각을 정한다(기본 21:00~07:00).
+     잠금 시간에는 모든 화면 위에 잠금 화면을 덮고, 앱 실행·퀴즈 진행·보상
+     타이머·별 붙이기를 모두 막아 학습 기록·별·쿠폰이 줄지 않게 한다.
+     판정은 기기 로컬 시간(new Date) 기준이라 앱 안에서도 브라우저에서도 같다.
+     어른이 산수 문제를 풀면 '그 잠금 시간 동안만' 풀린다(새로 열면 다시 잠김).
+     ══════════════════════════════════════════════════════ */
+  var SLEEP = { unlockedKey: '', timer: null, warnedPin: false };
+  var SLEEP_DAYS = ['일', '월', '화', '수', '목', '금', '토'];
+
+  function sleepCfg() {
+    if (!state.lock || typeof state.lock !== 'object') {
+      state.lock = { on: false, start: '21:00', end: '07:00', days: [] };
+    }
+    var c = state.lock;
+    if (typeof c.on !== 'boolean') c.on = false;
+    if (!/^\d{1,2}:\d{2}$/.test(String(c.start || ''))) c.start = '21:00';
+    if (!/^\d{1,2}:\d{2}$/.test(String(c.end || ''))) c.end = '07:00';
+    if (!Array.isArray(c.days)) c.days = [];
+    return c;
+  }
+
+  /* 'H:MM' → 0~1439 분 (형식이 틀리면 null) */
+  function hmMinutes(text) {
+    var m = /^(\d{1,2}):(\d{1,2})$/.exec(String(text == null ? '' : text).trim());
+    if (!m) return null;
+    var h = Number(m[1]), mi = Number(m[2]);
+    if (h > 23 || mi > 59) return null;
+    return h * 60 + mi;
+  }
+
+  /* 어떤 표기든 'HH:MM' 으로 맞춘다 */
+  function hmText(text, fallback) {
+    var min = hmMinutes(text);
+    if (min == null) min = hmMinutes(fallback == null ? '00:00' : fallback);
+    if (min == null) min = 0;
+    return pad2(Math.floor(min / 60)) + ':' + pad2(min % 60);
+  }
+
+  /* 지금이 잠금 시간대 안인지 + 이번 잠금이 언제 시작·끝나는지 */
+  function sleepWindow(now) {
+    now = now || new Date();
+    var c = sleepCfg();
+    var s = hmMinutes(c.start), e = hmMinutes(c.end);
+    var out = { on: !!c.on, active: false, none: false, startAt: 0, endAt: 0, key: '', start: c.start, end: c.end };
+    if (!out.on) return out;
+    if (s == null || e == null) { out.none = true; return out; }
+    if (s === e) { out.none = true; return out; }      /* 시작=끝이면 잠그지 않는다 */
+    var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    var startToday = today.getTime() + s * 60000;
+    var endToday = today.getTime() + e * 60000;
+    var t = now.getTime();
+    var inWin, startAt, endAt;
+    if (s < e) {                                        /* 같은 날 안에서 끝난다 */
+      inWin = t >= startToday && t < endToday;
+      startAt = startToday; endAt = endToday;
+    } else {                                            /* 자정을 넘긴다 (21:00~07:00) */
+      inWin = t >= startToday || t < endToday;
+      if (t >= startToday) { startAt = startToday; endAt = endToday + 86400000; }
+      else { startAt = startToday - 86400000; endAt = endToday; }
+    }
+    if (inWin && c.days.length) {                       /* 요일을 골랐으면 시작한 날 요일로 본다 */
+      var day = new Date(startAt).getDay();
+      if (c.days.indexOf(day) < 0) inWin = false;
+    }
+    out.active = inWin;
+    out.startAt = startAt;
+    out.endAt = endAt;
+    out.key = String(startAt);
+    return out;
+  }
+
+  /* 잠금 중인가 (어른이 이번 잠금을 풀었으면 아님) */
+  function sleepBlocked(now) {
+    var w = sleepWindow(now);
+    if (!w.active) return false;
+    return !(SLEEP.unlockedKey && SLEEP.unlockedKey === w.key);
+  }
+
+  /* 남은 잠금 시간(ms) */
+  function sleepLeftMs(now) {
+    now = now || new Date();
+    var w = sleepWindow(now);
+    if (!w.active) return 0;
+    return Math.max(0, w.endAt - now.getTime());
+  }
+
+  function sleepSpan(ms) {
+    var min = Math.max(0, Math.ceil(ms / 60000));
+    var h = Math.floor(min / 60), m = min % 60;
+    if (h <= 0) return m + '분';
+    return h + '시간' + (m ? ' ' + m + '분' : '');
+  }
+
+  function sleepRuleText() {
+    var c = sleepCfg();
+    var when = c.days.length
+      ? c.days.slice().sort().map(function (d) { return SLEEP_DAYS[d]; }).join('·') + '요일'
+      : '매일';
+    return when + ' ' + hmText(c.start) + ' ~ ' + hmText(c.end) + '에는 별별 탐험대가 잠겨요.';
+  }
+
+  /* 다음 잠금이 시작하는 때 (잠금 중이 아니어도 '지금은 자는 시간이야'를 예고할 수 있게) */
+  function sleepNextStart(now) {
+    now = now || new Date();
+    var c = sleepCfg();
+    var s = hmMinutes(c.start);
+    if (s == null) return null;
+    var t = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime() + s * 60000;
+    if (t <= now.getTime()) t += 86400000;
+    return t;
+  }
+
+  function sleepNextText(now) {
+    var next = sleepNextStart(now);
+    if (!next) return '';
+    var d = new Date(next);
+    var today = new Date();
+    var sameDay = d.getFullYear() === today.getFullYear() && d.getMonth() === today.getMonth() && d.getDate() === today.getDate();
+    var label = sameDay ? '오늘' : (d.getDate() === today.getDate() + 1 && d.getMonth() === today.getMonth() ? '내일'
+      : (d.getMonth() + 1) + '월 ' + d.getDate() + '일');
+    return label + ' ' + hmText(sleepCfg().start);
+  }
+
+  /* 잠금을 막아야 하면 잠금 화면을 띄우고 true (각 동작의 첫 줄에서 부른다) */
+  function sleepGuard() {
+    if (!sleepBlocked()) return false;
+    /* 보호자 확인을 통과해 보호자 화면을 열어 둔 동안은 어른이 쓰는 중이라 막지 않는다 */
+    if (!$('guardianSheet').hidden) return false;
+    refreshSleep();
+    return true;
+  }
+
+  /* 잠금이 시작될 때 열려 있던 아이 화면을 닫는다 — 별·기록·쿠폰은 건드리지 않는다 */
+  function sleepCloseChildScreens() {
+    if ($('quizSheet') && !$('quizSheet').hidden) closeQuiz(true);
+    ['celebrateModal', 'launchModal', 'rewardModal'].forEach(function (id) {
+      var el = $(id);
+      if (el && !el.hidden) el.hidden = true;
+    });
+    stopSpeak();
+    /* 보상(유튜브 키즈)을 보던 중이었으면 밤에 이어 보지 않도록 멈추고,
+       쓰지 못한 보상은 돌려준다(학습 횟수를 되돌린다) */
+    var r = rewardState();
+    if (r.endsAt) {
+      r.endsAt = 0;
+      r.sessions = Math.max(0, r.sessions - 1);
+      saveState();
+      renderReward();
+    }
+  }
+
+  function renderSleepLock() {
+    var w = sleepWindow();
+    var rule = $('sleepRule'), left = $('sleepLeft');
+    if (rule) rule.textContent = sleepRuleText();
+    if (left) {
+      left.innerHTML = '<b>' + hmText(sleepCfg().end) + '</b>까지 ' + sleepSpan(sleepLeftMs()) + ' 남았어';
+    }
+    var msg = $('sleepMsg');
+    if (msg) msg.textContent = '오늘도 참 잘했어. 푹 자고 내일 또 만나!';
+    var emoji = document.querySelector('#sleepLock .sleep-emoji');
+    if (emoji) emoji.setAttribute('data-on', w.active ? '1' : '0');
+  }
+
+  /* 잠금 화면을 지금 상태에 맞춘다 (잠금 시작·해제·시간 경과 때마다) */
+  function refreshSleep() {
+    var el = $('sleepLock');
+    if (!el) return;
+    /* 보호자 화면(산수 확인을 통과한 어른 자리)을 열어 둔 동안에는 덮지 않는다 */
+    var blocked = sleepBlocked() && $('guardianSheet').hidden;
+    var showing = !el.hidden;
+    if (blocked) {
+      if (!showing) {
+        sleepCloseChildScreens();
+        el.hidden = false;
+        document.body.style.overflow = 'hidden';
+        renderSleepLock();
+        try { $('sleepParent').focus({ preventScroll: true }); } catch (e) {}
+      } else {
+        renderSleepLock();
+      }
+    } else if (showing) {
+      el.hidden = true;
+      if ($('quizSheet').hidden) document.body.style.overflow = '';
+      renderSleepLock();
+    }
+    renderSleepCard();
+  }
+
+  /* 어른 확인을 통과하면 '그 잠금 시간 동안만' 잠금을 푼다 (영구 해제 아님) */
+  function unlockSleepSession() {
+    var w = sleepWindow();
+    SLEEP.unlockedKey = w.key || 'session';
+    refreshSleep();
+    if (!w.active) { toast('지금은 잠금 시간이 아니에요.'); return; }
+    toast('보호자 해제 · 이번 잠금 시간만 풀려요');
+    speak('보호자 확인으로 잠금을 잠깐 풀었어요. 다음 잠금 시간에는 다시 잠겨요.');
+  }
+
+  /* ── 보호자 > 기기 설정 카드 ──────────────────────────── */
+  function renderSleepCard() {
+    var card = $('sleepCard');
+    if (!card) return;
+    var c = sleepCfg();
+    var w = sleepWindow();
+    var btn = $('sleepToggle');
+    if (btn) {
+      btn.textContent = c.on ? '끄기' : '켜기';
+      btn.className = c.on ? 'btn primary' : 'btn';
+      btn.setAttribute('aria-pressed', c.on ? 'true' : 'false');
+    }
+    var st = $('sleepStart'), en = $('sleepEnd');
+    if (st && document.activeElement !== st) st.value = hmText(c.start);
+    if (en && document.activeElement !== en) en.value = hmText(c.end);
+
+    var now = $('sleepNow'), stt = $('sleepState');
+    if (now) {
+      var head, tail;
+      if (!c.on) {
+        head = '사용 시간 제한이 꺼져 있어요';
+        tail = '켜 두면 정한 시간마다 잠겨요.';
+      } else if (w.none) {
+        head = '시작과 끝 시각이 같아요';
+        tail = '두 시각을 다르게 정해 주세요.';
+      } else if (sleepBlocked()) {
+        head = '지금 잠금 시간이에요';
+        tail = hmText(c.end) + '에 풀려요 · ' + sleepSpan(sleepLeftMs()) + ' 남음';
+      } else if (w.active) {
+        head = '지금은 잠금을 풀었어요';
+        tail = '보호자 확인으로 이번 잠금만 풀려 있어요.';
+      } else {
+        head = '지금은 잠금 시간이 아니에요';
+        tail = '다음 잠금은 ' + sleepNextText() + '부터예요.';
+      }
+      now.innerHTML = '';
+      now.appendChild(make('b', null, head));
+      now.appendChild(document.createTextNode(tail));
+    }
+    if (stt) {
+      stt.textContent = !c.on
+        ? '사용 시간 제한이 꺼져 있어요. 켜면 정한 시간에 홈·학습·보상이 잠겨요.'
+        : (w.none ? '시작과 끝 시각이 같아서 잠그지 않아요.'
+          : sleepRuleText() + ' 잠금 중에는 별·기록·쿠폰이 줄지 않아요.');
+    }
+    renderSleepPinNote();
+  }
+
+  /* 화면 고정이 꺼져 있으면 아이가 홈으로 빠져나갈 수 있다는 것을 알린다 */
+  function renderSleepPinNote() {
+    var note = $('sleepPinNote'), btn = $('sleepPinBtn');
+    if (!note) return;
+    var b = window.YuminLauncherBridge;
+    var can = !!(b && typeof b.setScreenPinning === 'function');
+    var pinned = !!UPD.pinOn;
+    note.hidden = false;
+    note.className = 'sleep-warn';
+    if (!can) {
+      note.textContent = '화면 고정은 태블릿 앱에서만 켤 수 있어요. 웹 미리보기에서는 아이가 홈으로 나갈 수 있다고 보고, 태블릿 앱에서 화면 고정을 함께 켜 주세요.';
+      if (btn) btn.hidden = true;
+    } else if (!pinned) {
+      note.textContent = '화면 고정이 꺼져 있어요. 아이가 홈 버튼으로 나가면 잠금 화면을 피해 다른 앱을 쓸 수 있어요. 잠금과 함께 화면 고정을 켜 두세요.';
+      if (btn) btn.hidden = false;
+    } else {
+      note.className = 'sleep-warn off';
+      note.textContent = '화면 고정이 켜져 있어요. 잠금 시간에 아이가 홈으로 나갈 수 없어요.';
+      if (btn) btn.hidden = true;
+    }
+  }
+
+  function sleepApiState() {
+    var c = sleepCfg(), w = sleepWindow();
+    var el = $('sleepLock');
+    return {
+      on: !!c.on, start: hmText(c.start), end: hmText(c.end), days: c.days.slice(),
+      window: w.active, blocked: sleepBlocked(),
+      unlocked: !!(SLEEP.unlockedKey && SLEEP.unlockedKey === w.key),
+      none: !!w.none, leftMs: sleepLeftMs(), nextStart: sleepNextStart(),
+      visible: !!(el && !el.hidden),
+      text: {
+        title: $('sleepTitle') ? $('sleepTitle').textContent : '',
+        left: $('sleepLeft') ? $('sleepLeft').textContent : '',
+        rule: $('sleepRule') ? $('sleepRule').textContent : ''
+      }
+    };
+  }
+
+  function sleepApiConfig(patch) {
+    var c = sleepCfg();
+    if (patch && typeof patch === 'object') {
+      if (typeof patch.on === 'boolean') c.on = patch.on;
+      if (typeof patch.start === 'string') c.start = hmText(patch.start, c.start);
+      if (typeof patch.end === 'string') c.end = hmText(patch.end, c.end);
+      if (Array.isArray(patch.days)) c.days = patch.days.filter(function (d) { return d >= 0 && d <= 6; });
+    }
+    saveState();
+    renderSleepCard();
+    refreshSleep();
+    return sleepApiState();
+  }
+
+  /* ── 사용 시간 제한: 화면 연결 ─────────────────────────── */
+  (function bindSleepUi() {
+    var toggle = $('sleepToggle');
+    if (toggle) toggle.addEventListener('click', function () {
+      var c = sleepCfg();
+      c.on = !c.on;
+      saveState();
+      refreshSleep();
+      renderSleepCard();
+      if (c.on) {
+        var w = sleepWindow();
+        var b = window.YuminLauncherBridge;
+        var can = !!(b && typeof b.setScreenPinning === 'function');
+        if (w.none) toast('시작과 끝 시각을 다르게 정해 주세요.');
+        else if (sleepBlocked()) toast('지금부터 ' + hmText(c.end) + '까지 잠겨요.');
+        else toast('켰어요 · 다음 잠금은 ' + sleepNextText() + '부터예요.');
+        if (can && !UPD.pinOn) toast('화면 고정도 함께 켜 두면 아이가 나가지 못해요.');
+      } else {
+        toast('사용 시간 제한을 껐어요.');
+      }
+    });
+
+    ['sleepStart', 'sleepEnd'].forEach(function (id) {
+      var el = $(id);
+      if (!el) return;
+      el.addEventListener('change', function () {
+        var v = hmMinutes(this.value);
+        var c = sleepCfg();
+        if (v == null) { this.value = hmText(id === 'sleepStart' ? c.start : c.end); return; }
+        var text = hmText(this.value);
+        if (id === 'sleepStart') c.start = text; else c.end = text;
+        if (c.start === c.end) toast('시작과 끝 시각이 같으면 잠그지 않아요.');
+        saveState();
+        renderSleepCard();
+        refreshSleep();
+      });
+    });
+
+    var pinBtn2 = $('sleepPinBtn');
+    if (pinBtn2) pinBtn2.addEventListener('click', function () {
+      var b = window.YuminLauncherBridge;
+      if (!b || typeof b.setScreenPinning !== 'function') return;
+      try { b.setScreenPinning(true); } catch (e) {}
+      var st = $('sleepPinState');
+      if (st) st.textContent = '화면 고정을 켜는 중이에요…';
+    });
+
+    var parentBtn = $('sleepParent');
+    if (parentBtn) parentBtn.addEventListener('click', function () {
+      openPin('잠금을 풀려면 어른 확인이 필요해요. 문제를 풀어 주세요.', unlockSleepSession);
+    });
+  }());
+
+  /* 15초마다 잠금 시간이 되었는지 확인한다 (화면을 켜 둔 채 시간이 넘어가는 경우) */
+  SLEEP.timer = setInterval(function () { refreshSleep(); }, 15000);
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden) refreshSleep();
+  });
+  window.addEventListener('pageshow', function () { refreshSleep(); });
+
   /* ── 시작 ──────────────────────────────────────────── */
   loadState();
   /* 어제 보던 보상 기록이 남아 있으면 오늘 기준으로 정리한다 */
@@ -8004,6 +8511,9 @@ var ART_ORDER = [
   window.scrollTo(0, 0);
   if (!state.profileSet) showOnboard();
   startEmoji3D();
+  /* 사용 시간 제한: 저장된 설정대로 잠금 화면을 먼저 맞춘다 */
+  renderSleepCard();
+  refreshSleep();
   recLoad().then(function () {
     if (!$('guardianSheet').hidden) renderVoices();
   });

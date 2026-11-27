@@ -2,9 +2,9 @@
   "versionCode": 18,
   "versionName": "0.9.9",
   "apkUrl": "https://jroti0614-star.github.io/yumin-preview/apk/yumin-launcher-v0.9.9-debug.apk",
-  "sha256": "1ccf0c51ea35205cde5efccefa7c020b6247a8c1dbb9ad0b2aa528e21c27b815",
-  "sizeBytes": 13287076,
-  "publishedAt": "2026-11-28T06:54:26+09:00",
+  "sha256": "d25064dbff9f21f13a8c919fdadf970cf9ddc57ef6b2894afb4f5196a9966ad4",
+  "sizeBytes": 13287584,
+  "publishedAt": "2026-11-28T07:00:09+09:00",
   "notes": "키오스크 홈(●) 버튼 허용 — 외부 학습 앱(핑크퐁)에서 바로 별별 탐험대 홈으로 복귀 · 음성(TTS)·OTA·백그라운드 소리 정지·새 아이콘 유지",
   "releasePage": "https://github.com/jroti0614-star/yumin-preview/releases/tag/v0.9.9",
   "mirrorUrl": "https://github.com/jroti0614-star/yumin-preview/releases/download/v0.9.9/yumin-launcher-0.9.9-debug.apk"

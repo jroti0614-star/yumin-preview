@@ -1,10 +1,10 @@
 {
-  "versionCode": 6,
-  "versionName": "0.6.0",
-  "apkUrl": "https://github.com/jroti0614-star/yumin-preview/releases/download/v0.6.0/yumin-launcher-0.6.0-debug.apk",
-  "sha256": "c226d0976a347d278999e5b878547eb36f657fee023aa33ae0678714093a2dfc",
-  "sizeBytes": 12321732,
-  "publishedAt": "2026-11-27T08:21:55+09:00",
-  "notes": "온라인 최신 웹 반영 · 오프라인 폴백 · 앱 업데이트 확인 · 화면 고정",
-  "releasePage": "https://github.com/jroti0614-star/yumin-preview/releases/tag/v0.6.0"
+  "versionCode": 7,
+  "versionName": "0.7.0",
+  "apkUrl": "https://github.com/jroti0614-star/yumin-preview/releases/download/v0.7.0/yumin-launcher-0.7.0-debug.apk",
+  "sha256": "bb1e911e44ac87840f2603a533fcb0019558fd2c544ed0330fbe38648e43e46a",
+  "sizeBytes": 12332596,
+  "publishedAt": "2026-11-27T13:56:58+09:00",
+  "notes": "웹 개편 내장 · 처음 1회 프로필 · 앱 서랍/미연결 칸 바로 열기 · 보호자 3탭 · 어른 확인 산수 · 유튜브 키즈 20분 보상",
+  "releasePage": "https://github.com/jroti0614-star/yumin-preview/releases/tag/v0.7.0"
 }

@@ -35,6 +35,11 @@ var EMOJI_3D = { '🍎': 'red_apple', '⭐': 'star', ... };
 3. 새 이모지를 추가하려면 fluentui-emoji에서 3D PNG를 받아 192px WebP로 줄여
    이 폴더에 넣고 `EMOJI_3D` 표에 한 줄 추가하면 됩니다.
 
+## 입문 힌트 손가락
+
+`backhand_index_pointing_right.webp` 는 이모지 표에 넣지 않고 코드가 직접 씁니다.
+입문(3~4세) 퀴즈에서 오래 고민하면 정답 보기 위에 뜨는 3D 손가락(같은 Fluent Emoji 3D, Default 톤)입니다.
+
 ## 목록 (258종, 이모지 → 파일)
 
 | 이모지 | 파일 | 이모지 | 파일 | 이모지 | 파일 |

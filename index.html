@@ -1303,6 +1303,9 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
   width:68px;height:68px;border-radius:21px;display:grid;place-items:center;
   background:#ffffffcc;font-size:34px;box-shadow:0 8px 16px -12px rgba(23,24,40,.5);
 }
+/* 연결된 앱의 실제 아이콘을 보여 줄 때 */
+.lt-icon.has-img{background:transparent;box-shadow:none;overflow:hidden;border-radius:20px}
+.lt-icon.has-img img{width:100%;height:100%;object-fit:contain;border-radius:20px;display:block}
 .lt-name{font-family:var(--display);font-size:22px;color:#2a2f45;line-height:1.15}
 .lt-app{font-size:12px;color:#5d6478;display:flex;align-items:center;gap:4px;min-height:16px}
 .lt-app .dot{width:6px;height:6px;border-radius:50%;background:#c9ccda;display:inline-block}
@@ -1532,6 +1535,8 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
   font-family:var(--display);font-size:18px;
   background:#eef0ff;color:#4a3fb0;border:1px solid #e2e4f8;
 }
+.ad-icon.has-img{background:transparent;border-color:transparent;overflow:hidden}
+.ad-icon.has-img img{width:100%;height:100%;object-fit:contain;border-radius:12px;display:block}
 .ad-name{
   width:100%;font-size:11.5px;line-height:1.3;color:#2a2f45;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
@@ -4290,6 +4295,37 @@ var ART_ORDER = [
     return state.launcher[key] || { name: '', pkg: '' };
   }
 
+  /* 연결된 앱의 실제 아이콘 (안드로이드 앱의 getAppIcon) — 없으면 빈 문자열.
+     웹 미리보기에는 브리지가 없으니 그대로 3D 그림을 보여 준다. */
+  var APP_ICON_CACHE = {};
+  function appIconUrl(pkg) {
+    var key = String(pkg || '').trim();
+    if (!key) return '';
+    if (Object.prototype.hasOwnProperty.call(APP_ICON_CACHE, key)) return APP_ICON_CACHE[key];
+    var b = window.YuminLauncherBridge;
+    var url = '';
+    if (b && typeof b.getAppIcon === 'function') {
+      try { url = String(b.getAppIcon(key) || ''); } catch (e) { url = ''; }
+    }
+    if (url.indexOf('data:image') !== 0) url = '';
+    APP_ICON_CACHE[key] = url;
+    return url;
+  }
+  /** span 안에 앱 아이콘 이미지를 넣는다. 아이콘이 없으면 false (기존 그림 유지) */
+  function fillAppIcon(box, pkg, radius) {
+    var url = appIconUrl(pkg);
+    if (!url || !box) return false;
+    box.innerHTML = '';
+    box.classList.add('has-img');
+    var img = document.createElement('img');
+    img.src = url;
+    img.alt = '';
+    img.setAttribute('aria-hidden', 'true');
+    if (radius) img.style.borderRadius = radius;
+    box.appendChild(img);
+    return true;
+  }
+
   function padClock(n) { return (n < 10 ? '0' : '') + n; }
 
   /* 시간대별 인사 · 환영 문구 · 응원 한마디 */
@@ -4399,6 +4435,8 @@ var ART_ORDER = [
 
       var icon = make('span', 'lt-icon', slot.emoji);
       icon.setAttribute('aria-hidden', 'true');
+      /* 연결된 앱이 있으면 실제 앱 아이콘으로 (없으면 3D 그림 그대로) */
+      if (app) fillAppIcon(icon, cfg.pkg, '20px');
       tile.appendChild(icon);
       tile.appendChild(make('div', 'lt-name', slot.title));
 
@@ -5463,6 +5501,13 @@ var ART_ORDER = [
       ic.style.background = 'hsl(' + hue + ' 82% 96%)';
       ic.style.color = 'hsl(' + hue + ' 42% 38%)';
       ic.style.borderColor = 'hsl(' + hue + ' 58% 89%)';
+      /* 설치된 앱이면 실제 아이콘으로 (웹 예시 목록은 글자 아이콘 그대로) */
+      if (hasBridge && app.pkg) {
+        if (fillAppIcon(ic, app.pkg, '12px')) {
+          ic.style.background = 'transparent';
+          ic.style.borderColor = 'transparent';
+        }
+      }
       btn.appendChild(ic);
       btn.appendChild(make('span', 'ad-name', app.label));
       btn.addEventListener('click', function () { openDrawerApp(app); });

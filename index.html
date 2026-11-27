@@ -4455,6 +4455,20 @@ var ART_ORDER = [
     $('launchTodayTitle').textContent = sub.title + ' ' + currentLesson(sub.id) + '강';
     $('launchTodaySub').textContent = sub.hero;
     renderHomeWidgets();
+    syncAllowedPackages();
+  }
+
+  /* 기기 소유자(키오스크) 모드에서 열 수 있는 앱 목록을 앱에 알려 준다 (일반 모드에서는 앱이 무시) */
+  function syncAllowedPackages() {
+    var b = window.YuminLauncherBridge;
+    if (!b || typeof b.updateAllowedPackages !== 'function') return;
+    var pkgs = [];
+    LAUNCH_SLOTS.forEach(function (slot) {
+      var cfg = slotConfig(slot.key);
+      if (cfg && cfg.pkg) pkgs.push(String(cfg.pkg));
+    });
+    if (!pkgs.length) return;
+    try { b.updateAllowedPackages(JSON.stringify(pkgs)); } catch (e) {}
   }
 
   function launchSlotByKey(key) {
@@ -7841,7 +7855,10 @@ var ART_ORDER = [
     btn.textContent = UPD.pinOn ? '끄기' : '켜기';
     btn.className = UPD.pinOn ? 'btn primary' : 'btn';
     var label = $('pinStateLabel');
-    if (label) label.textContent = !can ? '태블릿 앱에서만 켤 수 있어요' : (UPD.pinOn ? '켜짐 · 런처에 묶여 있어요' : '꺼짐');
+    if (label) label.textContent = !can ? '태블릿 앱에서만 켤 수 있어요'
+      : (UPD.pinOn
+        ? (UPD.info && UPD.info.isDeviceOwner ? '켜짐 · 기기 소유자(키오스크)' : '켜짐 · 런처에 묶여 있어요')
+        : (UPD.info && UPD.info.isDeviceOwner ? '꺼짐 · 기기 소유자라 확인 창 없이 켜져요' : '꺼짐'));
     if (typeof renderSleepPinNote === 'function') renderSleepPinNote();
   }
   /* 음성(TTS) 상태 — 태블릿에 한국어 음성 엔진이 없으면 조용히 실패하지 않게 알려 준다 */

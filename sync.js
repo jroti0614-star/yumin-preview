@@ -436,8 +436,22 @@
         if (merged) cfg.bookT = Math.max(cfg.bookT || 0, docT(merged));
         saveCfg();
 
+        /* 태블릿 '기기 설정'에서 직접 바꾼 잠금 설정도 부모 쪽과 맞춘다 */
+        var lockChanged = false;
+        try {
+          var lk = app && typeof app.getLockSettings === 'function' ? app.getLockSettings() : null;
+          if (lk && (!!cfg.settings.lockOn !== !!lk.lockOn
+            || cfg.settings.lockStart !== lk.lockStart
+            || cfg.settings.lockEnd !== lk.lockEnd)) {
+            cfg.settings = normalizeSettings(Object.assign({}, cfg.settings, lk));
+            cfg.settingsT = nowMs();
+            lockChanged = true;
+          }
+        } catch (e) {}
+
         var chain = Promise.resolve();
         if (needPush) chain = chain.then(function () { return pushBook(merged); });
+        if (lockChanged) chain = chain.then(pushSettings);
         if (needPush && remoteSettingsT > cfg.settingsT) chain = chain.then(pushSettings);
         return chain.then(function () { return true; });
       })
@@ -499,9 +513,14 @@
     return cur >= a || cur < b;   /* 자정을 넘는 시간대 (예: 21:00~07:00) */
   }
 
+  /* sync.js 가 직접 덮는 잠금은 '부모가 지금 잠금' 하나뿐이다.
+     시간 제한(잠금 시작·끝)은 앱 안의 잠금 화면(state.lock)이 담당하고,
+     부모 폰에서 바꾼 시각은 applySettings 로 그쪽 설정에 넣어 준다. */
   function locked() {
-    var s = settings();
-    return !!(s.remoteLock || scheduledLock(s));
+    return !!settings().remoteLock;
+  }
+  function remoteLocked() {
+    return !!settings().remoteLock;
   }
 
   var lockTimer = null;
@@ -730,6 +749,7 @@
     login: signIn,
     logout: logout,
     locked: locked,
+    remoteLocked: remoteLocked,
     refreshLock: updateLock,
     today: todayStr,
     configure: function (url, key) {

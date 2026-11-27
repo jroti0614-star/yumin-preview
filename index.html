@@ -1641,6 +1641,7 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
   .hc-from{font-size:12px}
 }
 </style>
+<script src="sync.js?v=20261127-2"></script>
 </head>
 <body>
 
@@ -2299,6 +2300,8 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
       </div>
       <p class="g-hint">켜면 <span class="kid-name">유민이</span> 화면이 런처에 묶여 다른 앱이나 설정으로 나가지 못해요. 학습 앱을 열어 줘야 할 때는 꺼 주세요. 기본은 꺼짐이에요.</p>
     </div>
+
+    <div class="card g-card" id="famSyncCard"></div>
 
     <div class="card g-card">
       <h3>따라 말하기 녹음</h3>
@@ -3569,8 +3572,45 @@ var ART_ORDER = [
     hint: '보상 · 유튜브 키즈 앱', sample: 'com.google.android.apps.youtube.kids'
   };
   var REWARD_APP = { name: '유튜브 키즈', pkg: 'com.google.android.apps.youtube.kids' };
-  var REWARD_SECONDS = 20 * 60;   // 한 번에 보는 시간
-  var REWARD_NEED = 2;            // 보상을 열려면 오늘 완료할 학습 횟수
+  /* ── [가족 동기화] 부모 폰에서 바꾼 설정 ────────────────
+     sync.js 가 없거나 로그인 전이면 아래 기본값으로 예전처럼 동작한다. */
+  var REWARD_SECONDS = 20 * 60;   // 기본: 한 번에 보는 시간
+  var REWARD_NEED = 2;            // 기본: 보상을 열려면 오늘 완료할 학습 횟수
+
+  function famCfg() {
+    var f = window.ByeolFamily;
+    if (f && typeof f.settings === 'function') { try { return f.settings(); } catch (e) {} }
+    return null;
+  }
+  function rewardMinutes() {
+    var c = famCfg();
+    var m = c ? c.ytMinutes : 0;
+    return (typeof m === 'number' && m >= 1) ? Math.round(m) : 20;
+  }
+  function rewardNeedNow() {
+    var c = famCfg();
+    var n = c ? c.rewardNeed : 0;
+    return (typeof n === 'number' && n >= 1) ? Math.round(n) : REWARD_NEED;
+  }
+  function ytMaxSessions() {
+    var c = famCfg();
+    var n = c ? c.ytDailySessions : 0;
+    return (typeof n === 'number' && n > 0) ? Math.round(n) : 0;   /* 0 = 제한 없음 */
+  }
+  function famBonusTotal() {
+    var c = famCfg();
+    if (!c || c.bonusDate !== todayStr()) return 0;
+    return Math.max(0, Number(c.bonusMinutes) || 0);
+  }
+  function famBonusLeft() {
+    var used = Math.max(0, Number(state.reward && state.reward.bonusUsedMin) || 0);
+    return Math.max(0, famBonusTotal() - used);
+  }
+  function famLocked() {
+    var f = window.ByeolFamily;
+    if (f && typeof f.remoteLocked === 'function') { try { return !!f.remoteLocked(); } catch (e) {} }
+    return false;
+  }
 
   /* 자주 쓰는 유아 앱 프리셋 (패키지명은 스토어 판본에 따라 다를 수 있어 직접 고칠 수 있게 둔다) */
   var LAUNCH_PRESETS = [
@@ -3605,6 +3645,10 @@ var ART_ORDER = [
   var LESSON_MAX = 24;
 
   /* ── 상태 ───────────────────────────────────────────── */
+  /* [가족 동기화] 마지막으로 기록이 바뀐 시각·서버 적용 중 여부 */
+  var lastChangeAt = 0;
+  var applyingRemote = false;
+
   var state = {
     name: '유민이',
     childAge: 0,        // 아이 나이(살) — 처음 시작 화면에서 받는다
@@ -3635,6 +3679,10 @@ var ART_ORDER = [
   }
 
   function saveState() {
+    lastChangeAt = Date.now();
+    if (!applyingRemote && window.ByeolFamily && typeof window.ByeolFamily.markDirty === 'function') {
+      try { window.ByeolFamily.markDirty(); } catch (e) {}
+    }
     try {
       window.localStorage.setItem(CONFIG.storageKey, JSON.stringify({
         name: state.name, childAge: state.childAge, profileSet: state.profileSet,
@@ -4358,6 +4406,7 @@ var ART_ORDER = [
 
   function launchSlot(key) {
     if (sleepGuard()) return;            /* 사용 시간 제한: 잠금 중에는 앱을 열지 않는다 */
+    if (famLocked()) { toast('지금은 쉬는 시간이에요'); return; }   /* 부모가 지금 잠금 */
     var slot = launchSlotByKey(key);
     var cfg = slotConfig(key);
     var app = (cfg.name || '').trim();
@@ -4433,12 +4482,18 @@ var ART_ORDER = [
 
   function rewardInfo() {
     var r = rewardState();
-    var base = REWARD_NEED * r.sessions;              // 이미 보상으로 쓴 학습 횟수
-    var have = Math.max(0, Math.min(REWARD_NEED, r.lessons - base));
+    var need = rewardNeedNow();
+    var maxSessions = ytMaxSessions();
+    var base = need * r.sessions;                     // 이미 보상으로 쓴 학습 횟수
+    var have = Math.max(0, Math.min(need, r.lessons - base));
+    /* 하루 횟수를 다 채웠으면 그날은 더 열리지 않는다 */
+    var capped = maxSessions > 0 && r.sessions >= maxSessions;
     var running = r.endsAt > Date.now();
     return {
-      have: have, need: REWARD_NEED,
-      unlocked: have >= REWARD_NEED,
+      have: have, need: need,
+      unlocked: !capped && have >= need,
+      capped: capped, maxSessions: maxSessions,
+      minutes: rewardMinutes() + famBonusLeft(),
       running: running,
       left: running ? Math.max(0, Math.ceil((r.endsAt - Date.now()) / 1000)) : 0,
       sessions: r.sessions, lessons: r.lessons
@@ -4466,26 +4521,28 @@ var ART_ORDER = [
     var app = rewardAppInfo();
     var nextState = info.running ? 'running' : (info.unlocked ? 'ready' : 'locked');
     card.setAttribute('data-state', nextState);
+    card.setAttribute('data-done', info.capped ? '1' : '0');
     /* 학습을 마쳐 잠김 → 열림이 되는 바로 그 순간, 카드가 반짝이며 컨페티가 터진다 */
     if (nextState === 'ready' && lastRewardState && lastRewardState !== 'ready') {
       burstFx({ from: card, count: 20 });
       fxRibbons(10);
-      toast('🎬 유튜브 키즈가 열렸어요! 20분 동안 볼 수 있어요');
+      toast('🎬 유튜브 키즈가 열렸어요! ' + info.minutes + '분 동안 볼 수 있어요');
       speak('학습을 마쳐서 유튜브 키즈가 열렸어요!');
     }
     lastRewardState = nextState;
     var sub = $('hrSub'), btn = $('hrBtn'), time = $('hrTime');
     if (sub) {
       if (info.running) sub.textContent = app.name + ' 보는 중 · 시간이 다 되면 저절로 잠겨요';
-      else if (info.unlocked) sub.textContent = '학습 ' + info.need + '회를 마쳤어요! 20분 동안 볼 수 있어요';
-      else sub.textContent = '학습 ' + info.need + '회 완료 시 열려요 (현재 ' + info.have + '/' + info.need + ')';
+      else if (info.capped) sub.textContent = '오늘 유튜브 키즈 시청을 모두 마쳤어요';
+      else if (info.unlocked) sub.textContent = '학습 ' + info.need + '회를 마쳤어요! ' + info.minutes + '분 동안 볼 수 있어요';
+      else sub.textContent = '학습 ' + info.need + '회 완료 시 ' + info.minutes + '분 열려요 (현재 ' + info.have + '/' + info.need + ')';
     }
     if (time) {
       time.hidden = !info.running;
       if (info.running) time.textContent = rewardClock(info.left);
     }
     if (btn) {
-      btn.textContent = info.running ? '보는 중' : (info.unlocked ? '열기' : '안내');
+      btn.textContent = info.running ? '보는 중' : (info.capped ? '오늘은 끝' : (info.unlocked ? '열기' : '안내'));
       btn.disabled = false;
     }
     if (info.running) startRewardTick();
@@ -4514,7 +4571,7 @@ var ART_ORDER = [
     if ($('rewardModal') && !$('rewardModal').hidden) renderRewardModal();
     if (announce && had) {
       $('rewardModal').hidden = true;
-      showCelebrate('⏰', '유튜브 키즈 시간 끝!', '20분을 다 봤어요. 다음엔 학습 2회를 마치면 또 볼 수 있어요.', false, 0, false);
+      showCelebrate('⏰', '유튜브 키즈 시간 끝!', rewardMinutes() + '분을 다 봤어요. 다음엔 학습 ' + rewardNeedNow() + '회를 마치면 또 볼 수 있어요.', false, 0, false);
       speak('시간이 다 됐어요. 유튜브 키즈는 이제 그만 하고 다시 놀아 볼까요?');
     }
     return had;
@@ -4536,8 +4593,10 @@ var ART_ORDER = [
       sub.textContent = info.running
         ? '지금 ' + app.name + ' 보는 중이에요.'
         : (info.unlocked
-          ? '학습 ' + info.need + '회를 마쳤어요! 20분 동안 볼 수 있어요.'
-          : '학습 ' + info.need + '회 완료 시 열려요 (현재 ' + info.have + '/' + info.need + ')');
+          ? '학습 ' + info.need + '회를 마쳤어요! ' + info.minutes + '분 동안 볼 수 있어요.'
+          : (info.capped
+            ? '오늘 유튜브 키즈 시청을 모두 마쳤어요. 내일 다시 만나요!'
+            : '학습 ' + info.need + '회 완료 시 열려요 (현재 ' + info.have + '/' + info.need + ')'));
     }
     var t = $('rewardTimer');
     if (t) {
@@ -4563,7 +4622,7 @@ var ART_ORDER = [
     if (go) {
       /* 보는 중에는 열기 버튼을 감춘다 — 남은 시간과 '닫기'만 보여 준다 */
       go.hidden = info.running || !info.unlocked;
-      go.textContent = '유튜브 키즈 열기 (20분)';
+      go.textContent = '유튜브 키즈 열기 (' + info.minutes + '분)';
     }
     var hint = $('rewardHint');
     if (hint) hint.textContent = (info.unlocked || info.running) ? '' : '학습을 2번 마치면 저절로 열려요.';
@@ -4585,8 +4644,11 @@ var ART_ORDER = [
     var info = rewardInfo();
     if (info.running || !info.unlocked) return;
     var r = rewardState();
+    /* 부모 폰에서 오늘만 연장한 시간(+N분)을 한 번만 더한다 */
+    var bonus = famBonusLeft();
     r.sessions += 1;
-    r.endsAt = Date.now() + REWARD_SECONDS * 1000;
+    r.endsAt = Date.now() + (rewardMinutes() + bonus) * 60 * 1000;
+    r.bonusUsedMin = famBonusTotal();
     saveState();
     renderReward();
     renderRewardModal();
@@ -4605,7 +4667,7 @@ var ART_ORDER = [
     }
     if (launched) {
       closeRewardModal();
-      toast(app.name + ' · 20분 시작!');
+      toast(app.name + ' · ' + rewardMinutes() + '분 시작!');
     } else {
       closeRewardModal();
       $('launchEmoji').textContent = '🎬';
@@ -7587,6 +7649,10 @@ var ART_ORDER = [
     capChips[cc].addEventListener('click', function () {
       state.dailyCap = Number(this.getAttribute('data-cap'));
       saveState();
+      /* [가족 동기화] 부모 설정으로도 저장해 부모님 폰과 맞춘다 */
+      if (window.ByeolFamily && typeof window.ByeolFamily.setLocalSettings === 'function') {
+        try { window.ByeolFamily.setLocalSettings({ dailyCap: state.dailyCap }); } catch (e) {}
+      }
       renderAll();
       renderGuardian();
       toast(state.dailyCap ? '하루 별 ' + state.dailyCap + '개까지 붙일 수 있어요' : '하루 제한 없이 붙일 수 있어요 (테스트용)');
@@ -8496,6 +8562,120 @@ var ART_ORDER = [
   });
   window.addEventListener('pageshow', function () { refreshSleep(); });
 
+  /* ══════════════════════════════════════════════════════
+     [가족 동기화] sync.js 와 잇는 다리
+     - getBook: 서버에 올릴 아이 기록 (기기별 설정인 launcher·preview는 빼낸다)
+     - applyBook / applySettings: 부모 폰에서 바뀐 값을 이 화면에 적용
+     ══════════════════════════════════════════════════════ */
+  function syncSnapshot() {
+    return {
+      t: lastChangeAt || 0,
+      name: state.name,
+      childAge: state.childAge,
+      profileSet: state.profileSet,
+      age: state.age,
+      stars: state.stars,
+      used: state.used,
+      placed: state.placed,
+      spent: state.spent,
+      tickets: state.tickets,
+      lessons: state.lessons,
+      daily: state.daily,
+      coupons: couponList(),
+      requests: state.requests,
+      gift: state.gift,
+      reward: {
+        date: (state.reward && state.reward.date) || todayStr(),
+        lessons: (state.reward && state.reward.lessons) || 0,
+        sessions: (state.reward && state.reward.sessions) || 0,
+        endsAt: (state.reward && state.reward.endsAt) || 0
+      }
+    };
+  }
+
+  function applySyncBook(book) {
+    if (!book || typeof book !== 'object') return;
+    var keepBonus = Math.max(0, Number(state.reward && state.reward.bonusUsedMin) || 0);
+    applyingRemote = true;
+    try {
+      if (typeof book.name === 'string' && book.name.trim()) state.name = book.name.trim();
+      if (typeof book.childAge === 'number') state.childAge = Math.max(0, Math.floor(book.childAge));
+      state.profileSet = !!book.profileSet;
+      if (book.age === 0 || book.age === 1 || book.age === 2) state.age = book.age;
+      if (typeof book.stars === 'number') state.stars = Math.max(0, Math.floor(book.stars));
+      if (typeof book.used === 'number') state.used = Math.max(0, Math.floor(book.used));
+      if (typeof book.spent === 'number') state.spent = Math.max(0, Math.floor(book.spent));
+      if (typeof book.tickets === 'number') state.tickets = Math.max(0, Math.floor(book.tickets));
+      if (typeof book.placed === 'number') state.placed = Math.min(CONFIG.stickerGoal, Math.max(0, Math.floor(book.placed)));
+      if (book.lessons && typeof book.lessons === 'object') state.lessons = book.lessons;
+      if (book.daily && typeof book.daily === 'object') {
+        state.daily = { date: String(book.daily.date || ''), count: Math.max(0, Math.floor(book.daily.count || 0)) };
+      }
+      if (Array.isArray(book.coupons)) state.coupons = book.coupons;
+      if (Array.isArray(book.requests)) state.requests = book.requests;
+      if (book.gift !== undefined) state.gift = book.gift;
+      if (book.reward && typeof book.reward === 'object') {
+        state.reward = {
+          date: String(book.reward.date || todayStr()),
+          lessons: Math.max(0, Math.floor(book.reward.lessons || 0)),
+          sessions: Math.max(0, Math.floor(book.reward.sessions || 0)),
+          endsAt: Math.max(0, Number(book.reward.endsAt) || 0),
+          bonusUsedMin: keepBonus
+        };
+      }
+      lastChangeAt = Math.max(lastChangeAt, Number(book.t) || 0);
+      saveState();
+      renderAll();
+      if (state.reward && state.reward.endsAt > Date.now()) startRewardTick();
+    } finally { applyingRemote = false; }
+  }
+
+  function applySyncSettings(s, extra) {
+    if (!s) return;
+    applyingRemote = true;
+    try {
+      if (typeof s.dailyCap === 'number') state.dailyCap = Math.max(0, Math.floor(s.dailyCap));
+      /* 사용 시간 제한(잠금 시작·끝)은 기기 안의 잠금 설정에도 그대로 넣는다 */
+      if (state.lock && typeof state.lock === 'object') {
+        state.lock.on = !!s.lockOn;
+        if (/^\d\d:\d\d$/.test(s.lockStart)) state.lock.start = s.lockStart;
+        if (/^\d\d:\d\d$/.test(s.lockEnd)) state.lock.end = s.lockEnd;
+        if (typeof refreshSleep === 'function') { try { refreshSleep(); } catch (e) {} }
+        if (typeof renderSleepCard === 'function') { try { renderSleepCard(); } catch (e) {} }
+      }
+      var delta = extra && extra.bonusDelta ? Math.max(0, Math.floor(extra.bonusDelta)) : 0;
+      if (delta > 0 && state.reward && state.reward.endsAt > Date.now()) {
+        state.reward.endsAt += delta * 60000;
+        state.reward.bonusUsedMin = famBonusTotal();
+        toast('🎬 부모님이 유튜브 키즈 시간을 ' + delta + '분 늘렸어요');
+      }
+      saveState();
+      renderAll();
+      if (state.reward && state.reward.endsAt > Date.now()) startRewardTick();
+      if (window.ByeolFamily && typeof window.ByeolFamily.refreshLock === 'function') {
+        try { window.ByeolFamily.refreshLock(); } catch (e) {}
+      }
+      if (typeof refreshSleep === 'function') { try { refreshSleep(); } catch (e) {} }
+      if (typeof renderSleepCard === 'function') { try { renderSleepCard(); } catch (e) {} }
+    } finally { applyingRemote = false; }
+  }
+
+  window.ByeolFamilyApp = {
+    getBook: syncSnapshot,
+    applyBook: applySyncBook,
+    applySettings: applySyncSettings,
+    /* 태블릿 '기기 설정'에서 직접 바꾼 시간 제한을 부모 폰과 맞출 때 쓴다 */
+    getLockSettings: function () {
+      if (!state.lock || typeof state.lock !== 'object') return null;
+      return {
+        lockOn: !!state.lock.on,
+        lockStart: state.lock.start,
+        lockEnd: state.lock.end
+      };
+    },
+    toast: toast
+  };
+
   /* ── 시작 ──────────────────────────────────────────── */
   loadState();
   /* 어제 보던 보상 기록이 남아 있으면 오늘 기준으로 정리한다 */
@@ -8514,6 +8694,10 @@ var ART_ORDER = [
   /* 사용 시간 제한: 저장된 설정대로 잠금 화면을 먼저 맞춘다 */
   renderSleepCard();
   refreshSleep();
+  /* [가족 동기화] 로그인했다면 이 시점에 서버 기록과 합친다 */
+  if (window.ByeolFamily && typeof window.ByeolFamily.attach === 'function') {
+    try { window.ByeolFamily.attach(window.ByeolFamilyApp); } catch (e) {}
+  }
   recLoad().then(function () {
     if (!$('guardianSheet').hidden) renderVoices();
   });

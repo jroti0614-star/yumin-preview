@@ -1,11 +1,11 @@
 {
-  "versionCode": 16,
-  "versionName": "0.9.7",
-  "apkUrl": "https://jroti0614-star.github.io/yumin-preview/apk/yumin-launcher-0.9.7-debug.apk",
-  "sha256": "db30d607dfaa4828afd3129868f7be85259da6ed6837bbde51c8d3322737875b",
-  "sizeBytes": 12772426,
-  "publishedAt": "2026-11-28T06:27:45+09:00",
-  "notes": "음성(TTS) 복구 · 화면 고정 중 앱 실행 · 백그라운드 소리 정지 · 앱 업데이트 다운로드 수정 · 새 아이콘 · 실제 앱 아이콘",
-  "releasePage": "https://github.com/jroti0614-star/yumin-preview/releases/tag/v0.9.7",
-  "mirrorUrl": "https://github.com/jroti0614-star/yumin-preview/releases/download/v0.9.7/yumin-launcher-0.9.7-debug.apk"
+  "versionCode": 17,
+  "versionName": "0.9.8",
+  "apkUrl": "https://jroti0614-star.github.io/yumin-preview/apk/yumin-launcher-0.9.8-debug.apk",
+  "sha256": "a52adce664d6ccb62cb114086e4541215aa6c289e4f976d92da2171ffef97a84",
+  "sizeBytes": 13287080,
+  "publishedAt": "2026-11-28T06:36:13+09:00",
+  "notes": "음성(TTS) 복구 · 기기 소유자(키오스크) 키오스크 잠금 · 백그라운드 소리 정지 · 앱 업데이트 다운로드 수정 · 새 아이콘",
+  "releasePage": "https://github.com/jroti0614-star/yumin-preview/releases/tag/v0.9.8",
+  "mirrorUrl": "https://github.com/jroti0614-star/yumin-preview/releases/download/v0.9.8/yumin-launcher-0.9.8-debug.apk"
 }

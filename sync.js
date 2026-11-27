@@ -128,6 +128,7 @@
         if (tok.user && tok.user.email) cfg.email = tok.user.email;
         saveCfg();
         emit();
+        startPolling();      /* 로그인한 뒤부터 60초마다 부모 설정을 확인한다 */
         return syncNow(true);
       });
   }

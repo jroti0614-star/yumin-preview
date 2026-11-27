@@ -1034,6 +1034,7 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
 }
 .sleep-left b{font-family:var(--display);font-weight:400;font-size:17px;letter-spacing:.5px}
 .sleep-actions{display:flex;justify-content:center;gap:9px;margin-top:24px}
+.sleep-hint{margin:0;max-width:20em;font-size:12.5px;line-height:1.5;color:rgba(255,255,255,.72);text-align:center}
 .btn.sleep-btn{
   background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.3);color:#fff;
   font-size:13.5px;padding:12px 18px;
@@ -2351,7 +2352,8 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
     <p class="sleep-rule" id="sleepRule">매일 21:00 ~ 07:00에는 별별 탐험대가 잠겨요.</p>
     <p class="sleep-left" id="sleepLeft">아침까지 <b>8시간</b> 남았어</p>
     <div class="sleep-actions">
-      <button class="btn sleep-btn" id="sleepParent" type="button">보호자 해제</button>
+      <button class="btn sleep-btn" id="sleepParent" type="button" hidden>보호자 해제</button>
+      <p class="sleep-hint" id="sleepHint">부모님 폰에서 시간 제한을 끄거나 시간을 바꾸면 풀려요.</p>
     </div>
   </div>
 </div>
@@ -8317,6 +8319,10 @@ var ART_ORDER = [
      어른이 산수 문제를 풀면 '그 잠금 시간 동안만' 풀린다(새로 열면 다시 잠김).
      ══════════════════════════════════════════════════════ */
   var SLEEP = { unlockedKey: '', timer: null, warnedPin: false };
+  /* 사용 시간 제한은 부모님 폰(parent.html)에서만 끄거나 시간을 바꿀 수 있습니다.
+     그래서 잠금 화면에는 '보호자 해제' 버튼을 두지 않습니다.
+     (태블릿에서도 잠금 화면에서 바로 풀 수 있게 되살리려면 이 값을 true 로 바꾸세요) */
+  var SLEEP_LOCK_PARENT_UNLOCK = false;
   var SLEEP_DAYS = ['일', '월', '화', '수', '목', '금', '토'];
 
   function sleepCfg() {
@@ -8487,7 +8493,10 @@ var ART_ORDER = [
         el.hidden = false;
         document.body.style.overflow = 'hidden';
         renderSleepLock();
-        try { $('sleepParent').focus({ preventScroll: true }); } catch (e) {}
+        try {
+          var pb = $('sleepParent');
+          if (pb && !pb.hidden) pb.focus({ preventScroll: true });
+        } catch (e) {}
       } else {
         renderSleepLock();
       }
@@ -8663,9 +8672,13 @@ var ART_ORDER = [
     });
 
     var parentBtn = $('sleepParent');
-    if (parentBtn) parentBtn.addEventListener('click', function () {
-      openPin('잠금을 풀려면 어른 확인이 필요해요. 문제를 풀어 주세요.', unlockSleepSession);
-    });
+    if (parentBtn) {
+      /* 시간 제한은 부모님 폰에서만 풀 수 있어 잠금 화면 버튼은 기본으로 숨긴다 */
+      parentBtn.hidden = !SLEEP_LOCK_PARENT_UNLOCK;
+      parentBtn.addEventListener('click', function () {
+        openPin('잠금을 풀려면 어른 확인이 필요해요. 문제를 풀어 주세요.', unlockSleepSession);
+      });
+    }
   }());
 
   /* 15초마다 잠금 시간이 되었는지 확인한다 (화면을 켜 둔 채 시간이 넘어가는 경우) */

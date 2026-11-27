@@ -4425,9 +4425,9 @@ var ART_ORDER = [
     showLaunchModal(slot, app);
   }
 
-  /* ── 보상: 유튜브 키즈 (오늘 학습 2회 → 20분) ────────── */
-  /* 외부 앱을 강제로 닫을 수는 없으므로, 20분이 지나면 알림·음성으로
-     알려 주고 다시 잠김 상태로 돌린다(다음 보상까지 학습 2회 필요). */
+  /* ── 보상: 유튜브 키즈 (오늘 학습 2회 → 제한 시간) ───── */
+  /* 제한 시간은 Android 브리지에도 전달해, 시간이 끝나면 공부방으로 자동 복귀한다.
+     웹 미리보기에서는 기존처럼 타이머와 잠금 상태만 표시한다. */
   var rewardTimer = null;
 
   /* 연령대별 추천 채널 */
@@ -4657,7 +4657,11 @@ var ART_ORDER = [
     var launched = false;
     if (bridge && typeof bridge.launchApp === 'function') {
       /* 실행에 실패하면(false) 보상을 쓰지 않은 것으로 되돌린다 */
-      try { launched = bridge.launchApp(app.pkg, app.name) !== false; } catch (e) { launched = false; }
+      try {
+        launched = typeof bridge.launchTimedApp === 'function'
+          ? bridge.launchTimedApp(app.pkg, app.name, Number(r.endsAt)) !== false
+          : bridge.launchApp(app.pkg, app.name) !== false;
+      } catch (e) { launched = false; }
       if (!launched) {
         r.sessions = Math.max(0, r.sessions - 1);
         r.endsAt = 0;

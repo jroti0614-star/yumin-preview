@@ -1487,11 +1487,11 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
 .ob-pick{font-size:12px;color:#6c7186}
 
 /* ── 보호자: 하위 탭 (앱 연결 · 앱 서랍 · 기기·학습 설정) ── */
-.g-tabs{display:flex;gap:6px;padding:5px;border-radius:16px;background:#eef0f8;border:1px solid #e3e5f0}
+.g-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;padding:6px;border-radius:16px;background:#eef0f8;border:1px solid #e3e5f0}
 .g-tab{
-  flex:1 1 0;min-width:0;padding:9px 8px;border-radius:12px;border:0;background:transparent;
-  font-family:var(--body);font-size:12.5px;font-weight:700;color:#6f7488;line-height:1.15;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  width:100%;min-width:0;min-height:42px;padding:10px 6px;border-radius:12px;border:0;background:transparent;
+  font-family:var(--body);font-size:14px;font-weight:700;color:#6f7488;line-height:1.25;
+  white-space:normal;overflow:visible;text-overflow:clip;word-break:keep-all;
 }
 .g-tab.on{background:#fff;color:#4a3fa8;box-shadow:0 6px 14px -10px rgba(60,45,140,.55)}
 .g-tab:not(.on):hover{color:#4a4f66}

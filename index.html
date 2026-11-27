@@ -419,6 +419,24 @@ h1,h2,h3,p{margin:0}
 .opt.right{border-color:#37c98b;background:#eafaf1;color:#0e7a4b}
 .opt.wrong{border-color:#f0928f;background:#fdeeee;color:#b23a3a}
 .opt.dim{opacity:.42}
+
+/* ── 입문 단계: 오래 고민하면 정답을 가리키는 화살표 ──── */
+.opt{position:relative}
+.opt.hint{
+  border-color:#f9c46b;background:#fffdf3;
+  box-shadow:0 0 0 4px rgba(255,186,80,.20);padding-left:54px;
+}
+@keyframes hintNudge{
+  0%,100%{transform:translateY(-50%) translateX(-3px) rotate(-4deg)}
+  50%{transform:translateY(-50%) translateX(4px) rotate(4deg)}
+}
+.hint-arrow{
+  position:absolute;left:9px;top:50%;pointer-events:none;line-height:1;
+  display:grid;place-items:center;width:30px;height:30px;border-radius:10px;
+  background:#ffd98a;font-size:18px;transform:translateY(-50%);
+  box-shadow:0 4px 10px -6px rgba(180,120,0,.85);
+  animation:hintNudge .85s ease-in-out infinite;
+}
 .feedback{
   margin-top:14px;padding:12px 14px;border-radius:14px;
   font-size:13.5px;text-align:center;
@@ -499,6 +517,18 @@ h1,h2,h3,p{margin:0}
 .voice-item .grow{flex:1 1 auto;min-width:0}
 .voice-item .grow div{font-size:13.5px}
 .voice-item small{font-size:11.5px;color:var(--muted)}
+
+/* ── 보호자: 학습 관리 요약 ───────────────────────────── */
+.g-summary{padding:16px 18px 14px}
+.g-summary h3{margin-bottom:10px}
+.gs-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.gs-item{
+  display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 6px;
+  border-radius:14px;background:linear-gradient(160deg,#f7f5ff,#fdfcff);border:1px solid #ece9fa;
+}
+.gs-ico{font-size:17px;line-height:1}
+.gs-item b{font-family:var(--display);font-size:16px;font-weight:400;color:#3f3670;line-height:1.1}
+.gs-item small{font-size:10.5px;color:var(--muted);text-align:center;line-height:1.2}
 
 /* ── 토스트 ─────────────────────────────────────────── */
 .toast{
@@ -1090,6 +1120,41 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
 .home-reward[data-state="ready"] .hr-btn{background:#ffb940;border-color:#ffb940;color:#4a2f00}
 .home-reward[data-state="running"] .hr-btn{border-color:#bfe8d6;color:#22795a}
 
+/* 보상이 열리면(ready) 테두리가 반짝이며 시선을 끈다 */
+@keyframes rewardGlow{
+  0%,100%{box-shadow:0 0 0 0 rgba(255,185,64,.42), 0 10px 24px -20px rgba(255,150,20,.55)}
+  50%{box-shadow:0 0 0 6px rgba(255,185,64,0), 0 16px 30px -14px rgba(255,150,20,.75)}
+}
+@keyframes rewardIcoPop{
+  0%,100%{transform:scale(1) rotate(0)}
+  38%{transform:scale(1.13) rotate(-7deg)}
+  72%{transform:scale(.97) rotate(5deg)}
+}
+@keyframes rewardShine{
+  0%{left:-45%}
+  52%{left:118%}
+  100%{left:118%}
+}
+.home-reward{position:relative;overflow:hidden}
+.home-reward[data-state="ready"]{animation:rewardGlow 2.1s ease-in-out infinite}
+.home-reward[data-state="ready"] .hr-ico{animation:rewardIcoPop 2.1s ease-in-out infinite}
+.home-reward[data-state="ready"]::after{
+  content:'';position:absolute;top:0;bottom:0;left:-45%;width:34%;pointer-events:none;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.9),transparent);
+  transform:skewX(-14deg);animation:rewardShine 3.4s ease-in-out infinite;
+}
+
+/* ── 축하 이펙트: 별·컨페티 (터치 방해 없음) ─────────── */
+.fx-layer{position:fixed;inset:0;z-index:95;pointer-events:none;overflow:hidden;contain:strict}
+.fx-bit{
+  position:absolute;pointer-events:none;line-height:1;will-change:transform,opacity;
+  filter:drop-shadow(0 2px 5px rgba(120,90,0,.28));
+}
+.fx-ribbon{
+  position:absolute;top:0;display:block;border-radius:2px;pointer-events:none;
+  will-change:transform,opacity;
+}
+
 /* ── 보상 안내 모달 (추천 채널) ──────────────────────── */
 .reward-modal{max-width:440px}
 .rw-head{text-align:center}
@@ -1404,7 +1469,11 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
   .ad-grid{grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px;max-height:300px}
   .stories-link{padding:15px;font-size:16px;margin:16px 0}
   .la-fields{grid-template-columns:1fr}
-  .g-tab{font-size:12px;padding:8px 6px}
+  .g-tab{font-size:11.5px;padding:8px 4px;letter-spacing:-.2px}
+  .gs-grid{gap:6px}
+  .gs-item{padding:9px 4px}
+  .gs-item b{font-size:15px}
+  .gs-item small{font-size:10px}
   .g-tabs-wrap{width:100%;padding:0 14px 9px}
   .ob-card{padding:22px 17px 18px;border-radius:22px}
   .ob-title{font-size:23px}
@@ -1758,12 +1827,12 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
   </div>
 </div>
 
-<div class="modal" id="rewardModal" role="dialog" aria-modal="true" aria-labelledby="rewardTitle" hidden>
+<div class="modal" id="rewardModal" role="dialog" aria-modal="true" aria-labelledby="rewardModalTitle" hidden>
   <div class="modal-card reward-modal">
     <div class="rw-head">
       <span class="rw-emoji" aria-hidden="true">🎬</span>
-      <h2 id="rewardTitle">유튜브 키즈</h2>
-      <p class="modal-sub" id="rewardSub">학습 2회 완료 시 열려요 (현재 0/2)</p>
+      <h2 id="rewardModalTitle">유튜브 키즈</h2>
+      <p class="modal-sub" id="rewardModalSub">학습 2회 완료 시 열려요 (현재 0/2)</p>
       <div class="rw-timer" id="rewardTimer" aria-live="polite" hidden>20:00</div>
     </div>
     <div class="rw-picks">
@@ -1917,67 +1986,38 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
     <button class="icon-btn" id="guardianClose" type="button" aria-label="닫기">✕</button>
     <div class="sheet-top-text">
       <strong id="guardianTitle">🔒 보호자</strong>
-      <small>아이 정보와 별 기록을 관리해요</small>
+      <small>학습 관리 · 앱 연결 · 기기 설정</small>
     </div>
     <span class="counter" id="guardianStars">⭐ 0</span>
   </div>
 
   <div class="g-tabs-wrap">
     <div class="g-tabs" role="tablist" aria-label="보호자 화면">
-      <button class="g-tab on" id="gTabLaunch" type="button" role="tab" data-gtab="launch" aria-selected="true" aria-controls="gPanelLaunch">앱 연결</button>
+      <button class="g-tab on" id="gTabStudy" type="button" role="tab" data-gtab="study" aria-selected="true" aria-controls="gPanelStudy">학습 관리</button>
+      <button class="g-tab" id="gTabLaunch" type="button" role="tab" data-gtab="launch" aria-selected="false" aria-controls="gPanelLaunch">앱 연결</button>
       <button class="g-tab" id="gTabDrawer" type="button" role="tab" data-gtab="drawer" aria-selected="false" aria-controls="gPanelDrawer">앱 서랍</button>
-      <button class="g-tab" id="gTabSettings" type="button" role="tab" data-gtab="settings" aria-selected="false" aria-controls="gPanelSettings">기기·학습 설정</button>
+      <button class="g-tab" id="gTabDevice" type="button" role="tab" data-gtab="device" aria-selected="false" aria-controls="gPanelDevice">기기 설정</button>
     </div>
   </div>
   </div>
 
   <div class="sheet-body">
 
-    <div class="g-panel" id="gPanelLaunch" data-gpanel="launch" role="tabpanel" aria-labelledby="gTabLaunch">
-    <div class="card g-card" id="launcherAdminCard">
-      <h3>런처 앱 연결</h3>
-      <p class="g-hint">홈 화면의 <b>한글 · 수학 · 언어 · 도서관</b> 칸에 열 앱을 연결해요. 안드로이드 태블릿에서는 설치된 앱 목록에서 골라 한 번에 연결하고, 연결한 앱이 바로 열려요.</p>
-      <div class="launch-admin" id="launchAdmin"></div>
-    </div>
-    </div>
-
-    <div class="g-panel" id="gPanelDrawer" data-gpanel="drawer" role="tabpanel" aria-labelledby="gTabDrawer" hidden>
-    <div class="card g-card" id="appDrawerCard">
-      <h3>보호자 앱 서랍</h3>
-      <p class="g-hint">어른이 잠깐 다른 앱(설정·플레이스토어·브라우저 등)을 써야 할 때, <b>기본 런처로 나가지 않고</b> 여기서 바로 열어요. 위의 '런처 앱 연결'은 <span class="kid-name">유민이</span> 홈 4칸에 넣을 앱을 정하는 곳이고, 이 서랍은 어른이 쓰는 전체 앱 목록이에요.</p>
-      <div class="ad-tools">
-        <input class="ad-search" id="appDrawerSearch" type="search" placeholder="앱 이름으로 찾기 (예: 설정)" aria-label="보호자 앱 서랍 검색">
-        <span class="ad-count" id="appDrawerCount"></span>
-      </div>
-      <div class="ad-grid" id="appDrawerGrid"></div>
-      <p class="ad-note" id="appDrawerNote">앱을 누르면 기본 런처를 거치지 않고 바로 열려요.</p>
-    </div>
-    </div>
-
-    <div class="g-panel" id="gPanelSettings" data-gpanel="settings" role="tabpanel" aria-labelledby="gTabSettings" hidden>
+    <div class="g-panel" id="gPanelStudy" data-gpanel="study" role="tabpanel" aria-labelledby="gTabStudy">
     <div class="card g-card" style="border:1px solid #cfe9d9;background:linear-gradient(135deg,#f2fbf5,#ffffff);">
       <h3>🌟 1년 맞춤 학습 관리</h3>
       <p class="g-hint">100편 교육과정, 영역별 학습 수준, 자동 난이도 조절과 복습 기록을 확인해요.</p>
       <a href="learning-center.html" class="btn primary" style="display:block;text-align:center;text-decoration:none;">학습 관리 열기 →</a>
     </div>
 
-    <div class="card g-card" id="appUpdateCard">
-      <h3>앱 업데이트 · 화면 고정</h3>
-      <p class="g-hint">태블릿에 깔린 앱 버전을 확인하고, 새 버전이 있으면 여기서 바로 내려받아 설치해요.</p>
-      <div class="upd-line">
-        <span class="upd-ver" id="appVersionLabel">앱 버전 확인 중…</span>
-        <button class="btn" id="appUpdateCheck" type="button">앱 업데이트 확인</button>
+    <div class="card g-card g-summary" id="gSummaryCard">
+      <h3>오늘의 기록</h3>
+      <div class="gs-grid">
+        <div class="gs-item"><span class="gs-ico" aria-hidden="true">⭐</span><b id="gsStars">0</b><small>모은 별</small></div>
+        <div class="gs-item"><span class="gs-ico" aria-hidden="true">🌟</span><b id="gsPlaced">0/14</b><small>별 지도</small></div>
+        <div class="gs-item"><span class="gs-ico" aria-hidden="true">📅</span><b id="gsToday">0/2</b><small>오늘 붙인 별</small></div>
+        <div class="gs-item"><span class="gs-ico" aria-hidden="true">🎟️</span><b id="gsTickets">0</b><small>소원 쿠폰</small></div>
       </div>
-      <p class="g-state" id="appUpdateState" role="status"></p>
-      <div class="g-actions" id="appUpdateActions" hidden>
-        <button class="btn primary" id="appUpdateInstall" type="button">지금 설치</button>
-      </div>
-      <div class="upd-sep" aria-hidden="true"></div>
-      <div class="upd-line">
-        <span class="upd-ver">화면 고정<small id="pinStateLabel">태블릿 앱에서만 켤 수 있어요</small></span>
-        <button class="btn" id="pinToggle" type="button" disabled>켜기</button>
-      </div>
-      <p class="g-hint">켜면 <span class="kid-name">유민이</span> 화면이 런처에 묶여 다른 앱이나 설정으로 나가지 못해요. 학습 앱을 열어 줘야 할 때는 꺼 주세요. 기본은 꺼짐이에요.</p>
     </div>
 
     <div class="card g-card">
@@ -2098,6 +2138,48 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
       <h3>아이가 연 소원 쿠폰</h3>
       <div class="req-list" id="guardianRequests"></div>
     </div>
+    </div>
+
+    <div class="g-panel" id="gPanelLaunch" data-gpanel="launch" role="tabpanel" aria-labelledby="gTabLaunch" hidden>
+    <div class="card g-card" id="launcherAdminCard">
+      <h3>런처 앱 연결</h3>
+      <p class="g-hint">홈 화면의 <b>한글 · 수학 · 언어 · 도서관</b> 칸에 열 앱을 연결해요. 안드로이드 태블릿에서는 설치된 앱 목록에서 골라 한 번에 연결하고, 연결한 앱이 바로 열려요.</p>
+      <div class="launch-admin" id="launchAdmin"></div>
+    </div>
+    </div>
+
+    <div class="g-panel" id="gPanelDrawer" data-gpanel="drawer" role="tabpanel" aria-labelledby="gTabDrawer" hidden>
+    <div class="card g-card" id="appDrawerCard">
+      <h3>보호자 앱 서랍</h3>
+      <p class="g-hint">어른이 잠깐 다른 앱(설정·플레이스토어·브라우저 등)을 써야 할 때, <b>기본 런처로 나가지 않고</b> 여기서 바로 열어요. 위의 '런처 앱 연결'은 <span class="kid-name">유민이</span> 홈 4칸에 넣을 앱을 정하는 곳이고, 이 서랍은 어른이 쓰는 전체 앱 목록이에요.</p>
+      <div class="ad-tools">
+        <input class="ad-search" id="appDrawerSearch" type="search" placeholder="앱 이름으로 찾기 (예: 설정)" aria-label="보호자 앱 서랍 검색">
+        <span class="ad-count" id="appDrawerCount"></span>
+      </div>
+      <div class="ad-grid" id="appDrawerGrid"></div>
+      <p class="ad-note" id="appDrawerNote">앱을 누르면 기본 런처를 거치지 않고 바로 열려요.</p>
+    </div>
+    </div>
+
+    <div class="g-panel" id="gPanelDevice" data-gpanel="device" role="tabpanel" aria-labelledby="gTabDevice" hidden>
+    <div class="card g-card" id="appUpdateCard">
+      <h3>앱 업데이트 · 화면 고정</h3>
+      <p class="g-hint">태블릿에 깔린 앱 버전을 확인하고, 새 버전이 있으면 여기서 바로 내려받아 설치해요.</p>
+      <div class="upd-line">
+        <span class="upd-ver" id="appVersionLabel">앱 버전 확인 중…</span>
+        <button class="btn" id="appUpdateCheck" type="button">앱 업데이트 확인</button>
+      </div>
+      <p class="g-state" id="appUpdateState" role="status"></p>
+      <div class="g-actions" id="appUpdateActions" hidden>
+        <button class="btn primary" id="appUpdateInstall" type="button">지금 설치</button>
+      </div>
+      <div class="upd-sep" aria-hidden="true"></div>
+      <div class="upd-line">
+        <span class="upd-ver">화면 고정<small id="pinStateLabel">태블릿 앱에서만 켤 수 있어요</small></span>
+        <button class="btn" id="pinToggle" type="button" disabled>켜기</button>
+      </div>
+      <p class="g-hint">켜면 <span class="kid-name">유민이</span> 화면이 런처에 묶여 다른 앱이나 설정으로 나가지 못해요. 학습 앱을 열어 줘야 할 때는 꺼 주세요. 기본은 꺼짐이에요.</p>
+    </div>
 
     <div class="card g-card">
       <h3>따라 말하기 녹음</h3>
@@ -2132,6 +2214,7 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
 </div>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="fx-layer no-emoji" id="fxLayer" aria-hidden="true"></div>
 
 <script>
 /* ─────────────────────────────────────────────────────────────
@@ -3495,25 +3578,62 @@ var ART_ORDER = [
       return (d.getMonth() + 1) + '월 ' + d.getDate() + '일 ' + pad2(d.getHours()) + ':' + pad2(d.getMinutes());
     } catch (e) { return ''; }
   }
+  /* ── 아이 이름 ──────────────────────────────────────── */
+  /* 저장·공식 표기(프로필 카드, 설정 입력칸)에는 입력한 이름을 그대로 쓰고,
+     부르는 말(인사·응원·토스트·배지)에는 성을 뺀 이름만 쓴다.
+     정유민 → 유민 / 김서준 → 서준 / 남궁민수 → 민수 / 유민이 → 유민 / 서준 → 서준 */
+  var KID_COMPOUND_SURNAMES = ['남궁', '황보', '제갈', '선우', '독고', '사공', '서문', '동방'];
+
+  function givenName(name) {
+    var s = String(name == null ? '' : name).trim();
+    if (!s) return '';
+    for (var i = 0; i < s.length; i++) {
+      var c = s.charCodeAt(i);
+      if (c < 0xAC00 || c > 0xD7A3) return s;      /* 영문·숫자·공백이 섞였으면 그대로 */
+    }
+    /* 이름 뒤에 붙은 '이'는 부르는 꼬리표로 본다 (유민이 → 유민) */
+    if (s.length >= 3 && s.charAt(s.length - 1) === '이') s = s.slice(0, -1);
+    if (s.length <= 2) return s;                   /* 두 글자 이하는 이름 자체 */
+    if (s.length >= 4 && KID_COMPOUND_SURNAMES.indexOf(s.slice(0, 2)) >= 0) return s.slice(2);
+    return s.slice(1);                             /* 성(한 글자)을 뗀다 */
+  }
+
+  /* 부르는 말: 유민아 / 지아야 / 유야 */
   function vocative(name) {
-    var n = (name || '').trim();
+    var n = givenName(name);
     if (!n) return '친구';
-    if (n.length > 1 && n.charAt(n.length - 1) === '이') n = n.slice(0, -1);
     var code = n.charCodeAt(n.length - 1);
     if (code < 0xAC00 || code > 0xD7A3) return n + '야';
     return n + (((code - 0xAC00) % 28) === 0 ? '야' : '아');
   }
 
-  /* 문구 속 {N}·{NA}를 아이 이름으로 바꿔 쓴다 (예: {NA} → 유민아) */
-  function kidT(text) {
-    return String(text == null ? '' : text)
-      .replace(/\{NA\}/g, vocative(state.name))
-      .replace(/\{N\}/g, state.name);
+  /* 문장 속 주어 꼴: 유민이 / 지아 (배지·안내문에 쓴다) */
+  function kidLabel(name) {
+    var n = givenName(name);
+    if (!n) return '아이';
+    var code = n.charCodeAt(n.length - 1);
+    if (code < 0xAC00 || code > 0xD7A3) return n;   /* 영문 등에는 조사를 붙이지 않는다 */
+    return josa(n, '이', '');
   }
-  /* .kid-name 자리에는 모두 아이 이름, 입력 예시도 아이 이름으로 */
+
+  /* 문구 속 {N}·{NA}를 아이 이름으로 바꿔 쓴다 (예: {NA} → 유민아, {N} → 유민) */
+  function kidT(text) {
+    var s = String(text == null ? '' : text);
+    var g = givenName(state.name) || state.name || '';
+    s = s.replace(/\{NA\}/g, vocative(state.name));
+    /* 조사가 붙는 자리는 받침에 맞춰 고른다 ({N}는 → 유민은 / 지아는) */
+    s = s.replace(/\{N\}(은|는)/g, function () { return josa(g, '은', '는'); });
+    s = s.replace(/\{N\}(이|가)/g, function () { return josa(g, '이', '가'); });
+    s = s.replace(/\{N\}(을|를)/g, function () { return josa(g, '을', '를'); });
+    s = s.replace(/\{N\}(과|와)/g, function () { return josa(g, '과', '와'); });
+    s = s.replace(/\{N\}/g, g);
+    return s;
+  }
+  /* .kid-name 자리에는 성을 뺀 이름, 입력 예시도 아이 이름으로 */
   function applyKidNames() {
+    var label = kidLabel(state.name);
     var els = document.querySelectorAll('.kid-name');
-    for (var i = 0; i < els.length; i++) els[i].textContent = state.name;
+    for (var i = 0; i < els.length; i++) els[i].textContent = label;
     var gm = $('giftMsgInput');
     if (gm) gm.setAttribute('placeholder', vocative(state.name) + ' 오늘도 최고! 💕');
     var cn = $('childNameInput');
@@ -3727,6 +3847,107 @@ var ART_ORDER = [
     box.classList.add('show');
     if (toastTimer) clearTimeout(toastTimer);
     toastTimer = setTimeout(function () { box.classList.remove('show'); }, 2400);
+  }
+
+  /* ── 축하 이펙트: 별·컨페티가 팡 ───────────────────── */
+  /* 터치를 가로막지 않도록 레이어는 pointer-events:none 이다. */
+  var FX_GLYPHS = ['⭐', '🌟', '✨', '🎉', '💫', '🎊', '💛'];
+  var fxTurn = 0;
+  function fxReduced() {
+    try { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); }
+    catch (e) { return false; }
+  }
+  function fxLayer() {
+    var layer = $('fxLayer');
+    if (!layer) {
+      layer = document.createElement('div');
+      layer.id = 'fxLayer';
+      layer.className = 'fx-layer no-emoji';
+      layer.setAttribute('aria-hidden', 'true');
+      document.body.appendChild(layer);
+    }
+    return layer;
+  }
+  /* 중심에서 사방으로 터지는 별 (from: 기준 요소) */
+  function burstFx(opts) {
+    if (fxReduced()) return 0;
+    opts = opts || {};
+    var layer = fxLayer();
+    var x = opts.x, y = opts.y;
+    if (x == null || y == null) {
+      var r = opts.from && opts.from.getBoundingClientRect ? opts.from.getBoundingClientRect() : null;
+      if (r && (r.width || r.height)) { x = r.left + r.width / 2; y = r.top + r.height / 2; }
+      else { x = window.innerWidth / 2; y = window.innerHeight * 0.42; }
+    }
+    var count = opts.count || 22;
+    var made = 0;
+    for (var i = 0; i < count; i++) {
+      var el = document.createElement('span');
+      el.className = 'fx-bit';
+      el.textContent = FX_GLYPHS[(fxTurn + i) % FX_GLYPHS.length];
+      el.style.left = x + 'px';
+      el.style.top = y + 'px';
+      el.style.fontSize = (13 + Math.random() * 15).toFixed(1) + 'px';
+      layer.appendChild(el);
+      var ang = (-Math.PI / 2) + (Math.random() - 0.5) * Math.PI * 1.9;
+      var dist = 60 + Math.random() * 170;
+      var dx = Math.cos(ang) * dist;
+      var dy = Math.sin(ang) * dist * 0.72 + 40 + Math.random() * 80;
+      var rot = Math.random() * 720 - 360;
+      var dur = 720 + Math.random() * 620;
+      var anim = null;
+      try {
+        anim = el.animate([
+          { transform: 'translate(-50%,-50%) scale(.3) rotate(0deg)', opacity: 0 },
+          { transform: 'translate(calc(-50% + ' + (dx * 0.5).toFixed(1) + 'px),calc(-50% + ' + (dy * 0.32).toFixed(1) + 'px)) scale(1.18) rotate(' + (rot * 0.4).toFixed(0) + 'deg)', opacity: 1, offset: 0.3 },
+          { transform: 'translate(calc(-50% + ' + dx.toFixed(1) + 'px),calc(-50% + ' + dy.toFixed(1) + 'px)) scale(.75) rotate(' + rot.toFixed(0) + 'deg)', opacity: 0 }
+        ], { duration: dur, delay: Math.random() * 90, easing: 'cubic-bezier(.16,.62,.3,1)', fill: 'forwards' });
+      } catch (e) { anim = null; }
+      made++;
+      (function (node, a) {
+        var drop = function () { if (node.parentNode) node.parentNode.removeChild(node); };
+        if (a && a.finished && a.finished.then) a.finished.then(drop, drop);
+        else setTimeout(drop, 1600);
+      })(el, anim);
+    }
+    fxTurn += 3;
+    return made;
+  }
+  /* 위에서 내려오는 색종이 (터치 방해 없음) */
+  function fxRibbons(n) {
+    if (fxReduced()) return 0;
+    var layer = fxLayer();
+    var colors = ['#ffb940', '#ff8fb1', '#8c6eff', '#4cc9a4', '#ffd34d', '#6fc3f7'];
+    var h = window.innerHeight || 640;
+    n = n || 12;
+    for (var i = 0; i < n; i++) {
+      var el = document.createElement('i');
+      el.className = 'fx-ribbon';
+      el.style.left = (4 + Math.random() * 92) + '%';
+      el.style.background = colors[i % colors.length];
+      el.style.width = (5 + Math.random() * 5).toFixed(0) + 'px';
+      el.style.height = (9 + Math.random() * 8).toFixed(0) + 'px';
+      layer.appendChild(el);
+      var sway = (Math.random() * 2 - 1) * 40;
+      var anim = null;
+      try {
+        anim = el.animate([
+          { transform: 'translate3d(0,-24px,0) rotate(0deg)', opacity: 1 },
+          { transform: 'translate3d(' + (sway * 0.5).toFixed(0) + 'px,' + (h * 0.55).toFixed(0) + 'px,0) rotate(' + (Math.random() > 0.5 ? 320 : -320) + 'deg)', opacity: 1, offset: 0.55 },
+          { transform: 'translate3d(' + sway.toFixed(0) + 'px,' + (h + 60) + 'px,0) rotate(' + (Math.random() > 0.5 ? 620 : -620) + 'deg)', opacity: 0.9 }
+        ], { duration: 1700 + Math.random() * 900, delay: Math.random() * 320, easing: 'cubic-bezier(.35,.05,.6,1)', fill: 'forwards' });
+      } catch (e) { anim = null; }
+      (function (node, a) {
+        var drop = function () { if (node.parentNode) node.parentNode.removeChild(node); };
+        if (a && a.finished && a.finished.then) a.finished.then(drop, drop);
+        else setTimeout(drop, 3200);
+      })(el, anim);
+    }
+    return n;
+  }
+  function fxCount() {
+    var layer = $('fxLayer');
+    return layer ? layer.childElementCount : 0;
   }
 
   /* ══════════════════════════════════════════════════════
@@ -4075,12 +4296,22 @@ var ART_ORDER = [
     };
   }
 
+  var lastRewardState = '';   /* 보상 카드의 직전 상태 (잠김 → 열림 순간을 잡아 이펙트를 낸다) */
   function renderReward() {
     var card = $('homeReward');
     if (!card) return;
     var info = rewardInfo();
     var app = rewardAppInfo();
-    card.setAttribute('data-state', info.running ? 'running' : (info.unlocked ? 'ready' : 'locked'));
+    var nextState = info.running ? 'running' : (info.unlocked ? 'ready' : 'locked');
+    card.setAttribute('data-state', nextState);
+    /* 학습을 마쳐 잠김 → 열림이 되는 바로 그 순간, 카드가 반짝이며 컨페티가 터진다 */
+    if (nextState === 'ready' && lastRewardState && lastRewardState !== 'ready') {
+      burstFx({ from: card, count: 20 });
+      fxRibbons(10);
+      toast('🎬 유튜브 키즈가 열렸어요! 20분 동안 볼 수 있어요');
+      speak('학습을 마쳐서 유튜브 키즈가 열렸어요!');
+    }
+    lastRewardState = nextState;
     var sub = $('hrSub'), btn = $('hrBtn'), time = $('hrTime');
     if (sub) {
       if (info.running) sub.textContent = app.name + ' 보는 중 · 시간이 다 되면 저절로 잠겨요';
@@ -4121,7 +4352,7 @@ var ART_ORDER = [
     if ($('rewardModal') && !$('rewardModal').hidden) renderRewardModal();
     if (announce && had) {
       $('rewardModal').hidden = true;
-      showCelebrate('⏰', '유튜브 키즈 시간 끝!', '20분을 다 봤어요. 다음엔 학습 2회를 마치면 또 볼 수 있어요.', false, 0);
+      showCelebrate('⏰', '유튜브 키즈 시간 끝!', '20분을 다 봤어요. 다음엔 학습 2회를 마치면 또 볼 수 있어요.', false, 0, false);
       speak('시간이 다 됐어요. 유튜브 키즈는 이제 그만 하고 다시 놀아 볼까요?');
     }
     return had;
@@ -4137,8 +4368,8 @@ var ART_ORDER = [
     var info = rewardInfo();
     var app = rewardAppInfo();
     var picks = rewardChannelPicks();
-    $('rewardTitle').textContent = app.name;
-    var sub = $('rewardSub');
+    $('rewardModalTitle').textContent = app.name;
+    var sub = $('rewardModalSub');
     if (sub) {
       sub.textContent = info.running
         ? '지금 ' + app.name + ' 보는 중이에요.'
@@ -4178,7 +4409,10 @@ var ART_ORDER = [
   function openRewardModal() {
     rewardState();
     renderRewardModal();
+    var info = rewardInfo();
     $('rewardModal').hidden = false;
+    /* 볼 수 있는 상태에서 열 때 한 번 더 팡 */
+    if (info.unlocked && !info.running) { burstFx({ from: $('hrBtn'), count: 18 }); fxRibbons(8); }
   }
   function closeRewardModal() { $('rewardModal').hidden = true; }
 
@@ -4812,6 +5046,9 @@ var ART_ORDER = [
       fresh.classList.add('stamped');
       setTimeout(function () { fresh.classList.remove('stamped'); }, 2400);
     }
+    /* 소원 쿠폰이 발급된 순간 팡 터지는 축하 이펙트 */
+    burstFx({ from: fresh || card, count: 18 });
+    fxRibbons(8);
     toast('✨ 소원 쿠폰 발급!');
     speak('소원 쿠폰이 발급됐어요!');
     setTimeout(function () { toast('💌 엄마·아빠에게 전달됨'); }, 1200);
@@ -4981,6 +5218,16 @@ var ART_ORDER = [
     renderAppDrawer();
     renderProgressPanel();
     renderCouponAdmin();
+    renderGuardianSummary();
+  }
+
+  /* 학습 관리 탭 머리: 오늘의 기록 요약 */
+  function renderGuardianSummary() {
+    var s = $('gsStars'), p = $('gsPlaced'), t = $('gsToday'), c = $('gsTickets');
+    if (s) s.textContent = availableStars();
+    if (p) p.textContent = state.placed + '/' + CONFIG.stickerGoal;
+    if (t) t.textContent = dailyUsed() + (state.dailyCap > 0 ? '/' + state.dailyCap : '');
+    if (c) c.textContent = state.tickets;
   }
 
   /* ── 보호자: 쿠폰 목록 관리 ─────────────────────────── */
@@ -5125,6 +5372,7 @@ var ART_ORDER = [
   var TABS = { home: 'panelHome', learn: 'panelLearn', board: 'panelBoard', shop: 'panelShop' };
   function switchTab(name) {
     if (name === 'guardian') { guardianJump = null; openPin(); return; }
+    if (typeof clearHint === 'function') clearHint();
     for (var key in TABS) {
       if (!Object.prototype.hasOwnProperty.call(TABS, key)) continue;
       $(TABS[key]).hidden = (key !== name);
@@ -5147,7 +5395,7 @@ var ART_ORDER = [
   $('launchTodayGo').addEventListener('click', function () { switchTab('learn'); });
 
   /* ── 축하 모달 ──────────────────────────────────────── */
-  function showCelebrate(emoji, title, sub, showStickerBtn, nextNo) {
+  function showCelebrate(emoji, title, sub, showStickerBtn, nextNo, withFx) {
     $('celebEmoji').textContent = emoji;
     $('celebTitle').textContent = title;
     $('celebSub').textContent = sub;
@@ -5155,6 +5403,7 @@ var ART_ORDER = [
     $('celebNext').hidden = !nextNo;
     $('celebNext').setAttribute('data-next', nextNo ? String(nextNo) : '');
     $('celebrateModal').hidden = false;
+    if (withFx !== false) { burstFx({ count: 24 }); fxRibbons(12); }
     $('celebOk').focus();
   }
   function closeCelebrate() { $('celebrateModal').hidden = true; }
@@ -5312,6 +5561,57 @@ var ART_ORDER = [
         speak(q.q + '. ' + q.opts.join(', '));
       }, 260);
     }
+    /* 입문(3~4세) 단계: 오래 고민하면 정답을 가리키는 화살표를 띄운다 */
+    armHint();
+  }
+
+  /* ── 입문 단계 힌트 화살표 ─────────────────────────────── */
+  var HINT_DELAY_MS = 8000;
+  var hintTimer = null;
+  var hintOn = false;
+
+  function clearHint() {
+    if (hintTimer) { clearTimeout(hintTimer); hintTimer = null; }
+    var box = $('quizOptions');
+    if (box) {
+      var arrows = box.querySelectorAll('.hint-arrow');
+      for (var i = 0; i < arrows.length; i++) {
+        if (arrows[i].parentNode) arrows[i].parentNode.removeChild(arrows[i]);
+      }
+      var hs = box.querySelectorAll('.opt.hint');
+      for (var j = 0; j < hs.length; j++) hs[j].classList.remove('hint');
+    }
+    hintOn = false;
+  }
+
+  function armHint() {
+    clearHint();
+    if (state.age !== 0) return;                 /* 입문(3~4세) 단계에서만 */
+    if (SESSION.step !== 'learn') return;        /* 퀴즈 화면에서만 */
+    if ($('quizSheet').hidden || $('quizPage').hidden) return;
+    hintTimer = setTimeout(showHint, HINT_DELAY_MS);
+  }
+
+  function showHint() {
+    hintTimer = null;
+    var q = quiz.list[quiz.index];
+    if (!q || quiz.locked || SESSION.step !== 'learn') return;
+    if ($('quizSheet').hidden || $('quizPage').hidden) return;
+    var box = $('quizOptions');
+    if (!box) return;
+    var btns = box.querySelectorAll('.opt');
+    var target = null;
+    for (var i = 0; i < btns.length; i++) {
+      if (btns[i].getAttribute('data-val') === q.a && !btns[i].disabled) target = btns[i];
+    }
+    if (!target || target.querySelector('.hint-arrow')) return;
+    target.classList.add('hint');
+    var arrow = make('span', 'hint-arrow no-emoji');
+    arrow.setAttribute('aria-hidden', 'true');
+    /* 기기마다 다르게 보이는 이모지 대신 직접 그린 화살표(SVG) */
+    arrow.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 12h13M11 5.5l6.5 6.5-6.5 6.5" fill="none" stroke="#8a5100" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    target.appendChild(arrow);
+    hintOn = true;
   }
 
   function updateSpeakCard() {
@@ -5333,6 +5633,7 @@ var ART_ORDER = [
 
   function answer(val) {
     if (quiz.locked) return;
+    clearHint();                       /* 보기를 누르면 힌트 타이머·화살표를 바로 정리한다 */
     var q = quiz.list[quiz.index];
     if (!q) return;
     var btns = $('quizOptions').querySelectorAll('.opt');
@@ -5375,6 +5676,7 @@ var ART_ORDER = [
   }
 
   function nextQuestion() {
+    clearHint();
     if ($('quizSheet').hidden) return;
     quiz.index++;
     if (quiz.index >= quiz.list.length) { afterQuiz(); return; }
@@ -5390,6 +5692,7 @@ var ART_ORDER = [
   }
 
   function showPractice(kind) {
+    clearHint();
     SESSION.step = 'practice';
     $('animPage').hidden = true;
     $('quizPage').hidden = true;
@@ -5455,6 +5758,7 @@ var ART_ORDER = [
   }
 
   function closeQuiz(skipRender) {
+    clearHint();
     clearAnimAdvance();
     stopRecording();
     cancelAnim();
@@ -6878,14 +7182,14 @@ var ART_ORDER = [
   });
 
   /* ── 보호자 시트 하위 탭 ──────────────────────────── */
-  /* 앱 연결 · 앱 서랍 · 기기·학습 설정. 홈에서 미연결 칸이나 '앱 서랍'을
-     누르면 PIN 확인 뒤 해당 하위 탭으로 바로 들어간다. */
-  var GUARDIAN_TABS = ['launch', 'drawer', 'settings'];
-  var guardianTab = 'launch';
+  /* 학습 관리(기본) · 앱 연결 · 앱 서랍 · 기기 설정. 홈에서 미연결 칸이나
+     '앱 서랍'을 누르면 PIN 확인 뒤 해당 하위 탭으로 바로 들어간다. */
+  var GUARDIAN_TABS = ['study', 'launch', 'drawer', 'device'];
+  var guardianTab = 'study';
   var guardianJump = null;   // { tab: 'launch' | 'drawer', key: 'hangul' | '' }
 
   function setGuardianTab(name, keepScroll) {
-    if (GUARDIAN_TABS.indexOf(name) < 0) name = 'launch';
+    if (GUARDIAN_TABS.indexOf(name) < 0) name = 'study';
     guardianTab = name;
     var tabs = document.querySelectorAll('.g-tab');
     for (var i = 0; i < tabs.length; i++) {
@@ -6967,7 +7271,7 @@ var ART_ORDER = [
     updVersionLabel();
     $('guardianSheet').hidden = false;
     document.body.style.overflow = 'hidden';
-    setGuardianTab(jump ? jump.tab : 'launch', true);
+    setGuardianTab(jump ? jump.tab : 'study', true);
     $('guardianSheet').scrollTop = 0;
     $('childState').textContent = '';
     $('giftState').textContent = '';
@@ -7399,6 +7703,14 @@ var ART_ORDER = [
     state: state,
     session: SESSION,
     profile: function () { return { name: state.name, childAge: state.childAge, age: state.age, profileSet: state.profileSet }; },
+    givenName: function (n) { return givenName(n); },
+    vocative: function (n) { return vocative(n); },
+    kidLabel: function (n) { return kidLabel(n); },
+    kidText: function (t) { return kidT(t); },
+    guardianTab: function () { return guardianTab; },
+    hint: function () { return { on: hintOn, armed: !!hintTimer, delayMs: HINT_DELAY_MS }; },
+    celebrate: function (emoji, title, sub, sticker, nextNo) { showCelebrate(emoji, title, sub, sticker, nextNo); },
+    fx: function () { return { count: fxCount(), reduced: fxReduced(), state: lastRewardState }; },
     onboardOpen: function () { return !$('onboardScreen').hidden; },
     guardianQuiz: function () { return pinQuiz ? { text: pinQuiz.text, answer: pinQuiz.answer } : null; },
     reward: function () {

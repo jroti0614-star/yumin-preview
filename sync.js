@@ -291,6 +291,37 @@
     };
   }
 
+  /* 이번 주 집중 2과목: 더 새로운 주가 이기고, 같은 주면 보호자가 직접 고른 쪽을 쓴다 */
+  function mergeWeeklyFocus(a, b) {
+    var A = a && typeof a === 'object' ? a : null;
+    var B = b && typeof b === 'object' ? b : null;
+    if (!A) return B;
+    if (!B) return A;
+    var ka = String(A.weekKey || ''), kb = String(B.weekKey || '');
+    if (ka !== kb) return ka > kb ? A : B;
+    if (!!A.manual !== !!B.manual) return A.manual ? A : B;
+    return num(A.t, 0) >= num(B.t, 0) ? A : B;
+  }
+
+  /* 오늘 과목별 완료 수: 같은 날이면 과목마다 큰 값, 날짜가 다르면 최신 날짜 */
+  function mergeTodayDone(a, b) {
+    var A = a && typeof a === 'object' ? a : null;
+    var B = b && typeof b === 'object' ? b : null;
+    if (!A) return B;
+    if (!B) return A;
+    var da = String(A.date || ''), db = String(B.date || '');
+    if (da !== db) return da > db ? A : B;
+    var out = { date: da, subs: {} };
+    [A.subs, B.subs].forEach(function (s) {
+      if (!s || typeof s !== 'object') return;
+      for (var k in s) {
+        if (!Object.prototype.hasOwnProperty.call(s, k)) continue;
+        out.subs[k] = Math.max(num(out.subs[k], 0), num(s[k], 0));
+      }
+    });
+    return out;
+  }
+
   function mergeBook(local, remote) {
     if (!remote || typeof remote !== 'object') return local;
     if (!local || typeof local !== 'object') return remote;
@@ -300,8 +331,11 @@
       t: Math.max(lt, rt),
       name: newer.name,
       childAge: newer.childAge,
+      childBirthdate: typeof newer.childBirthdate === 'string' ? newer.childBirthdate : '',
       profileSet: !!newer.profileSet,
       age: num(newer.age, 0),
+      weeklyFocus: mergeWeeklyFocus(local.weeklyFocus, remote.weeklyFocus),
+      todayDone: mergeTodayDone(local.todayDone, remote.todayDone),
       stars: maxNum(local.stars, remote.stars),
       used: maxNum(local.used, remote.used),
       spent: maxNum(local.spent, remote.spent),

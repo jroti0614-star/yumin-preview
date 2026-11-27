@@ -1,10 +1,10 @@
 {
-  "versionCode": 13,
-  "versionName": "0.9.4",
-  "apkUrl": "https://github.com/jroti0614-star/yumin-lanucher/releases/download/v0.9.4/app-debug.apk",
-  "sha256": "b670d2ec44ab04143fa685d3f93c194b7933591bf8d75b6c7b52514a74e9a728",
-  "sizeBytes": 12380605,
-  "publishedAt": "2026-11-27T12:59:12Z",
-  "notes": "OTA 업데이트 연결 수정 · 잘못된 네트워크 사전 판정 제거 · 서버 오류 원인 표시",
-  "releasePage": "https://github.com/jroti0614-star/yumin-lanucher/releases/tag/v0.9.4"
+  "versionCode": 15,
+  "versionName": "0.9.6",
+  "apkUrl": "https://github.com/jroti0614-star/yumin-lanucher/releases/download/v0.9.6/app-debug.apk",
+  "sha256": "d985412924dd4c7cd73ca4120c481b2b9f99089ffee2921e011e37f7e079009d",
+  "sizeBytes": 12381237,
+  "publishedAt": "2026-11-27T13:14:17Z",
+  "notes": "OTA APK 다운로드 실패 원인 표시 · 업데이트 조회 주소 보완",
+  "releasePage": "https://github.com/jroti0614-star/yumin-lanucher/releases/tag/v0.9.6"
 }

@@ -367,7 +367,7 @@ label.field span{display:block;font-size:12px;font-weight:700;color:var(--sub);m
         save();
         render();
         renderBook();
-        $('syncLine').textContent = '마지막 확인 ' + timeLabel(cfg.lastSync) + ' · 태블릿 기록을 ' + timeLabel(num(row.settings_updated_at, 0)) + ' 기준으로 봤어요';
+        $('syncLine').textContent = '마지막 확인 ' + timeLabel(cfg.lastSync) + ' · 태블릿과 같은 계정으로 보고 있어요';
         state('');
         busy = false;
       })

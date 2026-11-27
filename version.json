@@ -1,10 +1,10 @@
 {
-  "versionCode": 10,
-  "versionName": "0.9.1",
-  "apkUrl": "https://github.com/jroti0614-star/yumin-lanucher/releases/download/v0.9.1/app-debug.apk",
-  "sha256": "",
-  "sizeBytes": 0,
-  "publishedAt": "2026-11-27T12:17:39.209Z",
-  "notes": "OTA 연결 판정 수정 · 실제 HTTPS 연결 결과로 업데이트 확인 · 서버 오류 상세 표시",
-  "releasePage": "https://github.com/jroti0614-star/yumin-lanucher/releases/tag/v0.9.1"
+  "versionCode": 12,
+  "versionName": "0.9.3",
+  "apkUrl": "https://github.com/jroti0614-star/yumin-lanucher/releases/download/v0.9.3/app-debug.apk",
+  "sha256": "b848ae63ef2529f6233b1a14588cf1de14df2727812715ce65fe83cd16e20954",
+  "sizeBytes": 12380573,
+  "publishedAt": "2026-11-27T12:52:01Z",
+  "notes": "학습 음성 안내 수정 · Android TTS 직접 연결 · 초기 재생 누락 보완 · 불필요한 음성 팝업 제거",
+  "releasePage": "https://github.com/jroti0614-star/yumin-lanucher/releases/tag/v0.9.3"
 }

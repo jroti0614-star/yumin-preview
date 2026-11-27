@@ -1,10 +1,10 @@
 {
-  "versionCode": 8,
-  "versionName": "0.8.0",
-  "apkUrl": "https://github.com/jroti0614-star/yumin-preview/releases/download/v0.8.0/yumin-launcher-0.8.0-debug.apk",
-  "sha256": "3e04c86e123b4933386511e9a8d3d3f9b24959e45c7e21f163079e6457955011",
-  "sizeBytes": 12338976,
-  "publishedAt": "2026-11-27T16:09:28+09:00",
-  "notes": "웹↔앱 연동 전체 점검 · TTS 즉시 멈춤(stopSpeak) · 앱 실행 실패 안내 · 유튜브 키즈 보상 되돌리기 · 마이크 권한 안내",
-  "releasePage": "https://github.com/jroti0614-star/yumin-preview/releases/tag/v0.8.0"
+  "versionCode": 9,
+  "versionName": "0.9.0",
+  "apkUrl": "https://github.com/jroti0614-star/yumin-lanucher/releases/download/v0.9.0/app-debug.apk",
+  "sha256": "2d30c230c79ff857480630e2fa8e801ab115026bd17f9594c94cf8d4d689ff18",
+  "sizeBytes": 12379717,
+  "publishedAt": "2026-11-27T12:11:56Z",
+  "notes": "유튜브 키즈 제한 시간 종료 시 공부방 자동 복귀 · 화면 고정 중 외부 앱 실행 및 복귀 시 재고정",
+  "releasePage": "https://github.com/jroti0614-star/yumin-lanucher/releases/tag/v0.9.0"
 }

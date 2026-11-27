@@ -202,6 +202,11 @@ h1,h2,h3,p{margin:0}
 }
 .chip:hover{border-color:#d5d3ef}
 .chip.on{border-color:var(--purple);background:var(--purple-soft);color:var(--purple-d);font-weight:700}
+/* 칩·버튼·정보 줄 바로 뒤 설명은 위로 당기지 않는다 (버튼 테두리와 글씨가 겹치지 않게) */
+.chips + .g-hint,
+.g-actions + .g-hint,
+.fam-line + .g-hint,
+.upd-line + .g-hint{margin:4px 0 12px;line-height:1.55}
 
 /* ── 과목 카드 ──────────────────────────────────────── */
 .subject-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
@@ -1487,11 +1492,11 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
 .ob-pick{font-size:12px;color:#6c7186}
 
 /* ── 보호자: 하위 탭 (앱 연결 · 앱 서랍 · 기기·학습 설정) ── */
-.g-tabs{display:flex;gap:6px;padding:5px;border-radius:16px;background:#eef0f8;border:1px solid #e3e5f0}
+.g-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;padding:6px;border-radius:16px;background:#eef0f8;border:1px solid #e3e5f0}
 .g-tab{
-  flex:1 1 0;min-width:0;padding:9px 8px;border-radius:12px;border:0;background:transparent;
-  font-family:var(--body);font-size:12.5px;font-weight:700;color:#6f7488;line-height:1.15;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  width:100%;min-width:0;min-height:42px;padding:10px 6px;border-radius:12px;border:0;background:transparent;
+  font-family:var(--body);font-size:14px;font-weight:700;color:#6f7488;line-height:1.25;
+  white-space:normal;overflow:visible;text-overflow:clip;word-break:keep-all;
 }
 .g-tab.on{background:#fff;color:#4a3fa8;box-shadow:0 6px 14px -10px rgba(60,45,140,.55)}
 .g-tab:not(.on):hover{color:#4a4f66}
@@ -2290,6 +2295,7 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
         <button class="btn" id="appUpdateCheck" type="button">앱 업데이트 확인</button>
       </div>
       <p class="g-state" id="appUpdateState" role="status"></p>
+      <p class="g-state" id="voiceState" role="status" hidden></p>
       <div class="g-actions" id="appUpdateActions" hidden>
         <button class="btn primary" id="appUpdateInstall" type="button">지금 설치</button>
       </div>
@@ -2298,7 +2304,7 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
         <span class="upd-ver">화면 고정<small id="pinStateLabel">태블릿 앱에서만 켤 수 있어요</small></span>
         <button class="btn" id="pinToggle" type="button" disabled>켜기</button>
       </div>
-      <p class="g-hint">켜면 <span class="kid-name">유민이</span> 화면이 런처에 묶여 다른 앱이나 설정으로 나가지 못해요. 학습 앱을 열어 줘야 할 때는 꺼 주세요. 기본은 꺼짐이에요.</p>
+      <p class="g-hint">켜면 <span class="kid-name">유민이</span>가 별별 탐험대 안에서만 놀 수 있어요. 연결해 둔 학습 앱을 열면 화면 고정이 잠시 풀렸다가, 별별 탐험대로 돌아오면 다시 켜져요. 홈 버튼까지 막으려면 태블릿 설정에서 기본 홈 앱을 별별 탐험대로 정해 주세요. 기본은 꺼짐이에요.</p>
     </div>
 
     <div class="card g-card" id="famSyncCard"></div>
@@ -3984,13 +3990,57 @@ var ART_ORDER = [
 
   var speakTimer = null;
   var speakSeq = 0;
+
+  /* 런처 앱(안드로이드)에서는 네이티브 TTS 다리가 가장 확실합니다.
+     Android WebView는 speechSynthesis 객체가 있어도 읽을 목소리가 비어 있어 소리 없이
+     끝나는 경우가 많아, 그 언어를 읽을 목소리가 없으면 YuminLauncherBridge 로 넘깁니다. */
+  function appBridge() {
+    var b = window.YuminLauncherBridge;
+    return (b && typeof b.speak === 'function') ? b : null;
+  }
+  function bridgeSpeak(text, lang) {
+    var b = appBridge();
+    if (!b) return false;
+    var code = lang || 'ko-KR';
+    try {
+      if (typeof b.speakLang === 'function') { b.speakLang(text, code); return true; }
+      b.speak(text);
+      return true;
+    } catch (e) { return false; }
+  }
+  function voicesFor(lang) {
+    try {
+      var list = (window.speechSynthesis.getVoices && window.speechSynthesis.getVoices()) || [];
+      var want = String(lang || 'ko').toLowerCase().indexOf('en') === 0 ? 'en' : 'ko';
+      for (var i = 0; i < list.length; i++) {
+        if (String(list[i].lang || '').toLowerCase().indexOf(want) === 0) return true;
+      }
+    } catch (e) {}
+    return false;
+  }
+
   function speak(text, lang) {
-    if (!window.speechSynthesis || typeof window.SpeechSynthesisUtterance !== 'function') return;
     var t = cleanText(text);
     if (!t) return;
     lang = lang || 'ko-KR';
     var isEn = lang.indexOf('en') === 0;
     var seq = ++speakSeq;
+    if (speakTimer) clearTimeout(speakTimer);
+    /* 앱: 이 언어를 읽을 목소리가 없으면 네이티브 TTS 로 말한다 (무음 방지) */
+    if (appBridge() && !voicesFor(lang)) {
+      try { if (window.speechSynthesis) window.speechSynthesis.cancel(); } catch (e) {}
+      try { if (typeof window.YuminLauncherBridge.stopSpeak === 'function') window.YuminLauncherBridge.stopSpeak(); } catch (e) {}
+      speakTimer = setTimeout(function () {
+        if (seq !== speakSeq) return;
+        bridgeSpeak(t, isEn ? 'en-US' : 'ko-KR');
+      }, 0);
+      return;
+    }
+    if (!window.speechSynthesis || typeof window.SpeechSynthesisUtterance !== 'function') {
+      /* Web Speech 자체가 없는 WebView 라도 다리가 있으면 그것으로 말한다 */
+      bridgeSpeak(t, isEn ? 'en-US' : 'ko-KR');
+      return;
+    }
     try {
       window.speechSynthesis.cancel();
       try { window.speechSynthesis.resume(); } catch (e2) {}
@@ -4028,7 +4078,14 @@ var ART_ORDER = [
   function speakEn(text) { speak(text, 'en-US'); }
   function stopSpeak() {
     try { if (window.speechSynthesis) window.speechSynthesis.cancel(); } catch (e) {}
+    /* 앱에서는 브라우저 speechSynthesis 가 비어 있어도 네이티브 TTS 는 계속 읽고 있으므로
+       다리를 항상 함께 멈춘다 (다음 문제 설명과 소리가 겹치지 않게). */
+    try {
+      var b = window.YuminLauncherBridge;
+      if (b && typeof b.stopSpeak === 'function') b.stopSpeak();
+    } catch (e) {}
     if (speakTimer) { clearTimeout(speakTimer); speakTimer = null; }
+    speakSeq++;
   }
 
   /* ── 토스트 ─────────────────────────────────────────── */
@@ -4382,7 +4439,7 @@ var ART_ORDER = [
       $('launchMsg').textContent = slot.title + ' 칸에 열 앱을 연결해 주세요. 보호자 탭에서 고를 수 있어요.';
       var go = make('button', 'btn primary', '보호자 탭에서 연결하기');
       go.type = 'button';
-      go.addEventListener('click', function () { closeLaunchModal(); openPin(); });
+      go.addEventListener('click', function () { closeLaunchModal(); enterGuardian(null, null); });
       acts.appendChild(go);
     }
     box.hidden = false;
@@ -4425,9 +4482,9 @@ var ART_ORDER = [
     showLaunchModal(slot, app);
   }
 
-  /* ── 보상: 유튜브 키즈 (오늘 학습 2회 → 20분) ────────── */
-  /* 외부 앱을 강제로 닫을 수는 없으므로, 20분이 지나면 알림·음성으로
-     알려 주고 다시 잠김 상태로 돌린다(다음 보상까지 학습 2회 필요). */
+  /* ── 보상: 유튜브 키즈 (오늘 학습 2회 → 제한 시간) ───── */
+  /* 제한 시간은 Android 브리지에도 전달해, 시간이 끝나면 공부방으로 자동 복귀한다.
+     웹 미리보기에서는 기존처럼 타이머와 잠금 상태만 표시한다. */
   var rewardTimer = null;
 
   /* 연령대별 추천 채널 */
@@ -4657,7 +4714,11 @@ var ART_ORDER = [
     var launched = false;
     if (bridge && typeof bridge.launchApp === 'function') {
       /* 실행에 실패하면(false) 보상을 쓰지 않은 것으로 되돌린다 */
-      try { launched = bridge.launchApp(app.pkg, app.name) !== false; } catch (e) { launched = false; }
+      try {
+        launched = typeof bridge.launchTimedApp === 'function'
+          ? bridge.launchTimedApp(app.pkg, app.name, Number(r.endsAt)) !== false
+          : bridge.launchApp(app.pkg, app.name) !== false;
+      } catch (e) { launched = false; }
       if (!launched) {
         r.sessions = Math.max(0, r.sessions - 1);
         r.endsAt = 0;
@@ -5615,7 +5676,7 @@ var ART_ORDER = [
   /* ── 탭 ─────────────────────────────────────────────── */
   var TABS = { home: 'panelHome', learn: 'panelLearn', board: 'panelBoard', shop: 'panelShop' };
   function switchTab(name) {
-    if (name === 'guardian') { guardianJump = null; openPin(); return; }
+    if (name === 'guardian') { guardianJump = null; enterGuardian(null, null); return; }
     if (typeof clearHint === 'function') clearHint();
     for (var key in TABS) {
       if (!Object.prototype.hasOwnProperty.call(TABS, key)) continue;
@@ -7414,6 +7475,30 @@ var ART_ORDER = [
     }
   }
 
+  /* ── 보호자 화면 들어가기 ────────────────────────────────
+     원래는 아이가 스스로 보호자 화면에 들어가지 못하도록 산수 문제를 냅니다.
+     지금은 화면을 다듬는 동안 잠시 문제 없이 들어가게 해 두었습니다.
+     다시 켜려면 TEMP_SKIP_GUARDIAN_QUIZ 를 false 로 바꾸면 됩니다.
+     (주소에 ?quiz=1 을 붙이면 이 값과 상관없이 문제를 냅니다 — 확인·테스트용)
+     취침 잠금 화면의 '보호자 해제' 확인 문제는 이 값과 무관하게 그대로입니다. */
+  var TEMP_SKIP_GUARDIAN_QUIZ = true;
+  if (/[?&]quiz=1(&|$)/.test(location.search)) TEMP_SKIP_GUARDIAN_QUIZ = false;
+
+  /** 보호자 화면으로 들어갑니다. (문제를 건너뛰는 동안에는 바로 열립니다) */
+  function enterGuardian(reason, jump) {
+    if (!TEMP_SKIP_GUARDIAN_QUIZ) {
+      guardianJump = jump || null;
+      openPin(reason);
+      return;
+    }
+    guardianJump = null;
+    if (!$('guardianSheet').hidden) {
+      if (jump) applyGuardianJump(jump);
+      return;
+    }
+    openGuardian(jump || null);
+  }
+
   function openPin(reason, action) {
     pinAction = typeof action === 'function' ? action : null;
     /* 잠금 화면 위에서 열었을 때는 확인 창이 잠금 화면보다 위에 보여야 한다 */
@@ -7432,7 +7517,7 @@ var ART_ORDER = [
   }
   /* 상단 '보호자' 버튼은 하단 탭과 겹쳐 없앴다. 남아 있는 예전 화면이면 그대로 연결한다. */
   var headerParentBtn = $('parentBtn');
-  if (headerParentBtn) headerParentBtn.addEventListener('click', function () { openPin(); });
+  if (headerParentBtn) headerParentBtn.addEventListener('click', function () { enterGuardian(null, null); });
   $('pinCancel').addEventListener('click', function () { guardianJump = null; pinAction = null; closePin(); });
   $('pinInput').addEventListener('input', function () {
     this.value = this.value.replace(/[^0-9]/g, '').slice(0, 4);
@@ -7523,10 +7608,9 @@ var ART_ORDER = [
   function jumpGuardian(tab, key) {
     var jump = { tab: tab === 'drawer' ? 'drawer' : 'launch', key: key || '' };
     if (!$('guardianSheet').hidden) { applyGuardianJump(jump); return; }
-    guardianJump = jump;
-    openPin(jump.tab === 'drawer'
+    enterGuardian(jump.tab === 'drawer'
       ? '앱 서랍은 어른만 열 수 있어요. 문제를 풀어 주세요.'
-      : '연결할 앱을 고르려면 어른 확인이 필요해요. 문제를 풀어 주세요.');
+      : '연결할 앱을 고르려면 어른 확인이 필요해요. 문제를 풀어 주세요.', jump);
   }
 
   /* 보호자 시트 상단 하위 탭 */
@@ -7713,6 +7797,23 @@ var ART_ORDER = [
     if (label) label.textContent = !can ? '태블릿 앱에서만 켤 수 있어요' : (UPD.pinOn ? '켜짐 · 런처에 묶여 있어요' : '꺼짐');
     if (typeof renderSleepPinNote === 'function') renderSleepPinNote();
   }
+  /* 음성(TTS) 상태 — 태블릿에 한국어 음성 엔진이 없으면 조용히 실패하지 않게 알려 준다 */
+  function updVoiceNote() {
+    var el = $('voiceState');
+    if (!el) return;
+    var tts = UPD.info && UPD.info.tts;
+    if (!tts) { el.hidden = true; return; }
+    el.hidden = false;
+    if (tts.ready && tts.korean) {
+      el.textContent = '음성 안내: 준비됐어요' + (tts.engine ? ' (' + tts.engine + ')' : '') + '.';
+    } else if (tts.ready) {
+      el.textContent = '음성 안내: 한국어 목소리가 없어 다른 목소리로 읽어요. 태블릿 설정 > 음성 합성(TTS)에서 한국어 음성 데이터를 설치하면 제대로 들려요.';
+    } else if (tts.init !== 2) {
+      el.textContent = '음성 안내: 음성 엔진을 준비하고 있어요…';
+    } else {
+      el.textContent = '음성 안내: 이 태블릿에서 음성 엔진을 찾지 못했어요. Play 스토어에서 ‘Google 음성 서비스(Google TTS)’를 설치하고 한국어를 추가한 뒤 앱을 다시 열어 주세요.';
+    }
+  }
   function updVersionLabel() {
     var el = $('appVersionLabel');
     if (!el) return;
@@ -7726,11 +7827,13 @@ var ART_ORDER = [
           '<small>버전 번호 ' + String(info.versionCode || '') + '</small>';
         updPinButton();
         renderSleepPinNote();
+        updVoiceNote();
         return;
       }
     }
     el.innerHTML = '지금은 웹 미리보기예요<small>태블릿 앱에서 열면 버전을 확인해요</small>';
     updPinButton();
+    updVoiceNote();
   }
   function updReceive(raw) {
     UPD.checking = false;
@@ -7775,6 +7878,7 @@ var ART_ORDER = [
     var res = updParse(raw) || {};
     if (typeof res.pinned === 'boolean') UPD.pinOn = res.pinned;
     if (res.ok === false) updSay(res.message || '화면 고정을 바꾸지 못했어요.');
+    else if (res.autoUnpinned) updSay('다른 앱을 여는 동안 화면 고정을 잠시 풀었어요. 별별 탐험대로 돌아오면 다시 켜요.');
     else updSay(UPD.pinOn ? '화면 고정을 켰어요. 끄려면 여기서 다시 눌러 주세요.' : '화면 고정을 껐어요.');
     updPinButton();
     renderSleepPinNote();
@@ -7997,6 +8101,10 @@ var ART_ORDER = [
     fx: function () { return { count: fxCount(), reduced: fxReduced(), state: lastRewardState }; },
     onboardOpen: function () { return !$('onboardScreen').hidden; },
     guardianQuiz: function () { return pinQuiz ? { text: pinQuiz.text, answer: pinQuiz.answer } : null; },
+    guardianQuizSkipped: function () { return !!TEMP_SKIP_GUARDIAN_QUIZ; },
+    speak: function (t, l) { speak(t, l); },
+    speakEn: function (t) { speakEn(t); },
+    stopSpeak: function () { stopSpeak(); },
     reward: function () {
       var i = rewardInfo();
       return { have: i.have, need: i.need, unlocked: i.unlocked, running: i.running, left: i.left, sessions: i.sessions, lessons: i.lessons };
@@ -8459,14 +8567,14 @@ var ART_ORDER = [
     note.hidden = false;
     note.className = 'sleep-warn';
     if (!can) {
-      note.textContent = '화면 고정은 태블릿 앱에서만 켤 수 있어요. 웹 미리보기에서는 아이가 홈으로 나갈 수 있다고 보고, 태블릿 앱에서 화면 고정을 함께 켜 주세요.';
+      note.textContent = '화면 고정은 태블릿 앱에서만 켤 수 있어요. 웹 미리보기에서는 아이가 홈으로 나갈 수 있으니, 태블릿 앱에서 화면 고정을 켜 주세요.';
       if (btn) btn.hidden = true;
     } else if (!pinned) {
-      note.textContent = '화면 고정이 꺼져 있어요. 아이가 홈 버튼으로 나가면 잠금 화면을 피해 다른 앱을 쓸 수 있어요. 잠금과 함께 화면 고정을 켜 두세요.';
+      note.textContent = '화면 고정을 켜면 별별 탐험대 안에서만 놀 수 있어요. 다른 앱을 열면 화면 고정이 잠시 풀렸다가 돌아오면 다시 켜져요. 홈 버튼만 막으려면 태블릿 기본 홈 앱을 별별 탐험대로 설정하세요.';
       if (btn) btn.hidden = false;
     } else {
       note.className = 'sleep-warn off';
-      note.textContent = '화면 고정이 켜져 있어요. 잠금 시간에 아이가 홈으로 나갈 수 없어요.';
+      note.textContent = '화면 고정이 켜져 있어요. 다른 앱을 열면 잠시 풀리고, 별별 탐험대로 돌아오면 다시 켜져요. 홈 버튼까지 막으려면 태블릿 기본 홈 앱을 별별 탐험대로 설정하세요.';
       if (btn) btn.hidden = true;
     }
     /* '함께 켜기'를 누른 직후의 '켜는 중…' 안내는 상태가 도착하면 지운다 */

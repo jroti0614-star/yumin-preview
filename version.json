@@ -1,10 +1,10 @@
 {
-  "versionCode": 8,
-  "versionName": "0.8.0",
-  "apkUrl": "https://github.com/jroti0614-star/yumin-preview/releases/download/v0.8.0/yumin-launcher-0.8.0-debug.apk",
-  "sha256": "3e04c86e123b4933386511e9a8d3d3f9b24959e45c7e21f163079e6457955011",
-  "sizeBytes": 12338976,
-  "publishedAt": "2026-11-27T16:09:28+09:00",
-  "notes": "웹↔앱 연동 전체 점검 · TTS 즉시 멈춤(stopSpeak) · 앱 실행 실패 안내 · 유튜브 키즈 보상 되돌리기 · 마이크 권한 안내",
-  "releasePage": "https://github.com/jroti0614-star/yumin-preview/releases/tag/v0.8.0"
+  "versionCode": 15,
+  "versionName": "0.9.6",
+  "apkUrl": "https://github.com/jroti0614-star/yumin-lanucher/releases/download/v0.9.6/app-debug.apk",
+  "sha256": "d985412924dd4c7cd73ca4120c481b2b9f99089ffee2921e011e37f7e079009d",
+  "sizeBytes": 12381237,
+  "publishedAt": "2026-11-27T13:14:17Z",
+  "notes": "OTA APK 다운로드 실패 원인 표시 · 업데이트 조회 주소 보완",
+  "releasePage": "https://github.com/jroti0614-star/yumin-lanucher/releases/tag/v0.9.6"
 }

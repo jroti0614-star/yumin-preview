@@ -636,6 +636,10 @@
       '.fam-line{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;margin:5px 0;color:#6f6b8a;}',
       '.fam-line b{color:#332f52;font-weight:700;text-align:right;}',
       '.fam-sep{height:1px;background:#ece8f7;margin:14px 0 10px;}',
+      /* 하루 횟수 칩 줄과 아래 설명 문구가 겹치지 않게 (390 폭·가로 화면 공통) */
+      '#famYtChips{margin:8px 0 10px;gap:8px;row-gap:8px;}',
+      '#famYtChips .chip{line-height:1.25;}',
+      '#famYtChips + .g-hint{margin:0 0 12px;line-height:1.55;}',
       '.fam-lock-sub{}'
     ].join('\n');
     document.head.appendChild(css);

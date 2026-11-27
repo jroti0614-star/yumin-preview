@@ -1,10 +1,10 @@
 {
-  "versionCode": 7,
-  "versionName": "0.7.0",
-  "apkUrl": "https://github.com/jroti0614-star/yumin-preview/releases/download/v0.7.0/yumin-launcher-0.7.0-debug.apk",
-  "sha256": "bb1e911e44ac87840f2603a533fcb0019558fd2c544ed0330fbe38648e43e46a",
-  "sizeBytes": 12332596,
-  "publishedAt": "2026-11-27T13:56:58+09:00",
-  "notes": "웹 개편 내장 · 처음 1회 프로필 · 앱 서랍/미연결 칸 바로 열기 · 보호자 3탭 · 어른 확인 산수 · 유튜브 키즈 20분 보상",
-  "releasePage": "https://github.com/jroti0614-star/yumin-preview/releases/tag/v0.7.0"
+  "versionCode": 8,
+  "versionName": "0.8.0",
+  "apkUrl": "https://github.com/jroti0614-star/yumin-preview/releases/download/v0.8.0/yumin-launcher-0.8.0-debug.apk",
+  "sha256": "3e04c86e123b4933386511e9a8d3d3f9b24959e45c7e21f163079e6457955011",
+  "sizeBytes": 12338976,
+  "publishedAt": "2026-11-27T16:09:28+09:00",
+  "notes": "웹↔앱 연동 전체 점검 · TTS 즉시 멈춤(stopSpeak) · 앱 실행 실패 안내 · 유튜브 키즈 보상 되돌리기 · 마이크 권한 안내",
+  "releasePage": "https://github.com/jroti0614-star/yumin-preview/releases/tag/v0.8.0"
 }

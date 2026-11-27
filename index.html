@@ -1651,6 +1651,158 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
   .hc-line{font-size:20px;line-height:1.5}
   .hc-from{font-size:12px}
 }
+
+/* ══ 이번 주 집중 2과목 · 학습 탭 추천 카드 ══════════ */
+.hero-week{display:inline-flex;align-items:center;gap:5px;margin-top:9px;font-size:11.5px;color:rgba(255,255,255,.82)}
+.hero-picks{margin-top:16px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;max-width:560px}
+.hero-pick{
+  display:flex;flex-direction:column;align-items:stretch;gap:4px;min-width:0;
+  padding:13px 14px 12px;border-radius:18px;border:1.5px solid rgba(255,255,255,.34);
+  background:rgba(255,255,255,.14);color:#fff;text-align:left;
+  transition:transform .15s ease, background .15s ease, border-color .15s ease;
+}
+.hero-pick:hover{background:rgba(255,255,255,.24);transform:translateY(-2px)}
+.hero-pick:active{transform:translateY(0) scale(.98)}
+.hero-pick.done{background:rgba(255,255,255,.26);border-color:rgba(255,255,255,.6)}
+.hp-top{display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0}
+.hp-icon{font-size:26px;line-height:1;flex:0 0 auto}
+.hp-icon .emoji-3d{width:28px;height:28px;vertical-align:middle}
+.hp-state{
+  flex:0 0 auto;padding:4px 9px;border-radius:999px;white-space:nowrap;
+  font-size:11px;font-weight:800;background:rgba(255,255,255,.28);color:#fff;
+}
+.hp-state.done{background:#8ff0c4;color:#0c4a32}
+.hp-title{font-family:var(--display);font-size:16px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hp-meta{font-size:11.5px;color:rgba(255,255,255,.86);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ══ 보호자: 이번 주 집중 과목 ══════════════════════ */
+.wf-range{font-size:11.5px;color:#7d829a;margin-top:-2px}
+.wf-note{font-size:11.5px;line-height:1.55;color:#8b90a3;margin-top:2px}
+.wf-note b{color:#4a3fa8}
+
+/* ══ 보호자: 앱 연결 슬롯 카드 + 아이콘 선택 모달 ════ */
+.la-row{gap:10px}
+.la-row-head .la-emoji img{width:26px;height:26px;object-fit:contain;border-radius:8px;display:block}
+.la-row-text{display:flex;flex-direction:column;min-width:0}
+.la-row-text .la-name{font-family:var(--display);font-size:16px;line-height:1.25}
+.la-row-text .la-state{
+  margin-left:0;margin-top:2px;background:transparent;padding:0;
+  font-size:11.5px;color:#8b90a3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.la-row-text .la-state.on{color:#22795a;font-weight:700}
+.pick-modal{width:min(720px,94vw);max-width:none}
+.pick-head h2{font-family:var(--display);font-size:20px}
+.pk-search{
+  width:100%;margin-top:13px;padding:11px 14px;border-radius:12px;
+  border:1px solid #dfe0ee;background:#fbfbff;font-size:13.5px;color:#2a2f45;
+}
+.pk-search:focus{outline:none;border-color:#b9a8fa;background:#fff}
+.pk-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:10px;
+  margin-top:12px;max-height:min(56vh,420px);overflow-y:auto;overscroll-behavior:contain;padding:2px;
+}
+.pk-app{
+  display:flex;flex-direction:column;align-items:center;gap:6px;min-height:92px;
+  padding:11px 6px 9px;border-radius:16px;border:1.5px solid #ececf6;background:#fff;
+  transition:background .15s ease,border-color .15s ease,transform .12s ease;
+}
+.pk-app:hover,.pk-app:focus-visible{background:#f7f4ff;border-color:#cdc0fb;outline:none;transform:translateY(-1px)}
+.pk-app.on{border-color:#31b37c;background:#f2fbf6}
+.pk-icon{
+  width:50px;height:50px;border-radius:15px;display:grid;place-items:center;
+  font-family:var(--display);font-size:25px;background:#f2f0ff;color:#4a3fb0;border:1px solid #ececf6;overflow:hidden;
+}
+.pk-icon.has-img{background:transparent;border-color:transparent}
+.pk-icon img{width:100%;height:100%;object-fit:contain;border-radius:14px;display:block}
+.pk-app b{font-size:11.5px;font-weight:600;line-height:1.25;color:#2a2f45;word-break:keep-all;text-align:center}
+.pk-on{font-size:10px;font-weight:800;color:#22795a;background:#dcf5e9;border-radius:999px;padding:2px 7px}
+.pk-empty{margin:16px 4px;font-size:12.5px;color:#8b90a3;text-align:center;grid-column:1/-1}
+.ad-app .ad-icon{width:50px;height:50px;border-radius:16px;font-size:24px}
+.ad-icon .emoji-3d{width:28px;height:28px;vertical-align:middle}
+
+/* ══ 태블릿 가로: 홈을 화면에 꽉 차게 ═══════════════ */
+@media (min-width:900px){
+  body[data-tab="home"] .wrap{max-width:1240px;padding:20px 26px 28px}
+  .home-dash{
+    grid-template-columns:minmax(0,1.42fr) minmax(0,1fr);
+    gap:20px;
+    height:calc(100vh - 204px);
+    height:calc(100dvh - 204px);
+    min-height:520px;
+  }
+  .home-main,.home-side{min-height:0}
+  .home-side>.card{min-height:0;overflow:hidden}
+  .launch-hero{margin:0 2px 14px}
+  .launch-title{font-size:34px}
+  .launch-sub{font-size:14px}
+  .launch-grid{gap:16px}
+  .launch-tile{padding:20px 24px 16px;border-radius:28px;gap:9px}
+  .lt-icon{width:92px;height:92px;border-radius:28px;font-size:46px}
+  .lt-name{font-size:30px}
+  .lt-app{font-size:14.5px;min-height:20px}
+  .lt-go{font-size:14.5px}
+  .home-foot{flex-direction:row;align-items:stretch;gap:12px;margin-top:13px}
+  .home-foot .home-reward{flex:1.25 1 0;margin-top:0;padding:14px 18px;gap:14px;border-radius:20px}
+  .home-foot .home-today-line{flex:1 1 0}
+  .home-foot .home-reward .hr-ico{width:62px;height:62px;flex:0 0 62px;border-radius:20px;font-size:32px}
+  .home-foot .home-reward .hr-ico .emoji-3d{width:36px;height:36px}
+  .home-foot .home-reward .hr-title{font-size:21px}
+  .home-foot .home-reward .hr-sub{font-size:13px;margin-top:3px}
+  .home-foot .home-reward .hr-btn{padding:12px 20px;font-size:15px;border-radius:14px}
+  .home-foot .home-reward .hr-time{font-size:20px;padding:8px 14px}
+  .home-foot .home-today-line{padding:12px 18px;border-radius:18px}
+  .home-foot .home-today-line strong{font-size:16px}
+  .home-foot .home-today-line small{font-size:12.5px}
+  .home-side{grid-template-rows:1.02fr 1fr 1.12fr;gap:18px}
+  .hw-clock{font-size:46px}
+  .hw-art{width:84px;height:84px;border-radius:26px;font-size:44px}
+  .card.home-stars{padding:20px 22px;gap:12px}
+  .hs-head strong{font-size:26px}
+  .hs-bar{height:13px}
+  .hc-line{font-size:19.5px}
+  .card.home-cheer{padding:16px 18px;gap:8px}
+  .card.home-welcome{padding:18px;gap:14px}
+  .hero{padding:34px 36px}
+  .hero-picks{max-width:620px}
+  .hero-pick{padding:16px 18px 15px;border-radius:20px}
+  .hp-icon{font-size:32px}
+  .hp-icon .emoji-3d{width:34px;height:34px}
+  .hp-title{font-size:19px}
+  .hp-meta{font-size:12.5px}
+  .hp-state{font-size:12px;padding:5px 11px}
+}
+@media (max-width:640px){
+  .hero-picks{gap:9px;margin-top:13px}
+  .hero-pick{padding:12px 11px 11px;border-radius:15px;gap:3px}
+  .hp-icon{font-size:24px}
+  .hp-icon .emoji-3d{width:25px;height:25px}
+  .hp-title{font-size:15px}
+  .hp-meta{font-size:11px}
+  .hp-state{font-size:10.5px;padding:3px 7px}
+  .hero-week{font-size:11px}
+  .pk-grid{grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px}
+  .pk-icon{width:46px;height:46px;font-size:23px}
+}
+/* ══ 보호자 3탭 · 기기 설정 접이식 섹션 ═════════════ */
+.g-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g-sec{border:1px solid var(--line);border-radius:18px;background:#fff;overflow:hidden;box-shadow:var(--shadow)}
+.g-sec>summary{
+  display:flex;align-items:center;gap:9px;padding:15px 16px;cursor:pointer;list-style:none;
+  font-family:var(--display);font-size:16px;color:#2f3550;
+}
+.g-sec>summary::-webkit-details-marker{display:none}
+.g-sec>summary::after{content:'▾';margin-left:auto;color:#9aa0b4;font-size:13px;transition:transform .15s ease}
+.g-sec[open]>summary::after{transform:rotate(180deg)}
+.g-sec>summary:hover{background:#f8f7ff}
+.gs-title{flex:0 0 auto}
+.gs-sub{min-width:0;font-family:var(--body);font-size:11.5px;font-weight:400;color:#8b90a3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gs-body{display:flex;flex-direction:column;gap:12px;padding:0 12px 14px}
+.gs-body>.card{margin:0}
+@media (max-width:640px){
+  .pk-grid{grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px}
+  .pk-icon{width:46px;height:46px;font-size:23px}
+  .g-sec>summary{font-size:15px;padding:13px 14px}
+}
 </style>
 <script src="sync.js?v=20261127-2"></script>
 </head>
@@ -1667,8 +1819,9 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
       <input id="obName" type="text" maxlength="10" placeholder="예) 유민" autocomplete="off">
     </label>
     <div class="field" style="margin-bottom:0">
-      <span>나이</span>
-      <div class="ob-ages" id="obAges" role="group" aria-label="아이 나이">
+      <span>생년월일</span>
+      <input id="obBirth" type="date" min="2015-01-01" placeholder="2023-06-07" aria-label="아이 생년월일">
+      <div class="ob-ages" id="obAges" role="group" aria-label="생년월일 빠르게 고르기" style="margin-top:9px">
         <button class="chip" type="button" data-obage="3">3살</button>
         <button class="chip" type="button" data-obage="4">4살</button>
         <button class="chip" type="button" data-obage="5">5살</button>
@@ -1676,9 +1829,8 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
         <button class="chip" type="button" data-obage="7">7살</button>
         <button class="chip" type="button" data-obage="8">8살 이상</button>
       </div>
-      <input id="obAge" type="text" inputmode="numeric" maxlength="2" placeholder="직접 입력 (예: 4)" aria-label="아이 나이 직접 입력">
     </div>
-    <p class="ob-pick" id="obPick">나이를 고르면 학습 난이도가 맞춰져요.</p>
+    <p class="ob-pick" id="obPick">생년월일을 넣으면 만 나이로 학습 난이도를 맞춰요.</p>
     <div class="g-actions">
       <button class="btn primary" id="obStart" type="button">시작하기</button>
       <span class="g-state" id="obState" role="status"></span>
@@ -1792,12 +1944,11 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
 
     <div class="hero">
       <div class="hero-copy">
-        <span class="hero-badge">✨ 오늘의 추천</span>
+        <span class="hero-badge" id="heroBadge">✨ 오늘의 추천</span>
         <h1 class="hero-title" id="heroTitle">안녕, 유민아!</h1>
-        <p class="hero-sub" id="heroSub">오늘은 한글 별에서 글자를 만나 볼까?</p>
-        <button class="hero-cta" id="heroStart" type="button">
-          <span aria-hidden="true">▶</span> 한글 탐험 시작
-        </button>
+        <p class="hero-sub" id="heroSub">이번 주는 한글 별 · 영어 별을 집중해서 만나 볼까?</p>
+        <div class="hero-picks" id="heroPicks" role="group" aria-label="이번 주 집중 과목"></div>
+        <span class="hero-week" id="heroWeek">이번 주</span>
       </div>
       <div class="hero-side" aria-hidden="true">
         <div class="hero-card">
@@ -1959,6 +2110,21 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
   </div>
 </div>
 
+<!-- ══════════════ 앱 고르기 (아이콘 그리드) ══════════════ -->
+<div class="modal" id="appPickModal" role="dialog" aria-modal="true" aria-labelledby="pickTitle" hidden>
+  <div class="modal-card pick-modal">
+    <div class="pick-head">
+      <h2 id="pickTitle">앱 고르기</h2>
+      <p class="modal-sub" id="pickSub">설치된 앱에서 골라 주세요.</p>
+    </div>
+    <input class="pk-search" id="pickSearch" type="search" placeholder="앱 이름으로 찾기" aria-label="연결할 앱 검색">
+    <div class="pk-grid" id="pickGrid" role="listbox" aria-label="연결할 앱 목록"></div>
+    <div class="modal-actions">
+      <button class="btn" id="pickClose" type="button">닫기</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══════════════ 수업(강) ══════════════ -->
 <div class="sheet" id="quizSheet" role="dialog" aria-modal="true" aria-labelledby="quizTitle" hidden>
   <div class="sheet-top">
@@ -2106,7 +2272,6 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
   <div class="g-tabs-wrap">
     <div class="g-tabs" role="tablist" aria-label="보호자 화면">
       <button class="g-tab on" id="gTabStudy" type="button" role="tab" data-gtab="study" aria-selected="true" aria-controls="gPanelStudy">학습 관리</button>
-      <button class="g-tab" id="gTabLaunch" type="button" role="tab" data-gtab="launch" aria-selected="false" aria-controls="gPanelLaunch">앱 연결</button>
       <button class="g-tab" id="gTabDrawer" type="button" role="tab" data-gtab="drawer" aria-selected="false" aria-controls="gPanelDrawer">앱 서랍</button>
       <button class="g-tab" id="gTabDevice" type="button" role="tab" data-gtab="device" aria-selected="false" aria-controls="gPanelDevice">기기 설정</button>
     </div>
@@ -2132,6 +2297,23 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
       </div>
     </div>
 
+    <div class="card g-card" id="weekFocusCard">
+      <h3>🗓️ 이번 주 집중 과목 (2개 선택)</h3>
+      <p class="g-hint">학습 탭 <b>오늘의 추천</b>에 이 두 과목이 한 주 동안 고정으로 나와요. 아이가 두 과목을 차례로 하면 오늘 보상(2회)도 저절로 채워져요.</p>
+      <p class="wf-range" id="weekFocusRange">이번 주</p>
+      <div class="chips" id="weekFocusChips" role="group" aria-label="이번 주 집중 과목">
+        <button class="chip" type="button" data-wf="0">✏️ 한글 별</button>
+        <button class="chip" type="button" data-wf="1">🔢 수학 별</button>
+        <button class="chip" type="button" data-wf="2">🔤 영어 별</button>
+        <button class="chip" type="button" data-wf="3">🎨 그림 별</button>
+      </div>
+      <div class="g-actions">
+        <button class="btn" id="weekFocusAuto" type="button">↺ 자동 추천으로 되돌리기</button>
+        <span class="g-state" id="weekFocusState" role="status"></span>
+      </div>
+      <p class="wf-note" id="weekFocusNote">다른 과목을 누르면 먼저 고른 과목이 빠지고 새 과목이 들어와요. 다음 주가 되면 주차에 맞춰 자동으로 다시 골라요.</p>
+    </div>
+
     <div class="card g-card">
       <h3>아이 정보</h3>
       <label class="field">
@@ -2139,7 +2321,12 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
         <input id="childNameInput" type="text" maxlength="10" placeholder="유민이">
       </label>
       <label class="field">
-        <span>나이</span>
+        <span>생년월일</span>
+        <input id="childBirthInput" type="date" min="2015-01-01" aria-label="아이 생년월일">
+      </label>
+      <p class="wf-range" id="childBirthHint">생년월일을 넣으면 만 나이·개월이 자동으로 계산돼요.</p>
+      <label class="field">
+        <span>생년월일을 모르면 만 나이로</span>
         <input id="childAgeInput" type="text" inputmode="numeric" maxlength="2" placeholder="예) 4">
       </label>
       <div class="field">
@@ -2252,14 +2439,6 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
     </div>
     </div>
 
-    <div class="g-panel" id="gPanelLaunch" data-gpanel="launch" role="tabpanel" aria-labelledby="gTabLaunch" hidden>
-    <div class="card g-card" id="launcherAdminCard">
-      <h3>런처 앱 연결</h3>
-      <p class="g-hint">홈 화면의 <b>한글 · 수학 · 언어 · 도서관</b> 칸에 열 앱을 연결해요. 안드로이드 태블릿에서는 설치된 앱 목록에서 골라 한 번에 연결하고, 연결한 앱이 바로 열려요.</p>
-      <div class="launch-admin" id="launchAdmin"></div>
-    </div>
-    </div>
-
     <div class="g-panel" id="gPanelDrawer" data-gpanel="drawer" role="tabpanel" aria-labelledby="gTabDrawer" hidden>
     <div class="card g-card" id="appDrawerCard">
       <h3>보호자 앱 서랍</h3>
@@ -2274,60 +2453,90 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
     </div>
 
     <div class="g-panel" id="gPanelDevice" data-gpanel="device" role="tabpanel" aria-labelledby="gTabDevice" hidden>
-    <div class="card g-card" id="sleepCard">
-      <h3>🌙 사용 시간 제한</h3>
-      <p class="g-hint">정한 시간에는 홈·학습·별 지도·소원 쿠폰·유튜브 키즈 보상이 모두 잠기고, <span class="kid-name">유민이</span> 화면에는 잠금 화면만 보여요. 잠금 중에는 학습 기록·별·쿠폰이 줄지 않아요.</p>
-      <div class="sleep-row">
-        <span class="sleep-now" id="sleepNow"><b>지금은 잠금 시간이 아니에요</b>켜 두면 정한 시간마다 잠겨요.</span>
-        <button class="btn" id="sleepToggle" type="button">켜기</button>
-      </div>
-      <div class="sleep-times">
-        <label>시작 <input type="time" id="sleepStart" value="21:00" step="600" aria-label="잠금 시작 시각"></label>
-        <label>끝 <input type="time" id="sleepEnd" value="07:00" step="600" aria-label="잠금 끝 시각"></label>
-      </div>
-      <p class="sleep-state" id="sleepState">매일 21:00 ~ 07:00에 잠겨요.</p>
-      <div class="sleep-warn" id="sleepPinNote" hidden></div>
-      <div class="g-actions">
-        <button class="btn" id="sleepPinBtn" type="button" hidden>화면 고정 함께 켜기</button>
-        <span class="g-state" id="sleepPinState" role="status"></span>
-      </div>
-    </div>
 
-    <div class="card g-card" id="appUpdateCard">
-      <h3>앱 업데이트 · 화면 고정</h3>
-      <p class="g-hint">태블릿에 깔린 앱 버전을 확인하고, 새 버전이 있으면 여기서 바로 내려받아 설치해요.</p>
-      <div class="upd-line">
-        <span class="upd-ver" id="appVersionLabel">앱 버전 확인 중…</span>
-        <button class="btn" id="appUpdateCheck" type="button">앱 업데이트 확인</button>
+    <details class="g-sec" id="gSecApps" open>
+      <summary><span class="gs-title">🧩 앱 연결</span><span class="gs-sub" id="gsAppsSub">홈 4칸</span></summary>
+      <div class="gs-body">
+        <div class="card g-card" id="launcherAdminCard">
+          <h3>런처 앱 연결</h3>
+          <p class="g-hint">홈 화면의 <b>한글 · 수학 · 언어 · 도서관</b> 칸과 <b>유튜브 키즈</b> 보상에 열 앱을 연결해요. <b>앱 고르기</b>를 누르면 태블릿에 설치된 앱이 아이콘으로 나오고, 한 번 누르면 바로 연결돼요.</p>
+          <div class="launch-admin" id="launchAdmin"></div>
+        </div>
       </div>
-      <p class="g-state" id="appUpdateState" role="status"></p>
-      <p class="g-state" id="voiceState" role="status" hidden></p>
-      <div class="g-actions" id="appUpdateActions" hidden>
-        <button class="btn primary" id="appUpdateInstall" type="button">지금 설치</button>
-      </div>
-      <div class="upd-sep" aria-hidden="true"></div>
-      <div class="upd-line">
-        <span class="upd-ver">화면 고정<small id="pinStateLabel">태블릿 앱에서만 켤 수 있어요</small></span>
-        <button class="btn" id="pinToggle" type="button" disabled>켜기</button>
-      </div>
-      <p class="g-hint">켜면 <span class="kid-name">유민이</span>가 별별 탐험대 안에서만 놀 수 있어요. 연결해 둔 학습 앱을 열면 화면 고정이 잠시 풀렸다가, 별별 탐험대로 돌아오면 다시 켜져요. 홈 버튼까지 막으려면 태블릿 설정에서 기본 홈 앱을 별별 탐험대로 정해 주세요. 기본은 꺼짐이에요.</p>
-    </div>
+    </details>
 
-    <div class="card g-card" id="famSyncCard"></div>
+    <details class="g-sec" id="gSecTime">
+      <summary><span class="gs-title">🌙 시간 · 화면 고정</span><span class="gs-sub" id="gsTimeSub">사용 시간 제한</span></summary>
+      <div class="gs-body">
+        <div class="card g-card" id="sleepCard">
+          <h3>🌙 사용 시간 제한</h3>
+          <p class="g-hint">정한 시간에는 홈·학습·별 지도·소원 쿠폰·유튜브 키즈 보상이 모두 잠기고, <span class="kid-name">유민이</span> 화면에는 잠금 화면만 보여요. 잠금 중에는 학습 기록·별·쿠폰이 줄지 않아요.</p>
+          <div class="sleep-row">
+            <span class="sleep-now" id="sleepNow"><b>지금은 잠금 시간이 아니에요</b>켜 두면 정한 시간마다 잠겨요.</span>
+            <button class="btn" id="sleepToggle" type="button">켜기</button>
+          </div>
+          <div class="sleep-times">
+            <label>시작 <input type="time" id="sleepStart" value="21:00" step="600" aria-label="잠금 시작 시각"></label>
+            <label>끝 <input type="time" id="sleepEnd" value="07:00" step="600" aria-label="잠금 끝 시각"></label>
+          </div>
+          <p class="sleep-state" id="sleepState">매일 21:00 ~ 07:00에 잠겨요.</p>
+          <div class="sleep-warn" id="sleepPinNote" hidden></div>
+          <div class="g-actions">
+            <button class="btn" id="sleepPinBtn" type="button" hidden>화면 고정 함께 켜기</button>
+            <span class="g-state" id="sleepPinState" role="status"></span>
+          </div>
+        </div>
 
-    <div class="card g-card">
-      <h3>따라 말하기 녹음</h3>
-      <div class="voice-list" id="voiceList"></div>
-    </div>
-
-    <div class="card g-card danger">
-      <h3>별 기록 초기화</h3>
-      <p class="g-hint">모은 별·별 지도·진도·쿠폰 기록을 모두 지우고 처음부터 시작해요.</p>
-      <div class="g-actions">
-        <button class="btn danger" id="resetBtn" type="button">기록 초기화</button>
-        <span class="g-state" id="resetState" role="status"></span>
+        <div class="card g-card" id="pinCard">
+          <h3>📌 화면 고정</h3>
+          <div class="upd-line">
+            <span class="upd-ver">지금 상태<small id="pinStateLabel">태블릿 앱에서만 켤 수 있어요</small></span>
+            <button class="btn" id="pinToggle" type="button" disabled>켜기</button>
+          </div>
+          <p class="g-hint">켜면 <span class="kid-name">유민이</span>가 별별 탐험대 안에서만 놀 수 있어요. 연결해 둔 학습 앱을 열면 화면 고정이 잠시 풀렸다가, 별별 탐험대로 돌아오면 다시 켜져요. 홈 버튼까지 막으려면 태블릿 설정에서 기본 홈 앱을 별별 탐험대로 정해 주세요. 기본은 꺼짐이에요.</p>
+        </div>
       </div>
-    </div>
+    </details>
+
+    <details class="g-sec" id="gSecFam">
+      <summary><span class="gs-title">🏠 가족 동기화</span><span class="gs-sub" id="gsFamSub">부모님 폰과 기록 맞추기</span></summary>
+      <div class="gs-body">
+        <div class="card g-card" id="famSyncCard"></div>
+      </div>
+    </details>
+
+    <details class="g-sec" id="gSecInfo">
+      <summary><span class="gs-title">🔔 업데이트 · 정보</span><span class="gs-sub" id="gsInfoSub">버전 · 녹음 · 초기화</span></summary>
+      <div class="gs-body">
+        <div class="card g-card" id="appUpdateCard">
+          <h3>앱 업데이트</h3>
+          <p class="g-hint">태블릿에 깔린 앱 버전을 확인하고, 새 버전이 있으면 여기서 바로 내려받아 설치해요. 화면은 웹에서 자동으로 새로 받아요.</p>
+          <div class="upd-line">
+            <span class="upd-ver" id="appVersionLabel">앱 버전 확인 중…</span>
+            <button class="btn" id="appUpdateCheck" type="button">앱 업데이트 확인</button>
+          </div>
+          <p class="g-state" id="appUpdateState" role="status"></p>
+          <p class="g-state" id="voiceState" role="status" hidden></p>
+          <div class="g-actions" id="appUpdateActions" hidden>
+            <button class="btn primary" id="appUpdateInstall" type="button">지금 설치</button>
+          </div>
+        </div>
+
+        <div class="card g-card" id="voiceCard">
+          <h3>따라 말하기 녹음</h3>
+          <div class="voice-list" id="voiceList"></div>
+        </div>
+
+        <div class="card g-card danger" id="resetCard">
+          <h3>별 기록 초기화</h3>
+          <p class="g-hint">모은 별·별 지도·진도·쿠폰 기록을 모두 지우고 처음부터 시작해요.</p>
+          <div class="g-actions">
+            <button class="btn danger" id="resetBtn" type="button">기록 초기화</button>
+            <span class="g-state" id="resetState" role="status"></span>
+          </div>
+        </div>
+      </div>
+    </details>
     </div>
 
   </div>
@@ -2719,6 +2928,110 @@ var HANGUL_LETTERS = [
   { g: 'ㅣ', name: '이', word: '이불', words: [['이불', '🛏️'], ['기차', '🚂'], ['비', '🌧️']] }
 ];
 
+
+/* ── 한글: 단계별 문제 (입문=글자 찾기·그림 낱말 / 기초=글자 조합·2글자 낱말 / 발전=받침·문장) ── */
+var HANGUL_JONG = ['', 'ㄱ', 'ㄲ', 'ㄳ', 'ㄴ', 'ㄵ', 'ㄶ', 'ㄷ', 'ㄹ', 'ㄺ', 'ㄻ', 'ㄼ', 'ㄽ', 'ㄾ',
+  'ㄿ', 'ㅀ', 'ㅁ', 'ㅂ', 'ㅄ', 'ㅅ', 'ㅆ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ'];
+var HANGUL_CHO = { 'ㄱ': 0, 'ㄲ': 1, 'ㄴ': 2, 'ㄷ': 3, 'ㄸ': 4, 'ㄹ': 5, 'ㅁ': 6, 'ㅂ': 7, 'ㅃ': 8,
+  'ㅅ': 9, 'ㅆ': 10, 'ㅇ': 11, 'ㅈ': 12, 'ㅉ': 13, 'ㅊ': 14, 'ㅋ': 15, 'ㅌ': 16, 'ㅍ': 17, 'ㅎ': 18 };
+var HANGUL_JUNG = [['ㅏ', 0], ['ㅑ', 1], ['ㅓ', 4], ['ㅕ', 5], ['ㅗ', 8], ['ㅛ', 12],
+  ['ㅜ', 13], ['ㅠ', 17], ['ㅡ', 18], ['ㅣ', 20]];
+var HANGUL_DOUBLE = [['ㄲ', '쌍기역'], ['ㄸ', '쌍디귿'], ['ㅃ', '쌍비읍'], ['ㅆ', '쌍시옷'], ['ㅉ', '쌍지읒'],
+  ['ㅐ', '애'], ['ㅒ', '얘'], ['ㅔ', '에'], ['ㅖ', '예'], ['ㅘ', '와'], ['ㅙ', '왜'], ['ㅚ', '외'],
+  ['ㅝ', '워'], ['ㅞ', '웨'], ['ㅟ', '위'], ['ㅢ', '의']];
+var HANGUL_FINAL_WORDS = ['강', '밥', '곰', '산', '달', '별', '책', '옷', '잎', '낮', '꽃', '집', '손', '발'];
+var HANGUL_SENTENCES = [
+  ['나는 밥을 ___', '먹어요', ['자요', '뛰어요'], '🍚'],
+  ['친구에게 손을 ___', '흔들어요', ['씻어요', '먹어요'], '👋'],
+  ['비가 와서 ___', '우산을 써요', ['잠을 자요', '달려요'], '☂️'],
+  ['목이 말라서 ___', '물을 마셔요', ['책을 읽어요', '뛰어요'], '💧'],
+  ['잠이 와서 ___', '이불을 덮어요', ['밥을 먹어요', '달려요'], '🛏️'],
+  ['신발을 ___', '신어요', ['마셔요', '읽어요'], '👟'],
+  ['책을 ___', '읽어요', ['신어요', '먹어요'], '📖']
+];
+
+function hSyllable(cho, jungIdx) {
+  return String.fromCharCode(0xAC00 + (cho * 21 + jungIdx) * 28);
+}
+
+/* 기초: 자음+모음 → 글자 */
+function hangulJoinQ(L) {
+  var letter = String(L.g);
+  var isVowel = /^[ㅏ-ㅣ]/.test(letter);
+  var cho = isVowel ? 'ㅇ' : letter;
+  var choIdx = HANGUL_CHO[cho];
+  if (choIdx === undefined) choIdx = 11;
+  var j = curPick(HANGUL_JUNG);
+  var answer = hSyllable(choIdx, j[1]);
+  var pool = curShuffle(HANGUL_JUNG.filter(function (v) { return v[0] !== j[0]; })).slice(0, 2)
+    .map(function (v) { return hSyllable(choIdx, v[1]); });
+  return {
+    type: '글자 만들기', art: cho + ' + ' + j[0] + ' = ?',
+    q: "'" + cho + "'" + josaSuffix(cho, '과', '와') + " '" + j[0] + "'" + josaSuffix(j[0], '이', '가') + ' 만나면 어떤 글자가 될까요?',
+    opts: curShuffle([answer].concat(pool)), a: answer
+  };
+}
+
+/* 기초·발전: 두 글자 낱말 읽기 (그림 고르기) */
+function hangulWordReadQ(L, others) {
+  var list = (L.words || []).filter(function (w) { return String(w[0]).length >= 2; });
+  if (!list.length) list = L.words || [];
+  var w = curPick(list);
+  var pool = [];
+  others.forEach(function (o) {
+    var ws = (o.words || []).filter(function (x) { return x[1] !== w[1] && String(x[0]).length >= 2; });
+    if (ws.length) pool.push(curPick(ws)[1]);
+  });
+  var seenPic = {};
+  seenPic[w[1]] = 1;
+  pool = curShuffle(pool).filter(function (p) {
+    if (!p || seenPic[p]) return false;
+    seenPic[p] = 1;
+    return true;
+  }).slice(0, 2);
+  var extras = curShuffle(['🍎', '🐰', '🚗', '⭐', '🎈']).filter(function (p) { return !seenPic[p]; });
+  while (pool.length < 2 && extras.length) { var ex = extras.shift(); seenPic[ex] = 1; pool.push(ex); }
+  return {
+    type: '낱말 읽기', art: String(w[0]),
+    q: "'" + w[0] + "'" + josaSuffix(w[0], '은', '는') + ' 무엇일까요?',
+    opts: curShuffle([w[1]].concat(pool)), a: w[1], say: w[0]
+  };
+}
+
+/* 발전: 받침 있는 낱말 · 쌍자음/이중모음 이름 */
+function hangulFinalQ(L) {
+  if (curRnd(3) === 0) {
+    var d = curPick(HANGUL_DOUBLE);
+    var dPool = curShuffle(HANGUL_DOUBLE.filter(function (x) { return x[0] !== d[0]; }))
+      .slice(0, 2).map(function (x) { return x[1]; });
+    return {
+      type: '쌍자음·이중모음', art: d[0],
+      q: "'" + d[0] + "'의 이름은 무엇일까요?", 
+      opts: threeOpts(d[1], dPool), a: d[1]
+    };
+  }
+  var w = curPick(HANGUL_FINAL_WORDS);
+  var code = w.charCodeAt(w.length - 1);
+  var jong = (code - 0xAC00) % 28;
+  var answer = HANGUL_JONG[jong] || 'ㄴ';
+  var pool = curShuffle(['ㄱ', 'ㄴ', 'ㄷ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅅ', 'ㅇ', 'ㅈ', 'ㅊ', 'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ']
+    .filter(function (x) { return x !== answer; })).slice(0, 2);
+  return {
+    type: '받침 찾기', art: w,
+    q: "'" + w + "'의 받침 글자는 무엇일까요?",
+    opts: threeOpts(answer, pool), a: answer, say: w
+  };
+}
+
+/* 발전: 짧은 문장 빈칸 */
+function hangulSentenceQ() {
+  var p = curPick(HANGUL_SENTENCES);
+  return {
+    type: '문장 빈칸', art: p[3], q: "'" + p[0] + "' 빈칸에 알맞은 말은 무엇일까요?",
+    opts: curShuffle([p[1]].concat(p[2])), a: p[1]
+  };
+}
+
 function hangulQuestions(i, lv) {
   lv = lv || 0;
   var L = HANGUL_LETTERS[i];
@@ -2739,12 +3052,14 @@ function hangulQuestions(i, lv) {
   var firstQ = lv === 0
     ? { type: '같은 글자 찾기', art: '🔎', q: "'" + L.g + "' " + josa(L.name, '과', '와') + ' 똑같은 글자는 무엇일까요?', opts: curShuffle([L.g, d1.g, d2.g]), a: L.g }
     : { type: '글자 이름', art: '🔤', q: "'" + L.g + "'의 이름은 무엇일까요?", opts: threeOpts(L.name, [d1.name, d2.name, d3.name]), a: L.name };
-  return [
-    firstQ,
-    { type: vowel ? '모음 찾기' : '첫소리 찾기', art: w0[1], q: "'" + w0[0] + "'" + (vowel ? '에 들어 있는 모음은 무엇일까요?' : '의 첫소리는 무엇일까요?'), opts: threeOpts(L.g, [d1.g, d2.g, d3.g]), a: L.g, say: w0[0] },
-    { type: '낱말 찾기', art: '🔎', q: "'" + L.g + "'" + (vowel ? '가 들어 있는 낱말은 무엇일까요?' : '으로 시작하는 낱말은 무엇일까요?'), opts: threeOpts(w1[0], [safeWord(d1, 0), safeWord(d2, 1), safeWord(d3, 0)]), a: w1[0] },
-    { type: '따라 말하기', art: w2[1], q: L.name + '! ' + w2[0] + '의 ' + L.g + '. 따라 말해 봐요!', opts: threeOpts(w2[0], [safeWord(d1, 1), safeWord(d2, 2), safeWord(d3, 2)]), a: w2[0], say: w2[0] }
-  ];
+  var qFirstSound = { type: vowel ? '모음 찾기' : '첫소리 찾기', art: w0[1], q: "'" + w0[0] + "'" + (vowel ? '에 들어 있는 모음은 무엇일까요?' : '의 첫소리는 무엇일까요?'), opts: threeOpts(L.g, [d1.g, d2.g, d3.g]), a: L.g, say: w0[0] };
+  var qWordFind = { type: '낱말 찾기', art: '🔎', q: "'" + L.g + "'" + (vowel ? '가 들어 있는 낱말은 무엇일까요?' : '으로 시작하는 낱말은 무엇일까요?'), opts: threeOpts(w1[0], [safeWord(d1, 0), safeWord(d2, 1), safeWord(d3, 0)]), a: w1[0] };
+  var qSay = { type: '따라 말하기', art: w2[1], q: L.name + '! ' + w2[0] + '의 ' + L.g + '. 따라 말해 봐요!', opts: threeOpts(w2[0], [safeWord(d1, 1), safeWord(d2, 2), safeWord(d3, 2)]), a: w2[0], say: w2[0] };
+  /* 기초(5~6세): 글자 조합과 쉬운 두 글자 낱말 */
+  if (lv === 1) return [hangulJoinQ(L), firstQ, hangulWordReadQ(L, others), qSay];
+  /* 발전(7세+): 받침·쌍자음/이중모음, 문장 빈칸, 낱말 읽기 */
+  if (lv === 2) return [hangulFinalQ(L), hangulSentenceQ(), hangulWordReadQ(L, others), qSay];
+  return [firstQ, qFirstSound, qWordFind, qSay];
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -2858,13 +3173,13 @@ function qSeqNext(max) {
 function qTwoDigit(lv) {
   var n = 10 + curRnd(10 + lvNum(lv) * 25);
   var t = Math.floor(n / 10), o = n % 10;
-  return { type: '십과 낱개', art: String(n), q: n + '은 십 몇 개와 낱개 몇 개일까요?', opts: curShuffle([t + '개와 ' + o + '개', (t + 1) + '개와 ' + o + '개', t + '개와 ' + (o + 1) + '개']), a: t + '개와 ' + o + '개' };
+  return { type: '십과 낱개', art: String(n), q: n + sinoJosa(n, '은', '는') + ' 십 몇 개와 낱개 몇 개일까요?', opts: curShuffle([t + '개와 ' + o + '개', (t + 1) + '개와 ' + o + '개', t + '개와 ' + (o + 1) + '개']), a: t + '개와 ' + o + '개' };
 }
 function qTens(lv) {
   var n = 10 + curRnd(10 + lvNum(lv) * 40);
   var t = Math.floor(n / 10), o = n % 10;
   var right = t + '개와 ' + o + '개';
-  return { type: '묶어 세기', art: '🟪×10 + 🟨', q: n + '은 십 원짜리 몇 개와 낱개 몇 개일까요?', opts: threeOpts(right, [t + '개와 ' + ((o + 2) % 10) + '개', (t + 1) + '개와 ' + o + '개', t + '개와 ' + ((o + 1) % 10) + '개']), a: right };
+  return { type: '묶어 세기', art: '🟪×10 + 🟨', q: n + sinoJosa(n, '은', '는') + ' 십 원짜리 몇 개와 낱개 몇 개일까요?', opts: threeOpts(right, [t + '개와 ' + ((o + 2) % 10) + '개', (t + 1) + '개와 ' + o + '개', t + '개와 ' + ((o + 1) % 10) + '개']), a: right };
 }
 function qCarry(lv) {
   var a = 5 + curRnd(5), b = 2 + curRnd(8);
@@ -2942,46 +3257,61 @@ function qColorPick() {
 }
 
 var MATH_LESSONS = [
-  /* 1 */ { titles: ['1~3 수 세기', '1~10 수 세기', '1~50 수 세기'], group: '수 세기',
+  /* 1 */ { titles: ['1~3 수 세기', '1~10 수 세기', '십 묶음으로 세기'], group: '수 세기',
     make: function (lv) {
       return fourQ(function () {
         if (lv === 0) return qCount(1, 3, curPick(['🍎', '⭐', '🎈', '🐟', '🌸', '🚗']));
         if (lv === 1) return qCount(3, 10, curPick(['🧁', '🚗', '🐥', '🌸']));
-        return qCount(10, 50, curPick(['🍇', '⚽', '🐞', '🍪']));
+        /* 발전: 수십 개를 하나씩 늘어놓지 않고 십 묶음 + 낱개로 센다 */
+        return curRnd(2) ? qTens(2) : qTwoDigit(2);
       });
     } },
-  /* 2 */ { titles: ['1~5 수 세기', '1~20 수 세기', '수 이름 (1~20)'], group: '수 세기',
+  /* 2 */ { titles: ['1~5 수 세기', '1~20 수 세기', '두 자리 수'], group: '수 세기',
     make: function (lv) {
       return fourQ(function () {
         if (lv === 0) return qCount(2, 5, curPick(['🍌', '🐥', '🚌', '🍓', '🧸', '🍪']));
         if (lv === 1) return qCount(5, 20, curPick(['🍇', '🐞', '🍪', '🎁']));
-        return qNumName(20);
+        return qTwoDigit(2);
       });
     } },
-  /* 3 */ { titles: ['1~10 수 세기', '수 이름 (1~10)', '큰 수·작은 수 (1~50)'], group: '수 세기',
+  /* 3 */ { titles: ['1~10 수 세기', '수 이름 (1~10)', '큰 수·작은 수 (1~20)'], group: '수 세기',
     make: function (lv) {
       return fourQ(function () {
         if (lv === 0) return qCount(4, 10, curPick(['🐟', '🌸', '🧁', '🚗', '🍎', '🎈']));
         if (lv === 1) return qNumName(10);
-        return qCompare(50);
+        return qCompare(20);
       });
     } },
   /* 4 */ { titles: ['같은 수 찾기', '같은 수 찾기', '같은 수 찾기'], group: '수 알기',
     make: function (lv) { return fourQ(function () { return qSameCount(lv === 0 ? 4 : 5); }); } },
   /* 5 */ { titles: ['많다·적다', '많다·적다', '많다·적다'], group: '비교',
     make: function (lv) { return fourQ(function () { return qMany(lv === 0 ? 4 : lv === 1 ? 6 : 8); }); } },
-  /* 6 */ { titles: ['큰 수·작은 수 (1~5)', '큰 수·작은 수 (1~20)', '큰 수·작은 수 (1~50)'], group: '비교',
+  /* 6 */ { titles: ['큰 수·작은 수 (1~5)', '큰 수·작은 수 (1~20)', '큰 수·작은 수 (20~50)'], group: '비교',
     make: function (lv) { return fourQ(function () { return qCompare(lv === 0 ? 5 : lv === 1 ? 20 : 50); }); } },
   /* 7 */ { titles: ['순서 익히기', '순서 익히기', '순서 이어 가기'], group: '순서',
     make: function (lv) { return fourQ(function () { return qOrder(lv); }); } },
-  /* 8 */ { titles: ['모으기 (5까지)', '모으기 (10까지)', '모으기 (20까지)'], group: '모으기',
-    make: function (lv) { return fourQ(function () { return qAdd(lv === 0 ? 5 : lv === 1 ? 10 : 20); }); } },
-  /* 9 */ { titles: ['가르기 (5까지)', '가르기 (10까지)', '가르기 (20까지)'], group: '가르기',
-    make: function (lv) { return fourQ(function () { return qSplit(lv === 0 ? 5 : lv === 1 ? 10 : 20); }); } },
-  /* 10 */ { titles: ['하나 더', '10 만들기', '10 만들기'], group: '수 놀이',
+  /* 8 */ { titles: ['모으기 (5까지)', '모으기 (10까지)', '받아올림 덧셈 (20까지)'], group: '모으기',
     make: function (lv) {
       return fourQ(function () {
-        return lv === 0 ? qOneMore(6) : qMakeTen();
+        if (lv === 0) return qAdd(5);
+        if (lv === 1) return qAdd(10);
+        return qCarry(2);
+      });
+    } },
+  /* 9 */ { titles: ['가르기 (5까지)', '가르기 (10까지)', '받아내림 뺄셈 (20까지)'], group: '가르기',
+    make: function (lv) {
+      return fourQ(function () {
+        if (lv === 0) return qSplit(5);
+        if (lv === 1) return qSplit(10);
+        return qBorrow(2);
+      });
+    } },
+  /* 10 */ { titles: ['하나 더', '10 만들기', '10 만들기 · 문장제'], group: '수 놀이',
+    make: function (lv) {
+      return fourQ(function () {
+        if (lv === 0) return qOneMore(6);
+        if (lv === 1) return qMakeTen();
+        return curRnd(2) ? qMakeTen() : qStory(2);
       });
     } },
   /* 11 */ { titles: ['하나 빼기', '덧셈 (10까지)', '덧셈 (20까지)'], group: '셈',
@@ -3202,19 +3532,82 @@ function qNumberWord(bank) {
   return { type: '숫자 영어', art: w[1], q: '숫자 ' + w[1] + sinoJosa(Number(w[1]) || 0, '을', '를') + ' 영어로 무엇이라고 할까요?', opts: curShuffle([w[0]].concat(pool)), a: w[0], say: w[1] };
 }
 
+
+/* 발전(7세+): 스펠링 빈칸 · 짧은 회화 문장 */
+function qSpellBlank(bank) {
+  var w = curPick(bank);
+  var ascii = [String(w[1]), String(w[0])].filter(function (x) { return /^[A-Za-z][A-Za-z ]*$/.test(x); });
+  var word = ascii.length ? ascii[0] : String(w[0]);
+  var pic = (Array.isArray(w) && w.length) ? w[w.length - 1] : '';
+  var pos = [];
+  for (var i = 0; i < word.length; i++) if (/[A-Za-z]/.test(word.charAt(i))) pos.push(i);
+  var at = pos.length > 2 ? pos[1 + curRnd(pos.length - 2)] : pos[0];
+  var answer = word.charAt(at).toUpperCase();
+  var shown = word.slice(0, at) + ' _ ' + word.slice(at + 1);
+  var pool = curShuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').filter(function (c) { return c !== answer; })).slice(0, 2);
+  return {
+    type: '스펠링 빈칸', art: (pic && String(pic).length <= 4 ? String(pic) : '🔤'),
+    q: "'" + shown.trim() + "' 빈칸에 들어갈 글자는 무엇일까요?",
+    opts: curShuffle([answer].concat(pool)), a: answer, say: word
+  };
+}
+function qConversation() {
+  var p = curPick([
+    ['How are you?', ['I am fine, thank you.', 'I am seven.', 'It is a cat.'], 'I am fine, thank you.'],
+    ['What is your name?', ['My name is Yumin.', 'I like apples.', 'It is sunny.'], 'My name is Yumin.'],
+    ['How old are you?', ['I am four years old.', 'I am hungry.', 'It is a book.'], 'I am four years old.'],
+    ['Do you like milk?', ['Yes, I do.', 'Yes, it is.', 'No, I am.'], 'Yes, I do.'],
+    ['Where is my cat?', ['It is under the chair.', 'I like cats.', 'It is a cat.'], 'It is under the chair.'],
+    ['I like apples.', ['I like apples, too.', 'I am apples.', 'Where is apples?'], 'I like apples, too.']
+  ]);
+  return {
+    type: '영어 대화', art: '💬',
+    q: "'" + p[0] + "'에 알맞은 대답은 무엇일까요?",
+    opts: curShuffle(p[1]), a: p[2], say: p[0]
+  };
+}
+function qLikeBlank() {
+  var w = curPick(EN_FOOD.concat(EN_ANIMAL));
+  var pool = curShuffle(EN_FOOD.concat(EN_ANIMAL).filter(function (x) { return x[0] !== w[0]; }))
+    .slice(0, 2).map(function (x) { return x[0]; });
+  return {
+    type: '문장 빈칸', art: '💛 I like ___',
+    q: "'나는 " + w[1] + josaSuffix(w[1], '을', '를') + " 좋아해요'가 되려면 빈칸에 무엇이 들어갈까요?",
+    opts: curShuffle([w[0]].concat(pool)), a: w[0], say: 'I like ' + w[0]
+  };
+}
+
 var EN_LESSONS = [
   /* 1 A~D */ { titles: ['A~D 알파벳', 'A~D 알파벳', 'A~D 알파벳'], group: '알파벳', match: ['apple', 'bear', 'cat', 'dog'],
-    make: function (lv) { var bank = alphaBank('ABCD'); return fourQ(function () { return lv === 2 && curRnd(2) ? qLetterUpper(bank) : qFirstLetter(bank); }); } },
+    make: function (lv) { var bank = alphaBank('ABCD'); return fourQ(function () {
+      if (lv === 2) return curRnd(2) ? qLetterUpper(bank) : qSpellBlank(bank);
+      return qFirstLetter(bank);
+    }); } },
   /* 2 E~H */ { titles: ['E~H 알파벳', 'E~H 알파벳', 'E~H 알파벳'], group: '알파벳', match: ['elephant', 'fish', 'grape', 'hat'],
-    make: function (lv) { var bank = alphaBank('EFGH'); return fourQ(function () { return lv === 2 && curRnd(2) ? qLetterUpper(bank) : qFirstLetter(bank); }); } },
+    make: function (lv) { var bank = alphaBank('EFGH'); return fourQ(function () {
+      if (lv === 2) return curRnd(2) ? qLetterUpper(bank) : qSpellBlank(bank);
+      return qFirstLetter(bank);
+    }); } },
   /* 3 I~L */ { titles: ['I~L 알파벳', 'I~L 알파벳', 'I~L 알파벳'], group: '알파벳', match: ['icecream', 'key', 'lion', 'moon'],
-    make: function (lv) { var bank = alphaBank('IJKL'); return fourQ(function () { return lv === 2 && curRnd(2) ? qLetterUpper(bank) : qFirstLetter(bank); }); } },
+    make: function (lv) { var bank = alphaBank('IJKL'); return fourQ(function () {
+      if (lv === 2) return curRnd(2) ? qLetterUpper(bank) : qSpellBlank(bank);
+      return qFirstLetter(bank);
+    }); } },
   /* 4 M~P */ { titles: ['M~P 알파벳', 'M~P 알파벳', 'M~P 알파벳'], group: '알파벳', match: ['moon', 'star', 'orange', 'pig'],
-    make: function (lv) { var bank = alphaBank('MNOP'); return fourQ(function () { return lv === 2 && curRnd(2) ? qLetterUpper(bank) : qFirstLetter(bank); }); } },
+    make: function (lv) { var bank = alphaBank('MNOP'); return fourQ(function () {
+      if (lv === 2) return curRnd(2) ? qLetterUpper(bank) : qSpellBlank(bank);
+      return qFirstLetter(bank);
+    }); } },
   /* 5 Q~T */ { titles: ['Q~T 알파벳', 'Q~T 알파벳', 'Q~T 알파벳'], group: '알파벳', match: ['rabbit', 'sun', 'tree', 'umbrella'],
-    make: function (lv) { var bank = alphaBank('QRST'); return fourQ(function () { return lv === 2 && curRnd(2) ? qLetterUpper(bank) : qFirstLetter(bank); }); } },
+    make: function (lv) { var bank = alphaBank('QRST'); return fourQ(function () {
+      if (lv === 2) return curRnd(2) ? qLetterUpper(bank) : qSpellBlank(bank);
+      return qFirstLetter(bank);
+    }); } },
   /* 6 U~Z */ { titles: ['U~Z 알파벳', 'U~Z 알파벳', 'U~Z 알파벳'], group: '알파벳', match: ['umbrella', 'watermelon', 'zebra', 'star'],
-    make: function (lv) { var bank = alphaBank('UVWXYZ'); return fourQ(function () { return lv === 2 && curRnd(2) ? qLetterUpper(bank) : qFirstLetter(bank); }); } },
+    make: function (lv) { var bank = alphaBank('UVWXYZ'); return fourQ(function () {
+      if (lv === 2) return curRnd(2) ? qLetterUpper(bank) : qSpellBlank(bank);
+      return qFirstLetter(bank);
+    }); } },
   /* 7 대소문자 */ { titles: ['같은 알파벳 찾기', '대소문자 짝', '대소문자 짝'], group: '글자 놀이', match: ['apple', 'bear', 'cat', 'dog'],
     make: function (lv) {
       return fourQ(function () {
@@ -3230,19 +3623,25 @@ var EN_LESSONS = [
   /* 9 동물 */ { titles: ['동물 단어', '동물 단어', '동물 단어'], group: '낱말', match: ['cat', 'dog', 'bear', 'lion'],
     make: function (lv) {
       return fourQ(function () {
-        return lv === 0 ? qWordEn(EN_ANIMAL) : (curRnd(2) ? qWordEn(EN_ANIMAL) : qWordKo(EN_ANIMAL));
+        if (lv === 0) return qWordEn(EN_ANIMAL);
+        if (lv === 2) return curRnd(2) ? qWordKo(EN_ANIMAL) : qSpellBlank(EN_ANIMAL);
+        return curRnd(2) ? qWordEn(EN_ANIMAL) : qWordKo(EN_ANIMAL);
       });
     } },
   /* 10 과일·음식 */ { titles: ['과일·음식 단어', '과일·음식 단어', '과일·음식 단어'], group: '낱말', match: ['apple', 'banana', 'grape', 'cake'],
     make: function (lv) {
       return fourQ(function () {
-        return lv === 0 ? qWordEn(EN_FOOD) : (curRnd(2) ? qWordEn(EN_FOOD) : qWordKo(EN_FOOD));
+        if (lv === 0) return qWordEn(EN_FOOD);
+        if (lv === 2) return curRnd(2) ? qWordKo(EN_FOOD) : qSpellBlank(EN_FOOD);
+        return curRnd(2) ? qWordEn(EN_FOOD) : qWordKo(EN_FOOD);
       });
     } },
   /* 11 색깔 */ { titles: ['색깔 단어', '색깔 단어', '색깔 단어'], group: '낱말', match: ['color_red', 'color_blue', 'color_yellow', 'color_green'],
     make: function (lv) {
       return fourQ(function () {
-        return lv === 0 ? qColorWord() : (curRnd(2) ? qColorWord() : qWordKo(EN_COLOR));
+        if (lv === 0) return qColorWord();
+        if (lv === 2) return curRnd(2) ? qWordKo(EN_COLOR) : qSpellBlank(EN_COLOR);
+        return curRnd(2) ? qColorWord() : qWordKo(EN_COLOR);
       });
     } },
   /* 12 숫자 1~5 */ { titles: ['숫자 1~5', '숫자 1~5', '숫자 1~5'], group: '낱말', match: ['dots_1', 'dots_2', 'dots_3', 'dots_4'],
@@ -3258,54 +3657,71 @@ var EN_LESSONS = [
   /* 15 */ { titles: ['색깔 낱말 놀이', '파닉스 A~F', '파닉스 A~F'], group: '파닉스', match: ['apple', 'bear', 'cat', 'duck'],
     make: function (lv) {
       return fourQ(function () {
-        return lv === 0 ? qColorWord() : qPhonics(EN_ANIMAL.concat(EN_FOOD));
+        if (lv === 0) return qColorWord();
+        if (lv === 2) return curRnd(2) ? qPhonics(EN_ANIMAL.concat(EN_FOOD)) : qSpellBlank(EN_ANIMAL.concat(EN_FOOD));
+        return qPhonics(EN_ANIMAL.concat(EN_FOOD));
       });
     } },
   /* 16 */ { titles: ['숫자 낱말 놀이', '파닉스 G~L', '파닉스 G~L'], group: '파닉스', match: ['grape', 'hat', 'icecream', 'key'],
     make: function (lv) {
       return fourQ(function () {
-        return lv === 0 ? qNumberWord(EN_NUM_W) : qPhonics(EN_ANIMAL.concat(EN_FOOD));
+        if (lv === 0) return qNumberWord(EN_NUM_W);
+        if (lv === 2) return curRnd(2) ? qPhonics(EN_ANIMAL.concat(EN_FOOD)) : qSpellBlank(EN_ANIMAL.concat(EN_FOOD));
+        return qPhonics(EN_ANIMAL.concat(EN_FOOD));
       });
     } },
   /* 17 */ { titles: ['가족 낱말 놀이', '파닉스 M~S', '파닉스 M~S'], group: '파닉스', match: ['moon', 'orange', 'pig', 'rabbit'],
     make: function (lv) {
       return fourQ(function () {
-        return lv === 0 ? qWordKo(EN_FAMILY) : qPhonics(EN_ANIMAL.concat(EN_FOOD));
+        if (lv === 0) return qWordKo(EN_FAMILY);
+        if (lv === 2) return curRnd(2) ? qPhonics(EN_ANIMAL.concat(EN_FOOD)) : qSpellBlank(EN_ANIMAL.concat(EN_FOOD));
+        return qPhonics(EN_ANIMAL.concat(EN_FOOD));
       });
     } },
   /* 18 */ { titles: ['동물·과일 복습', '파닉스 T~Z', '파닉스 T~Z'], group: '파닉스', match: ['tree', 'sun', 'umbrella', 'zebra'],
     make: function (lv) {
       return fourQ(function () {
-        if (lv !== 0) return qPhonics(EN_ANIMAL.concat(EN_FOOD));
+        if (lv === 2) return curRnd(2) ? qPhonics(EN_ANIMAL.concat(EN_FOOD)) : qSpellBlank(EN_ANIMAL.concat(EN_FOOD));
+        if (lv === 1) return qPhonics(EN_ANIMAL.concat(EN_FOOD));
         return curRnd(2) ? qWordEn(EN_ANIMAL) : qWordEn(EN_FOOD);
       });
     } },
   /* 19 인사말 */ { titles: ['인사말', '인사말', '인사말'], group: '표현', match: ['sun', 'moon', 'star', 'rainbow'],
     make: function (lv) {
-      return fourQ(function () { return qGreeting(lv === 0 ? EN_GREET.slice(0, 4) : EN_GREET); });
+      return fourQ(function () {
+        if (lv === 2) return qConversation();
+        return qGreeting(lv === 0 ? EN_GREET.slice(0, 4) : EN_GREET);
+      });
     } },
   /* 20 기분 */ { titles: ['기분 표현', '기분 표현', '기분 표현'], group: '표현', match: ['sun', 'moon', 'star', 'butterfly'],
-    make: function () { return fourQ(function () { return qWordKo(EN_FEEL); }); } },
+    make: function (lv) {
+      return fourQ(function () { return lv === 2 ? qSentence() : qWordKo(EN_FEEL); });
+    } },
   /* 21 날씨 */ { titles: ['날씨 표현', '날씨 표현', '날씨 표현'], group: '표현', match: ['sun', 'umbrella', 'tree', 'rainbow'],
-    make: function () { return fourQ(function () { return qWordKo(EN_WEATHER); }); } },
+    make: function (lv) {
+      return fourQ(function () { return lv === 2 ? qSentence() : qWordKo(EN_WEATHER); });
+    } },
   /* 22 */ { titles: ['낱말 복습', 'I like ~ 문장', 'I like ~ 문장'], group: '문장', match: ['apple', 'banana', 'cake', 'icecream'],
     make: function (lv) {
       return fourQ(function () {
-        if (lv !== 0) return qSentence();
+        if (lv === 2) return curRnd(2) ? qSentence() : qLikeBlank();
+        if (lv === 1) return qSentence();
         return curRnd(2) ? qWordEn(EN_FOOD) : qWordEn(EN_ANIMAL);
       });
     } },
   /* 23 */ { titles: ['낱말 복습 2', 'Where is ~? 문장', 'Where is ~? 문장'], group: '문장', match: ['cat', 'dog', 'book', 'hat'],
     make: function (lv) {
       return fourQ(function () {
-        if (lv !== 0) return qSentence();
+        if (lv === 2) return curRnd(2) ? qConversation() : qSentence();
+        if (lv === 1) return qSentence();
         return curRnd(2) ? qWordKo(EN_ANIMAL) : qWordKo(EN_FOOD);
       });
     } },
   /* 24 */ { titles: ['영어 낱말 종합', '문장 종합', '문장 종합'], group: '문장', match: ['rocket', 'rainbow', 'sunflower', 'butterfly'],
     make: function (lv) {
       return fourQ(function () {
-        if (lv !== 0) return qSentence();
+        if (lv === 2) return curPick([qSentence, qConversation, qLikeBlank, function () { return qSpellBlank(EN_FOOD.concat(EN_ANIMAL)); }])();
+        if (lv === 1) return qSentence();
         var bag = [qWordEn(EN_ANIMAL), qWordEn(EN_FOOD), qColorWord(), qWordKo(EN_ANIMAL), qWordKo(EN_FEEL)];
         return curPick(bag);
       });
@@ -3664,8 +4080,11 @@ var ART_ORDER = [
 
   var state = {
     name: '유민이',
-    childAge: 0,        // 아이 나이(살) — 처음 시작 화면에서 받는다
-    profileSet: false,  // 처음 시작(이름·나이)을 마쳤는지 — 딱 1번만 묻는다
+    childAge: 0,          // 아이 만 나이(살) — 생년월일에서 자동 계산(생년월일을 모를 때만 직접)
+    childBirthdate: '',   // 생년월일 'YYYY-MM-DD' — 만 나이·개월·연령대를 여기서 계산한다
+    weeklyFocus: null,    // { weekKey:'YYYY-MM-DD'(월요일), subjects:[0,2], manual:bool, t:ms }
+    todayDone: { date: '', subs: {} },   // 오늘 과목별로 마친 학습 수 (추천 카드의 '오늘 완료')
+    profileSet: false,  // 처음 시작(이름·생년월일)을 마쳤는지 — 딱 1번만 묻는다
     age: 0,
     level: 0,
     lessons: {},    // 'level-subject' -> { done:{1:true}, part:{3:2} }
@@ -3691,6 +4110,106 @@ var ART_ORDER = [
     return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
   }
 
+  /* ── 날짜 · 이번 주(월~일) 키 ───────────────────────── */
+  function ymdKey(d) {
+    return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
+  }
+  function parseYmd(str) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(str || ''));
+    if (!m) return null;
+    var y = Number(m[1]), mo = Number(m[2]) - 1, da = Number(m[3]);
+    var d = new Date(y, mo, da);
+    if (d.getFullYear() !== y || d.getMonth() !== mo || d.getDate() !== da) return null;
+    return d;
+  }
+  function weekStart(d) {
+    var x = new Date((d || new Date()).getFullYear(), (d || new Date()).getMonth(), (d || new Date()).getDate());
+    x.setDate(x.getDate() - ((x.getDay() + 6) % 7));   /* 월요일이 한 주의 시작 */
+    return x;
+  }
+  function weekKeyOf(d) { return ymdKey(weekStart(d || new Date())); }
+  function weekIndex(d) {
+    /* 1970-01-05(월)부터 몇 번째 주인지 — 짝/홀 주로 자동 추천을 번갈아 준다 */
+    var ms = weekStart(d || new Date()).getTime() - new Date(1970, 0, 5).getTime();
+    return Math.round(ms / (7 * 86400000));
+  }
+  function weekRangeLabel(key) {
+    var s = parseYmd(key);
+    if (!s) return '';
+    var e = new Date(s.getTime());
+    e.setDate(e.getDate() + 6);
+    return (s.getMonth() + 1) + '월 ' + s.getDate() + '일 ~ ' + (e.getMonth() + 1) + '월 ' + e.getDate() + '일';
+  }
+  function autoFocusSubjects(key) {
+    /* 짝수 주: 한글·영어 / 홀수 주: 수학·그림 — 한 주 동안은 그대로 고정된다 */
+    return (weekIndex(parseYmd(key) || new Date()) % 2 === 0) ? [0, 2] : [1, 3];
+  }
+  function cleanFocusSubjects(list) {
+    var out = [];
+    if (Array.isArray(list)) {
+      for (var i = 0; i < list.length; i++) {
+        var n = Number(list[i]);
+        if (n >= 0 && n < SUBJECTS.length && out.indexOf(n) < 0) out.push(n);
+      }
+    }
+    return out;
+  }
+  /* 이번 주 키가 아니면 그 주의 자동 추천으로 새로 고정한다.
+     보호자가 고른 2과목은 같은 주 안에서는 새로고침·재실행에도 그대로 남는다. */
+  function syncWeeklyFocus() {
+    var key = weekKeyOf(new Date());
+    var wf = state.weeklyFocus;
+    var subs = (wf && wf.weekKey === key) ? cleanFocusSubjects(wf.subjects) : [];
+    if (subs.length !== 2) {
+      state.weeklyFocus = { weekKey: key, subjects: autoFocusSubjects(key), manual: false, t: Date.now() };
+      return state.weeklyFocus;
+    }
+    wf.subjects = subs;
+    if (typeof wf.manual !== 'boolean') wf.manual = false;
+    return wf;
+  }
+  function weeklyFocus() { return syncWeeklyFocus(); }
+  function setWeeklyFocus(subs, manual) {
+    var clean = cleanFocusSubjects(subs);
+    if (clean.length !== 2) return weeklyFocus();
+    state.weeklyFocus = { weekKey: weekKeyOf(new Date()), subjects: clean, manual: !!manual, t: Date.now() };
+    return state.weeklyFocus;
+  }
+  function focusDoneToday(subId) {
+    var t = state.todayDone;
+    if (!t || t.date !== todayStr()) return 0;
+    return Math.max(0, Number(t.subs && t.subs[subId]) || 0);
+  }
+  function noteFocusDone(subId) {
+    var t = state.todayDone;
+    if (!t || t.date !== todayStr() || !t.subs || typeof t.subs !== 'object') t = { date: todayStr(), subs: {} };
+    t.subs[subId] = (Number(t.subs[subId]) || 0) + 1;
+    state.todayDone = t;
+  }
+
+  /* ── 생년월일 → 만 나이 · 개월 · 연령대 ─────────────── */
+  function ageFromBirthdate(str) {
+    var b = parseYmd(str);
+    if (!b) return null;
+    var t = new Date();
+    var months = (t.getFullYear() - b.getFullYear()) * 12 + (t.getMonth() - b.getMonth());
+    if (t.getDate() < b.getDate()) months -= 1;
+    if (months < 0) months = 0;
+    return { years: Math.floor(months / 12), months: months, date: b };
+  }
+  function ageGroupForMonths(months) {
+    if (months >= 84) return 2;    /* 7세 이상 */
+    if (months >= 60) return 1;    /* 5~6세 */
+    return 0;                      /* 3~4세(입문) */
+  }
+  function ageInfo() {
+    var a = ageFromBirthdate(state.childBirthdate);
+    if (a) return { known: true, years: a.years, months: a.months, exact: true, label: '만 ' + a.years + '세 (' + a.months + '개월)' };
+    var y = Number(state.childAge) || 0;
+    if (y > 0) return { known: true, years: y, months: y * 12, exact: false, label: '만 ' + y + '세' };
+    return { known: false, years: 0, months: 0, exact: false, label: '' };
+  }
+
   function saveState() {
     lastChangeAt = Date.now();
     if (!applyingRemote && window.ByeolFamily && typeof window.ByeolFamily.markDirty === 'function') {
@@ -3698,7 +4217,9 @@ var ART_ORDER = [
     }
     try {
       window.localStorage.setItem(CONFIG.storageKey, JSON.stringify({
-        name: state.name, childAge: state.childAge, profileSet: state.profileSet,
+        name: state.name, childAge: state.childAge, childBirthdate: state.childBirthdate,
+        weeklyFocus: state.weeklyFocus, todayDone: state.todayDone,
+        profileSet: state.profileSet,
         age: state.age, level: state.level,
         lessons: state.lessons, preview: state.preview,
         stars: state.stars, used: state.used, placed: state.placed, spent: state.spent, tickets: state.tickets,
@@ -3720,6 +4241,24 @@ var ART_ORDER = [
       if (!s || typeof s !== 'object') return;
       if (typeof s.name === 'string' && s.name.trim()) state.name = s.name.trim();
       if (typeof s.childAge === 'number') state.childAge = Math.max(0, Math.floor(s.childAge));
+      if (typeof s.childBirthdate === 'string' && parseYmd(s.childBirthdate)) state.childBirthdate = s.childBirthdate;
+      if (s.weeklyFocus && typeof s.weeklyFocus === 'object') {
+        var wfs = cleanFocusSubjects(s.weeklyFocus.subjects);
+        if (typeof s.weeklyFocus.weekKey === 'string' && wfs.length === 2) {
+          state.weeklyFocus = {
+            weekKey: s.weeklyFocus.weekKey, subjects: wfs,
+            manual: !!s.weeklyFocus.manual, t: Math.max(0, Number(s.weeklyFocus.t) || 0)
+          };
+        }
+      }
+      if (s.todayDone && typeof s.todayDone === 'object' && s.todayDone.subs && typeof s.todayDone.subs === 'object') {
+        var tds = {};
+        for (var tk in s.todayDone.subs) {
+          if (!Object.prototype.hasOwnProperty.call(s.todayDone.subs, tk)) continue;
+          tds[tk] = Math.max(0, Math.floor(Number(s.todayDone.subs[tk]) || 0));
+        }
+        state.todayDone = { date: typeof s.todayDone.date === 'string' ? s.todayDone.date : '', subs: tds };
+      }
       state.profileSet = !!s.profileSet;
       if (s.age === 0 || s.age === 1 || s.age === 2) state.age = s.age;
       if (s.level === 0 || s.level === 1 || s.level === 2) state.level = s.level;
@@ -3768,6 +4307,45 @@ var ART_ORDER = [
       }
     } catch (e) { /* 저장된 값이 깨졌으면 처음부터 시작합니다 */ }
   }
+
+  /* ── 스마트 팜 리젝션 (펜으로 쓸 때 손바닥·손가락 오작동 막기) ──
+     펜(pointerType==='pen')이 닿아 있는 동안, 그리고 마지막 펜 입력에서 450ms 안에
+     들어오는 손가락 터치는 기본 동작과 전파를 막는다. 펜을 쓰지 않을 때의 손가락
+     터치·클릭은 예전과 똑같이 동작한다. */
+  var PEN = { active: false, lastAt: 0, GRACE_MS: 450 };
+  function penShouldBlock(e) {
+    if (!e || e.pointerType !== 'touch') return false;
+    /* 펜이 pointerup 을 못 보내고 사라진 경우에도 손가락을 영영 막지 않는다 */
+    if (PEN.active && (Date.now() - PEN.lastAt) > 5000) PEN.active = false;
+    return PEN.active || (Date.now() - PEN.lastAt) < PEN.GRACE_MS;
+  }
+  function penTrack(e) {
+    if (!e || e.pointerType !== 'pen') return false;
+    PEN.lastAt = Date.now();
+    if (e.type === 'pointerup' || e.type === 'pointercancel') PEN.active = false;
+    else PEN.active = true;
+    return true;
+  }
+  function penGuard(e) {
+    penTrack(e);
+    if (!penShouldBlock(e)) return;
+    try { e.preventDefault(); } catch (err) {}
+    try { e.stopImmediatePropagation(); } catch (err) {}
+    try { e.stopPropagation(); } catch (err) {}
+  }
+  var PEN_EVENTS = ['pointerdown', 'pointermove', 'pointerup', 'pointercancel', 'pointerover'];
+  for (var pe = 0; pe < PEN_EVENTS.length; pe++) {
+    window.addEventListener(PEN_EVENTS[pe], penGuard, { capture: true, passive: false });
+  }
+  /* pointer 이벤트가 없는 옛 WebView 호환: 펜을 쓴 직후의 touchstart/touchmove 만 막는다 */
+  function penTouchGuard(e) {
+    if (!(PEN.active || (Date.now() - PEN.lastAt) < PEN.GRACE_MS)) return;
+    try { e.preventDefault(); } catch (err) {}
+    try { e.stopImmediatePropagation(); } catch (err) {}
+    try { e.stopPropagation(); } catch (err) {}
+  }
+  window.addEventListener('touchstart', penTouchGuard, { capture: true, passive: false });
+  window.addEventListener('touchmove', penTouchGuard, { capture: true, passive: false });
 
   /* ── 도우미 ─────────────────────────────────────────── */
   function $(id) { return document.getElementById(id); }
@@ -4026,12 +4604,20 @@ var ART_ORDER = [
     return false;
   }
 
-  function speak(text, lang) {
+  function speak(text, lang, onEnd) {
     var t = cleanText(text);
-    if (!t) return;
+    var done = false;
+    var fireEnd = function () {
+      if (done) return;
+      done = true;
+      if (typeof onEnd === 'function') { try { onEnd(Date.now()); } catch (e) {} }
+    };
+    if (!t) { setTimeout(fireEnd, 0); return; }
     lang = lang || 'ko-KR';
     var isEn = lang.indexOf('en') === 0;
     var seq = ++speakSeq;
+    /* 앱(네이티브 TTS)은 onend 를 주지 않으므로 글자 수로 끝난 시각을 어림한다 */
+    var guessMs = Math.max(1500, t.length * 140);
     if (speakTimer) clearTimeout(speakTimer);
     /* 앱: 이 언어를 읽을 목소리가 없으면 네이티브 TTS 로 말한다 (무음 방지) */
     if (appBridge() && !voicesFor(lang)) {
@@ -4041,11 +4627,13 @@ var ART_ORDER = [
         if (seq !== speakSeq) return;
         bridgeSpeak(t, isEn ? 'en-US' : 'ko-KR');
       }, 0);
+      setTimeout(function () { if (seq === speakSeq) fireEnd(); }, guessMs);
       return;
     }
     if (!window.speechSynthesis || typeof window.SpeechSynthesisUtterance !== 'function') {
       /* Web Speech 자체가 없는 WebView 라도 다리가 있으면 그것으로 말한다 */
       bridgeSpeak(t, isEn ? 'en-US' : 'ko-KR');
+      setTimeout(function () { if (seq === speakSeq) fireEnd(); }, guessMs);
       return;
     }
     try {
@@ -4066,6 +4654,8 @@ var ART_ORDER = [
           if (!v) { pickVoices(); v = isEn ? VOICES.en : VOICES.ko; }
           if (v) u.voice = v;
           u.onstart = function () { if (u && u._started === undefined) u._started = true; };
+          u.onend = function () { fireEnd(); };
+          u.onerror = function () { fireEnd(); };
           window.speechSynthesis.speak(u);
           window.speechSynthesis.resume();
         } catch (e) { return; }
@@ -4223,21 +4813,47 @@ var ART_ORDER = [
     applyKidNames();
   }
 
+  /* 이번 주 집중 2과목을 나란히 — 누르면 그 과목의 지금 강이 바로 열린다 */
   function renderHero() {
-    var idx = recommendedSubject();
-    var sub = SUBJECTS[idx];
-    var no = currentLesson(sub.id);
+    var wf = weeklyFocus();
+    var names = wf.subjects.map(function (i) { return SUBJECTS[i].title; });
     $('heroTitle').textContent = '안녕, ' + vocative(state.name) + '!';
-    $('heroSub').textContent = '오늘은 ' + sub.title + ' ' + no + '강에서 ' + sub.hero;
-    $('heroStart').textContent = '▸ ' + sub.title.replace(' 별', '') + ' 이어서 하기';
-    $('heroStart').setAttribute('data-sub', idx);
+    $('heroSub').textContent = '이번 주는 ' + names[0] + ' · ' + names[1] + '을 집중해서 만나 볼까?';
+    if ($('heroWeek')) {
+      $('heroWeek').textContent = '이번 주 ' + weekRangeLabel(wf.weekKey) + (wf.manual ? ' · 보호자가 골랐어요' : '');
+    }
+    var picks = $('heroPicks');
+    if (picks) {
+      picks.innerHTML = '';
+      wf.subjects.forEach(function (idx) {
+        var sub = SUBJECTS[idx];
+        var no = currentLesson(sub.id);
+        var done = focusDoneToday(sub.id) > 0;
+        var card = make('button', 'hero-pick ' + sub.cls + (done ? ' done' : ''));
+        card.type = 'button';
+        card.setAttribute('data-sub', idx);
+        card.setAttribute('data-focus', sub.id);
+        card.setAttribute('aria-label', sub.title + ' ' + no + '강 ' + (done ? '오늘 완료' : '시작하기'));
+        var top = make('span', 'hp-top');
+        var icon = make('span', 'hp-icon', sub.emoji);
+        icon.setAttribute('aria-hidden', 'true');
+        top.appendChild(icon);
+        top.appendChild(make('span', 'hp-state' + (done ? ' done' : ''), done ? '✓ 오늘 완료' : '▸ 시작하기'));
+        card.appendChild(top);
+        card.appendChild(make('b', 'hp-title', sub.title));
+        card.appendChild(make('small', 'hp-meta', LEVELS[state.level].short + ' · ' + no + '강'));
+        card.addEventListener('click', function () { openSubject(idx); });
+        picks.appendChild(card);
+      });
+    }
     $('heroBoard').textContent = state.placed + ' / ' + CONFIG.stickerGoal + '칸';
     $('heroBar').style.width = (state.placed / CONFIG.stickerGoal * 100) + '%';
   }
 
   function renderProfile() {
     $('profileName').textContent = state.name;
-    $('profileAge').textContent = (state.childAge ? state.childAge + '세 · ' : '') + AGES[state.age].name;
+    var ai = ageInfo();
+    $('profileAge').textContent = (ai.known ? ai.label + ' · ' : '') + AGES[state.age].name;
     $('profileLevel').textContent = LEVELS[state.level].chip;
   }
 
@@ -4493,7 +5109,7 @@ var ART_ORDER = [
       $('launchMsg').textContent = slot.title + ' 칸에 열 앱을 연결해 주세요. 보호자 탭에서 고를 수 있어요.';
       var go = make('button', 'btn primary', '보호자 탭에서 연결하기');
       go.type = 'button';
-      go.addEventListener('click', function () { closeLaunchModal(); enterGuardian(null, null); });
+      go.addEventListener('click', function () { closeLaunchModal(); jumpGuardian('device', slot.key); });
       acts.appendChild(go);
     }
     box.hidden = false;
@@ -4690,7 +5306,8 @@ var ART_ORDER = [
 
   function rewardChannelPicks() {
     var idx = (state.age === 1 || state.age === 2) ? state.age : 0;
-    var label = (state.childAge ? state.childAge + '살' : AGES[idx].name);
+    var ai = ageInfo();
+    var label = (ai.known ? ai.years + '살' : AGES[idx].name);
     return { ageLabel: label, list: REWARD_CHANNELS[idx] };
   }
 
@@ -4883,167 +5500,111 @@ var ART_ORDER = [
     toast(slot.title + ' 칸에 ' + app.label + particleEul(app.label) + ' 연결했어요.');
   }
 
-  function buildAppPicker(slot, cfg) {
-    var box = make('details', 'la-pick');
+  /* ── 보호자: 런처 앱 연결 ───────────────────────────── */
+  /* 슬롯 카드에는 지금 연결한 앱만 보여 주고, 실제 선택은 '앱 고르기'
+     모달에서 아이콘 그리드로 한다. (직접 입력·추천 앱 목록은 두지 않는다) */
+  var pickSlotKey = '';
 
-    var head = make('summary', 'la-pick-head');
-    head.appendChild(make('span', 'la-pick-title', '설치된 앱에서 고르기'));
-    var count = make('span', 'la-pick-count');
-    head.appendChild(count);
-    box.appendChild(head);
-
-    var body = make('div', 'la-pick-body');
-
-    var search = make('input', 'la-search');
-    search.type = 'search';
-    search.placeholder = '앱 이름으로 찾기 (예: 한글)';
-    search.value = adminQuery[slot.key] || '';
-    search.setAttribute('aria-label', slot.title + ' 칸에 연결할 앱 검색');
-    body.appendChild(search);
-
-    var list = make('div', 'la-applist');
-    list.setAttribute('role', 'listbox');
-    list.setAttribute('aria-label', slot.title + ' 칸에 연결할 앱 목록');
-    body.appendChild(list);
-
-    var empty = make('p', 'la-empty');
-    empty.hidden = true;
-    body.appendChild(empty);
-
-    var foot = make('div', 'la-pick-foot');
-    var reload = make('button', 'la-reload', '↻ 새로 불러오기');
-    reload.type = 'button';
-    foot.appendChild(reload);
-    body.appendChild(foot);
-    box.appendChild(body);
-
-    function paint() {
-      var apps = loadInstalledApps(false);
-      count.textContent = apps.length ? '앱 ' + apps.length + '개' : '';
-      adminQuery[slot.key] = search.value;
-      var q = search.value.trim().toLowerCase();
-      list.innerHTML = '';
-      var shown = 0;
-      apps.forEach(function (app) {
-        if (q && app.label.toLowerCase().indexOf(q) < 0 && app.pkg.toLowerCase().indexOf(q) < 0) return;
-        var on = cfg.pkg === app.pkg;
-        var opt = make('button', 'la-app-option' + (on ? ' on' : ''));
-        opt.type = 'button';
-        opt.setAttribute('role', 'option');
-        opt.setAttribute('data-pkg', app.pkg);
-        opt.setAttribute('data-label', app.label);
-        opt.setAttribute('aria-selected', on ? 'true' : 'false');
-        opt.appendChild(make('b', null, app.label));
-        opt.appendChild(make('small', null, app.pkg));
-        opt.addEventListener('click', function () { connectLaunchApp(slot, app); });
-        list.appendChild(opt);
-        shown++;
-      });
-      list.hidden = shown === 0;
-      empty.hidden = shown !== 0;
-      if (shown === 0) {
-        var typed = search.value.trim();
-        empty.textContent = installedErr || ('"' + typed + '" 가 들어간 앱이 없어요.');
-      }
-    }
-
-    search.addEventListener('input', paint);
-    reload.addEventListener('click', function () {
-      loadInstalledApps(true);
-      paint();
-      toast('설치된 앱 목록을 새로 불러왔어요.');
-    });
-    box.addEventListener('toggle', function () { if (box.open) paint(); });
-
-    paint();
-    return box;
+  function slotByKey(key) {
+    var all = LAUNCH_SLOTS.concat([REWARD_SLOT]);
+    for (var i = 0; i < all.length; i++) if (all[i].key === key) return all[i];
+    return LAUNCH_SLOTS[0];
   }
 
-  /* ── 보호자: 런처 앱 연결 ───────────────────────────── */
+  function pickerApps() {
+    var apps = loadInstalledApps(false);
+    if (apps && apps.length) return apps;
+    /* 웹 미리보기(브리지 없음)에서는 예시 앱을 아이콘으로 보여 준다 */
+    return DRAWER_SAMPLES.map(function (a) { return { pkg: a.pkg, label: a.label, emoji: a.emoji }; });
+  }
+
+  function renderAppPicker() {
+    var grid = $('pickGrid');
+    if (!grid) return;
+    var slot = slotByKey(pickSlotKey);
+    var cfg = slotConfig(pickSlotKey);
+    var bridge = !!bridgeInstalledApps();
+    if ($('pickTitle')) $('pickTitle').textContent = slot.title + ' 칸에 연결할 앱';
+    if ($('pickSub')) {
+      $('pickSub').textContent = bridge
+        ? '태블릿에 설치된 앱이에요. 한 번 누르면 바로 연결돼요.'
+        : '지금은 웹 미리보기라 예시 앱으로 보여요. 태블릿 앱에서는 설치된 앱 전체가 아이콘으로 나와요.';
+    }
+    var q = String($('pickSearch') ? $('pickSearch').value : '').trim().toLowerCase();
+    var apps = pickerApps().filter(function (a) {
+      if (!q) return true;
+      return String(a.label).toLowerCase().indexOf(q) >= 0 || String(a.pkg || '').toLowerCase().indexOf(q) >= 0;
+    });
+    grid.innerHTML = '';
+    apps.forEach(function (app) {
+      var on = cfg.pkg === app.pkg;
+      var tile = make('button', 'pk-app' + (on ? ' on' : ''));
+      tile.type = 'button';
+      tile.setAttribute('role', 'option');
+      tile.setAttribute('aria-selected', on ? 'true' : 'false');
+      tile.setAttribute('data-pkg', app.pkg);
+      tile.setAttribute('data-label', app.label);
+      tile.setAttribute('aria-label', app.label + (on ? ' 연결됨' : ' 연결하기'));
+      var hue = drawerHue(String(app.label));
+      var ic = make('span', 'pk-icon', app.emoji || String(app.label).charAt(0));
+      if (!app.emoji) { ic.style.background = 'hsl(' + hue + ' 82% 96%)'; ic.style.color = 'hsl(' + hue + ' 42% 38%)'; }
+      if (bridge) fillAppIcon(ic, app.pkg, '16px');
+      tile.appendChild(ic);
+      tile.appendChild(make('b', null, app.label));
+      if (on) tile.appendChild(make('span', 'pk-on', '연결됨'));
+      tile.addEventListener('click', function () {
+        connectLaunchApp(slot, app);
+        closeAppPicker();
+      });
+      grid.appendChild(tile);
+    });
+    if (!apps.length) grid.appendChild(make('p', 'pk-empty', installedErr || '그 이름의 앱을 찾지 못했어요.'));
+  }
+
+  function openAppPicker(key) {
+    pickSlotKey = key;
+    if ($('pickSearch')) $('pickSearch').value = '';
+    renderAppPicker();
+    $('appPickModal').hidden = false;
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeAppPicker() {
+    var m = $('appPickModal');
+    if (m) m.hidden = true;
+    document.body.style.overflow = '';
+    renderLaunchAdmin();
+  }
+
   function renderLaunchAdmin() {
     var box = $('launchAdmin');
     if (!box) return;
     box.innerHTML = '';
-    var bridge = bridgeInstalledApps();
-    if (bridge) loadInstalledApps(false);
+    var connectedCount = 0;
     LAUNCH_SLOTS.concat([REWARD_SLOT]).forEach(function (slot) {
       var cfg = slotConfig(slot.key);
       var connected = !!(cfg.name || '').trim();
+      if (connected) connectedCount++;
       var row = make('div', 'la-row' + (connected ? ' connected' : ''));
+      row.setAttribute('data-la', slot.key);
 
       var head = make('div', 'la-row-head');
       var emo = make('span', 'la-emoji', slot.emoji);
       emo.setAttribute('aria-hidden', 'true');
+      if (connected && cfg.pkg) fillAppIcon(emo, cfg.pkg, '12px');
       head.appendChild(emo);
-      head.appendChild(make('span', 'la-name', slot.title));
-      head.appendChild(make('span', 'la-state', connected ? cfg.name : '미연결'));
+      var text = make('div', 'la-row-text');
+      text.appendChild(make('span', 'la-name', slot.title));
+      text.appendChild(make('span', 'la-state' + (connected ? ' on' : ''), connected ? cfg.name : '아직 연결 안 했어요'));
+      head.appendChild(text);
       row.appendChild(head);
-
-      var presets = make('div', 'la-presets');
-      var fields = make('div', 'la-fields');
-      var nameLab = make('label');
-      nameLab.appendChild(make('span', null, '앱 이름'));
-      var nameInput = make('input');
-      nameInput.type = 'text';
-      nameInput.maxLength = 24;
-      nameInput.value = cfg.name || '';
-      nameInput.placeholder = slot.hint;
-      nameInput.setAttribute('aria-label', slot.title + ' 앱 이름');
-      nameLab.appendChild(nameInput);
-
-      var pkgLab = make('label');
-      pkgLab.appendChild(make('span', null, '패키지명 (안드로이드)'));
-      var pkgInput = make('input');
-      pkgInput.type = 'text';
-      pkgInput.maxLength = 80;
-      pkgInput.value = cfg.pkg || '';
-      pkgInput.placeholder = '예) ' + slot.sample;
-      pkgInput.setAttribute('aria-label', slot.title + ' 패키지명');
-      pkgLab.appendChild(pkgInput);
-
-      LAUNCH_PRESETS.forEach(function (p) {
-        var b = make('button', 'la-preset', p.name);
-        b.type = 'button';
-        b.setAttribute('data-preset', p.name);
-        b.addEventListener('click', function () {
-          nameInput.value = p.name;
-          pkgInput.value = p.pkg;
-          nameInput.focus();
-        });
-        presets.appendChild(b);
-      });
-
-      fields.appendChild(nameLab);
-      fields.appendChild(pkgLab);
-
-      /* 태블릿(안드로이드 앱)에서는 설치된 앱 목록을 먼저 보여 준다 */
-      if (bridge) row.appendChild(buildAppPicker(slot, cfg));
-
-      var manual = make('details', 'la-manual');
-      if (!bridge) manual.open = true;   // 브라우저에서는 예전처럼 펼쳐 둔다
-      manual.appendChild(make('summary', null, '직접 입력 · 추천 앱'));
-      manual.appendChild(presets);
-      manual.appendChild(fields);
-      row.appendChild(manual);
 
       var btns = make('div', 'la-btns');
       var msg = make('span', 'la-msg');
-      var save = make('button', 'btn primary', connected ? '변경 저장' : '연결');
-      save.type = 'button';
-      save.addEventListener('click', function () {
-        var name = nameInput.value.trim().slice(0, 24);
-        var pkg = pkgInput.value.trim().slice(0, 80);
-        if (!name) { msg.style.color = '#bd3f31'; msg.textContent = '앱 이름을 먼저 적어 주세요.'; nameInput.focus(); return; }
-        state.launcher[slot.key] = { name: name, pkg: pkg };
-        saveState();
-        renderLauncher();
-        renderLaunchAdmin();
-        var fresh = box.querySelector('.la-row[data-la="' + slot.key + '"] .la-msg');
-        if (fresh) fresh.textContent = '연결했어요 ✓';
-        toast(slot.title + ' 칸에 ' + name + particleEul(name) + ' 연결했어요.');
-      });
-      btns.appendChild(save);
-
+      var pickBtn = make('button', 'btn primary', connected ? '앱 바꾸기' : '앱 고르기');
+      pickBtn.type = 'button';
+      pickBtn.addEventListener('click', function () { openAppPicker(slot.key); });
+      btns.appendChild(pickBtn);
       if (connected) {
         var off = make('button', 'btn', '해제');
         off.type = 'button';
@@ -5052,17 +5613,16 @@ var ART_ORDER = [
           saveState();
           renderLauncher();
           renderLaunchAdmin();
-          var fresh = box.querySelector('.la-row[data-la="' + slot.key + '"] .la-msg');
-          if (fresh) fresh.textContent = '연결을 해제했어요';
           toast(slot.title + ' 칸 연결을 해제했어요.');
         });
         btns.appendChild(off);
+      } else {
+        btns.appendChild(msg);
       }
-      btns.appendChild(msg);
       row.appendChild(btns);
-      row.setAttribute('data-la', slot.key);
       box.appendChild(row);
     });
+    if ($('gsAppsSub')) $('gsAppsSub').textContent = connectedCount + ' / ' + (LAUNCH_SLOTS.length + 1) + '칸 연결';
   }
 
   function renderGiftBanner() {
@@ -5449,12 +6009,13 @@ var ART_ORDER = [
      보호자
      ══════════════════════════════════════════════════════ */
   var giftForm = { count: 1, from: '엄마' };
-  var gDraft = { name: '', age: 0, childAge: 0, level: 0, dirty: false };
+  var gDraft = { name: '', age: 0, childAge: 0, childBirthdate: '', level: 0, dirty: false };
 
   function resetGuardianDraft() {
     gDraft.name = state.name;
     gDraft.age = state.age;
     gDraft.childAge = state.childAge || 0;
+    gDraft.childBirthdate = state.childBirthdate || '';
     gDraft.level = state.level;
     gDraft.dirty = false;
   }
@@ -5463,18 +6024,18 @@ var ART_ORDER = [
   /* 유민이 홈 4칸을 정하는 '런처 앱 연결'과는 다른, 어른용 전체 앱 목록이다.
      안드로이드 앱에서는 설치된 앱 전체, 웹 브라우저에서는 대표 앱 예시로 보여 준다. */
   var DRAWER_SAMPLES = [
-    { label: '설정', pkg: 'com.android.settings' },
-    { label: 'Chrome', pkg: 'com.android.chrome' },
-    { label: 'YouTube', pkg: 'com.google.android.youtube' },
-    { label: 'Play 스토어', pkg: 'com.android.vending' },
-    { label: '카메라', pkg: 'com.android.camera' },
-    { label: '계산기', pkg: 'com.android.calculator2' },
-    { label: '갤러리', pkg: 'com.android.gallery3d' },
-    { label: '시계', pkg: 'com.android.deskclock' },
-    { label: '윙크', pkg: 'com.wink.coin' },
-    { label: '토도한글', pkg: 'com.todotos.hangul' },
-    { label: '토도수학', pkg: 'com.todotos.math' },
-    { label: '밀리의서재', pkg: 'com.millie.themillie' }
+    { label: '설정', pkg: 'com.android.settings', emoji: '⚙️' },
+    { label: 'Chrome', pkg: 'com.android.chrome', emoji: '🌐' },
+    { label: 'YouTube', pkg: 'com.google.android.youtube', emoji: '📺' },
+    { label: 'Play 스토어', pkg: 'com.android.vending', emoji: '🛍️' },
+    { label: '카메라', pkg: 'com.android.camera', emoji: '📷' },
+    { label: '계산기', pkg: 'com.android.calculator2', emoji: '🧮' },
+    { label: '갤러리', pkg: 'com.android.gallery3d', emoji: '🖼️' },
+    { label: '시계', pkg: 'com.android.deskclock', emoji: '⏰' },
+    { label: '윙크', pkg: 'com.wink.coin', emoji: '🐣' },
+    { label: '토도한글', pkg: 'com.todotos.hangul', emoji: '✏️' },
+    { label: '토도수학', pkg: 'com.todotos.math', emoji: '🔢' },
+    { label: '밀리의서재', pkg: 'com.millie.themillie', emoji: '📚' }
   ];
   var drawerQuery = '';
 
@@ -5509,7 +6070,7 @@ var ART_ORDER = [
       btn.type = 'button';
       btn.setAttribute('data-pkg', app.pkg);
       btn.setAttribute('aria-label', app.label + ' 열기');
-      var ic = make('span', 'ad-icon', String(app.label).charAt(0));
+      var ic = make('span', 'ad-icon', app.emoji || String(app.label).charAt(0));
       ic.setAttribute('aria-hidden', 'true');
       var hue = drawerHue(String(app.label));
       ic.style.background = 'hsl(' + hue + ' 82% 96%)';
@@ -5563,6 +6124,20 @@ var ART_ORDER = [
     if (typeof renderSleepCard === 'function') renderSleepCard();
     $('childNameInput').value = gDraft.name;
     $('childAgeInput').value = gDraft.childAge ? String(gDraft.childAge) : '';
+    var birthEl = $('childBirthInput');
+    if (birthEl) {
+      birthEl.max = ymdKey(new Date());
+      if (document.activeElement !== birthEl) birthEl.value = gDraft.childBirthdate || '';
+    }
+    var birthHint = $('childBirthHint');
+    if (birthHint) {
+      var dAge = ageFromBirthdate(gDraft.childBirthdate);
+      birthHint.textContent = dAge
+        ? ('만 ' + dAge.years + '세 (' + dAge.months + '개월) · ' + AGES[ageGroupForMonths(dAge.months)].name + ' 난이도')
+        : (gDraft.childAge
+          ? ('만 ' + gDraft.childAge + '세 · 생년월일을 넣으면 개월까지 자동으로 맞춰요')
+          : '생년월일을 넣으면 만 나이·개월과 난이도가 자동으로 맞춰져요');
+    }
     var ageChips = $('ageChips').querySelectorAll('[data-age]');
     for (var i = 0; i < ageChips.length; i++) ageChips[i].classList.toggle('on', Number(ageChips[i].getAttribute('data-age')) === gDraft.age);
     var lvChips = $('levelChipsGuardian').querySelectorAll('[data-level]');
@@ -5585,6 +6160,20 @@ var ART_ORDER = [
     renderProgressPanel();
     renderCouponAdmin();
     renderGuardianSummary();
+    renderWeekFocus();
+  }
+
+  /* 이번 주 집중 과목: 보호자가 고른 2과목을 칩으로 보여 준다 */
+  function renderWeekFocus() {
+    var wf = weeklyFocus();
+    var chips = $('weekFocusChips') ? $('weekFocusChips').querySelectorAll('[data-wf]') : [];
+    for (var i = 0; i < chips.length; i++) {
+      chips[i].classList.toggle('on', wf.subjects.indexOf(Number(chips[i].getAttribute('data-wf'))) >= 0);
+    }
+    if ($('weekFocusRange')) {
+      $('weekFocusRange').textContent = '이번 주 ' + weekRangeLabel(wf.weekKey) +
+        (wf.manual ? ' · 보호자가 직접 골랐어요' : ' · 주차에 맞춰 자동으로 골랐어요');
+    }
   }
 
   /* 학습 관리 탭 머리: 오늘의 기록 요약 */
@@ -5745,6 +6334,7 @@ var ART_ORDER = [
     }
     var btns = document.querySelectorAll('.tab');
     for (var i = 0; i < btns.length; i++) btns[i].classList.toggle('on', btns[i].getAttribute('data-tab') === name);
+    document.body.setAttribute('data-tab', name);
     if (name === 'home') renderLauncher();
     if (name === 'learn') renderHero();
     if (name === 'board') renderBoard();
@@ -5755,9 +6345,6 @@ var ART_ORDER = [
     tabBtns[tb].addEventListener('click', function () { switchTab(this.getAttribute('data-tab')); });
   }
 
-  $('heroStart').addEventListener('click', function () {
-    openSubject(Number(this.getAttribute('data-sub')) || 0);
-  });
   $('launchTodayGo').addEventListener('click', function () { switchTab('learn'); });
 
   /* ── 축하 모달 ──────────────────────────────────────── */
@@ -5922,21 +6509,26 @@ var ART_ORDER = [
     });
 
     updateSpeakCard();
+    /* 입문(3~4세) 단계: 문제 음성을 다 들려준 뒤 5초가 지나면 정답을 가리킨다 */
+    var said = q.q + '. ' + q.opts.join(', ');
+    var planHint = armHint(said);
     if (SESSION.step === 'learn') {
       setTimeout(function () {
         if (SESSION.step !== 'learn') return;
-        speak(q.q + '. ' + q.opts.join(', '));
+        speak(said, null, planHint);
       }, 260);
     }
-    /* 입문(3~4세) 단계: 오래 고민하면 정답을 가리키는 화살표를 띄운다 */
-    armHint();
   }
 
   /* ── 입문 단계 힌트 화살표 ─────────────────────────────── */
-  /* 아이가 5초 동안 고르지 못하면 정답에 손가락을 띄운다(예전 8초는 너무 길었다). */
+  /* 문제 음성 안내가 끝난 뒤 5초가 지나야 정답에 손가락을 띄운다.
+     기기·TTS 엔진에 따라 onend 가 일찍 오거나 아예 안 오므로 글자 수로 최소 대기
+     (Math.max(1500ms, 글자수 × 140ms))를 잡고, onend 가 그보다 늦게 오면 그때부터
+     다시 5초를 센다. */
   var HINT_DELAY_MS = 5000;
   var hintTimer = null;
   var hintOn = false;
+  var hintAt = 0;            /* 힌트가 뜨도록 예약된 시각 (테스트·확인용) */
 
   function clearHint() {
     if (hintTimer) { clearTimeout(hintTimer); hintTimer = null; }
@@ -5952,12 +6544,26 @@ var ART_ORDER = [
     hintOn = false;
   }
 
-  function armHint() {
+  /* 화면에 뜬 음성 안내(speechText)가 끝난 뒤 5초 뒤로 힌트를 예약한다.
+     돌려주는 plan(끝난시각)을 speak 의 onEnd 에 넘기면, 음성이 더 길었을 때 다시 잡는다. */
+  function armHint(speechText) {
     clearHint();
-    if (state.age !== 0) return;                 /* 입문(3~4세) 단계에서만 */
-    if (SESSION.step !== 'learn') return;        /* 퀴즈 화면에서만 */
-    if ($('quizSheet').hidden || $('quizPage').hidden) return;
-    hintTimer = setTimeout(showHint, HINT_DELAY_MS);
+    if (state.age !== 0) return null;            /* 입문(3~4세) 단계에서만 */
+    if (SESSION.step !== 'learn') return null;   /* 퀴즈 화면에서만 */
+    if ($('quizSheet').hidden || $('quizPage').hidden) return null;
+    var minMs = Math.max(1500, String(speechText || '').length * 140);
+    var startAt = Date.now();
+    var armedBase = 0;
+    var plan = function (endAt) {
+      var base = Math.max(Number(endAt) || 0, startAt + minMs);
+      if (armedBase && base <= armedBase) return;   /* 더 이른 시각으로는 되돌리지 않는다 */
+      armedBase = base;
+      if (hintTimer) { clearTimeout(hintTimer); hintTimer = null; }
+      hintAt = base + HINT_DELAY_MS;
+      hintTimer = setTimeout(showHint, Math.max(0, hintAt - Date.now()));
+    };
+    plan(0);
+    return plan;
   }
 
   function showHint() {
@@ -6001,13 +6607,15 @@ var ART_ORDER = [
   $('quizQ').addEventListener('click', function () {
     var q = quiz.list[quiz.index];
     if (!q) return;
-    speak(q.q + '. ' + q.opts.join(', '));
+    var again = q.q + '. ' + q.opts.join(', ');
+    speak(again, null, armHint(again));
     toast('🔊 다시 들려줘요');
   });
   $('quizArt').addEventListener('click', function () {
     var q = quiz.list[quiz.index];
     if (!q) return;
-    speak(q.q + '. ' + q.opts.join(', '));
+    var again = q.q + '. ' + q.opts.join(', ');
+    speak(again, null, armHint(again));
   });
 
   function answer(val) {
@@ -6047,14 +6655,14 @@ var ART_ORDER = [
       fb2.className = 'feedback no';
       fb2.textContent = '아쉬워요! 다시 한 번 골라 봐요 💪';
       quiz.wrongs++;
-      speak('아쉬워요. 다시 한 번 골라 봐요!');
+      var wrongSay = '아쉬워요. 다시 한 번 골라 봐요!';
+      /* 오답도 바로 힌트를 주지 않는다 — 오답 안내 음성이 끝난 뒤 5초 뒤에 띄운다 */
+      var planWrongHint = armHint(wrongSay);
+      speak(wrongSay, null, planWrongHint);
       var box = $('quizFeedback');
       box.classList.remove('shake');
       void box.offsetWidth;
       box.classList.add('shake');
-      /* 한 번 틀리면 기다리지 않고 바로 손가락 힌트를 띄운다
-         (answer() 맨 위의 clearHint()가 예약된 힌트를 지우기 때문에 다시 걸어 줘야 한다) */
-      if (state.age === 0 && SESSION.step === 'learn') showHint();
     }
   }
 
@@ -6123,6 +6731,7 @@ var ART_ORDER = [
     var next = no < LESSON_MAX ? no + 1 : 0;
     if (!already) { rec.done[no] = true; state.stars += 1; }
     rewardNoteLesson();   // 오늘 완료한 학습 수를 세어 '유튜브 키즈' 보상을 연다
+    noteFocusDone(id);    // 과목별 오늘 완료 — 추천 카드의 '✓ 오늘 완료'
     saveState();
     closeQuiz(true);
     renderAll();
@@ -7606,11 +8215,13 @@ var ART_ORDER = [
   /* ── 보호자 시트 하위 탭 ──────────────────────────── */
   /* 학습 관리(기본) · 앱 연결 · 앱 서랍 · 기기 설정. 홈에서 미연결 칸이나
      '앱 서랍'을 누르면 PIN 확인 뒤 해당 하위 탭으로 바로 들어간다. */
-  var GUARDIAN_TABS = ['study', 'launch', 'drawer', 'device'];
+  var GUARDIAN_TABS = ['study', 'drawer', 'device'];
+  var DEVICE_SECS = ['gSecApps', 'gSecTime', 'gSecFam', 'gSecInfo'];
   var guardianTab = 'study';
-  var guardianJump = null;   // { tab: 'launch' | 'drawer', key: 'hangul' | '' }
+  var guardianJump = null;   // { tab: 'device' | 'drawer', key: 'hangul' | '', sec: 'gSecApps' }
 
   function setGuardianTab(name, keepScroll) {
+    if (name === 'launch' || name === 'apps') name = 'device';   /* 앱 연결은 기기 설정 안으로 */
     if (GUARDIAN_TABS.indexOf(name) < 0) name = 'study';
     guardianTab = name;
     var tabs = document.querySelectorAll('.g-tab');
@@ -7632,42 +8243,36 @@ var ART_ORDER = [
     setTimeout(function () { el.classList.remove('g-jump-hit'); }, 1800);
   }
 
+  /* 기기 설정의 접이식 섹션 중 하나만 펼친다 */
+  function openDeviceSection(secId) {
+    for (var i = 0; i < DEVICE_SECS.length; i++) {
+      var sec = $(DEVICE_SECS[i]);
+      if (!sec) continue;
+      sec.open = sessionStorage.getItem('byeol-dev-' + DEVICE_SECS[i]) === '1';
+      if (DEVICE_SECS[i] === secId) sec.open = true;
+    }
+  }
+
   function applyGuardianJump(jump) {
     if (!jump) return;
-    setGuardianTab(jump.tab, true);
+    var tab = (jump.tab === 'launch' || jump.tab === 'apps') ? 'device' : jump.tab;
+    setGuardianTab(tab, true);
     var sheet = $('guardianSheet');
-    var card = $(jump.tab === 'drawer' ? 'appDrawerCard' : 'launcherAdminCard');
+    if (tab === 'device') openDeviceSection(jump.sec || 'gSecApps');
+    var card = $(tab === 'drawer' ? 'appDrawerCard' : 'launcherAdminCard');
     if (!card) { sheet.scrollTop = 0; return; }
     var row = null;
-    if (jump.tab === 'launch' && jump.key) row = card.querySelector('.la-row[data-la="' + jump.key + '"]');
+    if (tab === 'device' && jump.key) row = card.querySelector('.la-row[data-la="' + jump.key + '"]');
     var target = row || card;
 
     /* 고정 헤더 높이만큼 띄워 그 칸이 화면 위쪽에 오게 한다 */
     var top = target.getBoundingClientRect().top - sheet.getBoundingClientRect().top + sheet.scrollTop - 74;
     sheet.scrollTop = Math.max(0, top);
-    flashGuardianTarget(target);
-
-    if (jump.tab === 'drawer') {
-      var ds = $('appDrawerSearch');
-      if (ds) setTimeout(function () { try { ds.focus({ preventScroll: true }); } catch (e) { ds.focus(); } }, 60);
-      return;
-    }
-    if (!row) return;
-    var pick = row.querySelector('.la-pick');
-    var manual = row.querySelector('.la-manual');
-    if (pick) {                        /* 안드로이드 앱: 설치된 앱 고르기 펼침 */
-      pick.open = true;
-      var ps = pick.querySelector('.la-search');
-      if (ps) setTimeout(function () { try { ps.focus({ preventScroll: true }); } catch (e) { ps.focus(); } }, 80);
-    } else if (manual) {               /* 웹 미리보기: 추천 앱 · 직접 입력 펼침 */
-      manual.open = true;
-      var ni = row.querySelector('.la-fields input');
-      if (ni) setTimeout(function () { try { ni.focus({ preventScroll: true }); } catch (e) { ni.focus(); } }, 80);
-    }
+    flashGuardianTarget(target);   /* 검색창에 저절로 포커스를 주지 않는다 — 키보드가 올라오지 않게 */
   }
 
   function jumpGuardian(tab, key) {
-    var jump = { tab: tab === 'drawer' ? 'drawer' : 'launch', key: key || '' };
+    var jump = { tab: tab === 'drawer' ? 'drawer' : 'device', key: key || '', sec: 'gSecApps' };
     if (!$('guardianSheet').hidden) { applyGuardianJump(jump); return; }
     enterGuardian(jump.tab === 'drawer'
       ? '앱 서랍은 어른만 열 수 있어요. 문제를 풀어 주세요.'
@@ -7707,6 +8312,27 @@ var ART_ORDER = [
   }
   $('guardianClose').addEventListener('click', closeGuardian);
 
+  /* 기기 설정 접이식 섹션: 펼친 상태를 이번 실행 동안 기억한다 */
+  (function () {
+    for (var i = 0; i < DEVICE_SECS.length; i++) {
+      var sec = $(DEVICE_SECS[i]);
+      if (!sec) continue;
+      (function (node) {
+        var key = node.id;
+        if (sessionStorage.getItem('byeol-dev-' + key) === '1') node.open = true;
+        node.addEventListener('toggle', function () {
+          try { sessionStorage.setItem('byeol-dev-' + key, node.open ? '1' : '0'); } catch (e) {}
+        });
+      })(sec);
+    }
+  })();
+
+  /* 앱 고르기 모달 */
+  var pickCloseBtn = $('pickClose');
+  if (pickCloseBtn) pickCloseBtn.addEventListener('click', closeAppPicker);
+  var pickSearchEl = $('pickSearch');
+  if (pickSearchEl) pickSearchEl.addEventListener('input', renderAppPicker);
+
   /* 보호자 앱 서랍 검색 */
   var drawerSearchEl = $('appDrawerSearch');
   if (drawerSearchEl) {
@@ -7720,11 +8346,8 @@ var ART_ORDER = [
   var ageChips = $('ageChips').querySelectorAll('[data-age]');
   for (var a = 0; a < ageChips.length; a++) {
     ageChips[a].addEventListener('click', function () {
-      gDraft.age = Number(this.getAttribute('data-age'));
-      gDraft.childAge = 0;
-      gDraft.dirty = true;
-      $('childState').textContent = '';
-      renderGuardian();
+      /* 연령대는 생년월일로 자동 계산한다 — 칩은 지금 값을 보여 주기만 한다 */
+      $('childState').textContent = '연령대는 생년월일에서 자동으로 정해져요.';
     });
   }
   var gLevelChips = $('levelChipsGuardian').querySelectorAll('[data-level]');
@@ -7742,10 +8365,28 @@ var ART_ORDER = [
     $('childDirty').hidden = false;
     $('childState').textContent = '';
   });
+  function onBirthEdit() {
+    gDraft.childBirthdate = this.value || '';
+    var a = ageFromBirthdate(gDraft.childBirthdate);
+    if (a) {
+      gDraft.childAge = a.years;
+      gDraft.age = ageGroupForMonths(a.months);
+    }
+    gDraft.dirty = true;
+    $('childDirty').hidden = false;
+    $('childState').textContent = '';
+    renderGuardian();
+  }
+  var birthInput = $('childBirthInput');
+  if (birthInput) {
+    birthInput.addEventListener('input', onBirthEdit);
+    birthInput.addEventListener('change', onBirthEdit);
+  }
   $('childAgeInput').addEventListener('input', function () {
     this.value = this.value.replace(/[^0-9]/g, '').slice(0, 2);
     var n = Number(this.value) || 0;
     gDraft.childAge = n;
+    gDraft.childBirthdate = '';                       /* 나이로 적으면 생년월일은 비운다 */
     if (n >= 2 && n <= 9) gDraft.age = ageGroupOf(n);   // 나이를 적으면 연령대도 맞춘다
     gDraft.dirty = true;
     $('childDirty').hidden = false;
@@ -7759,16 +8400,52 @@ var ART_ORDER = [
       return;
     }
     state.name = name.slice(0, 10);
-    state.age = gDraft.age;
-    state.childAge = gDraft.childAge || 0;
+    var saveAge = ageFromBirthdate(gDraft.childBirthdate);
+    state.childBirthdate = saveAge ? gDraft.childBirthdate : '';
+    state.childAge = saveAge ? saveAge.years : (gDraft.childAge || 0);
+    state.age = saveAge ? ageGroupForMonths(saveAge.months) : gDraft.age;
     state.level = gDraft.level;
     saveState();
     resetGuardianDraft();
     renderAll();
     $('childState').style.color = '#0e7a4b';
-    $('childState').textContent = '저장했어요! ' + AGES[state.age].name + ' · ' + LEVELS[state.level].chip;
+    var savedAge = ageInfo();
+    $('childState').textContent = '저장했어요! ' + (savedAge.known ? savedAge.label + ' · ' : '') + AGES[state.age].name + ' · ' + LEVELS[state.level].chip;
     toast('아이 정보와 난이도를 저장했어요.');
   });
+
+  /* ── 보호자: 이번 주 집중 과목 ──────────────────────── */
+  var wfChipEls = document.querySelectorAll('#weekFocusChips [data-wf]');
+  for (var wfci = 0; wfci < wfChipEls.length; wfci++) {
+    wfChipEls[wfci].addEventListener('click', function () {
+      var idx = Number(this.getAttribute('data-wf'));
+      var cur = weeklyFocus().subjects.slice();
+      var stateEl = $('weekFocusState');
+      if (cur.indexOf(idx) >= 0) {
+        if (stateEl) stateEl.textContent = '두 과목은 꼭 있어야 해요. 다른 과목을 누르면 바뀌어요.';
+        return;
+      }
+      cur = [cur[1], idx];        /* 먼저 고른 과목이 빠지고 새 과목이 들어온다 */
+      setWeeklyFocus(cur, true);
+      saveState();
+      renderAll();
+      renderWeekFocus();
+      if (stateEl) stateEl.textContent = '이번 주는 ' + SUBJECTS[cur[0]].title + ' · ' + SUBJECTS[cur[1]].title + ' 로 바꿨어요.';
+      toast('이번 주 집중: ' + SUBJECTS[cur[0]].title + ' · ' + SUBJECTS[cur[1]].title);
+    });
+  }
+  var wfAutoBtn = $('weekFocusAuto');
+  if (wfAutoBtn) {
+    wfAutoBtn.addEventListener('click', function () {
+      var auto = autoFocusSubjects(weekKeyOf(new Date()));
+      setWeeklyFocus(auto, false);
+      saveState();
+      renderAll();
+      renderWeekFocus();
+      if ($('weekFocusState')) $('weekFocusState').textContent = '주차에 맞춘 자동 추천으로 돌아왔어요.';
+      toast('자동 추천: ' + SUBJECTS[auto[0]].title + ' · ' + SUBJECTS[auto[1]].title);
+    });
+  }
 
   /* ── 보호자: 별 선물 ───────────────────────────────── */
   var giftChips = $('giftCountChips').querySelectorAll('[data-gift]');
@@ -8008,7 +8685,17 @@ var ART_ORDER = [
 
   /* ── 처음 시작: 아이 프로필 (딱 1회) ──────────────── */
   /* 저장된 프로필이 없으면 이름·나이를 받는다. 한 번 저장하면 다시 묻지 않는다. */
-  var obAge = 0;
+  var obAge = 0, obBirth = '';
+
+  /* '3살·4살…' 빠른 선택 → 오늘에서 그 나이만큼 전(4개월 여유)으로 생년월일을 채운다 */
+  function birthForYears(n) {
+    var t = new Date();
+    var y = t.getFullYear() - Math.max(0, Math.floor(Number(n) || 0));
+    var m = t.getMonth() - 4;
+    if (m < 0) { m += 12; y -= 1; }
+    var d = Math.min(t.getDate(), 28);
+    return y + '-' + pad2(m + 1) + '-' + pad2(d);
+  }
 
   function ageGroupOf(n) {
     var v = Number(n) || 0;
@@ -8018,26 +8705,31 @@ var ART_ORDER = [
   }
 
   function obPaint() {
+    var a = ageFromBirthdate(obBirth);
+    obAge = a ? a.years : 0;
     var chips = document.querySelectorAll('#obAges [data-obage]');
     for (var i = 0; i < chips.length; i++) {
       var v = Number(chips[i].getAttribute('data-obage'));
-      chips[i].classList.toggle('on', v === 8 ? obAge >= 8 : v === obAge);
+      chips[i].classList.toggle('on', a ? (v === 8 ? obAge >= 8 : v === obAge) : false);
     }
     var lab = $('obPick');
     if (lab) {
-      lab.textContent = obAge
-        ? (obAge + '살 · ' + AGES[ageGroupOf(obAge)].name + ' 난이도로 시작해요.')
-        : '나이를 고르면 학습 난이도가 맞춰져요.';
+      lab.textContent = a
+        ? ('만 ' + a.years + '세 (' + a.months + '개월) · ' + AGES[ageGroupForMonths(a.months)].name + ' 난이도로 시작해요.')
+        : '생년월일을 넣으면 만 나이로 학습 난이도를 맞춰요.';
     }
-    var input = $('obAge');
-    if (input && obAge && input.value !== String(obAge)) input.value = String(obAge);
+    var input = $('obBirth');
+    if (input) {
+      input.max = ymdKey(new Date());
+      if (obBirth && input.value !== obBirth) input.value = obBirth;
+    }
   }
 
   function showOnboard() {
     var scr = $('onboardScreen');
     if (!scr) return;
     if ($('obName')) $('obName').value = state.name || '';
-    obAge = state.childAge || (state.age === 2 ? 7 : state.age === 1 ? 5 : 4);
+    obBirth = state.childBirthdate || (state.childAge ? birthForYears(state.childAge) : '');
     obPaint();
     if ($('obState')) { $('obState').textContent = ''; $('obState').style.color = '#0e7a4b'; }
     scr.hidden = false;
@@ -8054,32 +8746,35 @@ var ART_ORDER = [
   var obChipEls = document.querySelectorAll('#obAges [data-obage]');
   for (var oci = 0; oci < obChipEls.length; oci++) {
     obChipEls[oci].addEventListener('click', function () {
-      obAge = Number(this.getAttribute('data-obage'));
+      obBirth = birthForYears(Number(this.getAttribute('data-obage')));
       obPaint();
     });
   }
-  $('obAge').addEventListener('input', function () {
-    this.value = this.value.replace(/[^0-9]/g, '').slice(0, 2);
-    obAge = Number(this.value) || 0;
-    obPaint();
-  });
+  var obBirthEl = $('obBirth');
+  if (obBirthEl) {
+    var onObBirth = function () { obBirth = this.value || ''; obPaint(); };
+    obBirthEl.addEventListener('input', onObBirth);
+    obBirthEl.addEventListener('change', onObBirth);
+  }
   $('obStart').addEventListener('click', function () {
     var name = $('obName').value.trim();
-    var age = Number(String($('obAge').value || '').replace(/[^0-9]/g, '')) || obAge;
+    var birth = (obBirthEl && obBirthEl.value) || obBirth;
+    var bAge = ageFromBirthdate(birth);
     if (!name) {
       $('obState').style.color = '#c0392b';
       $('obState').textContent = '아이 이름을 적어 주세요.';
       try { $('obName').focus(); } catch (e) {}
       return;
     }
-    if (!age || age < 2 || age > 9) {
+    if (!bAge || bAge.months < 24 || bAge.months > 119) {
       $('obState').style.color = '#c0392b';
-      $('obState').textContent = '나이를 골라 주세요. (2~9살)';
+      $('obState').textContent = '생년월일을 넣어 주세요. (만 2~9세)';
       return;
     }
     state.name = name.slice(0, 10);
-    state.childAge = age;
-    state.age = ageGroupOf(age);
+    state.childBirthdate = birth;
+    state.childAge = bAge.years;
+    state.age = ageGroupForMonths(bAge.months);
     state.profileSet = true;
     saveState();
     hideOnboard();
@@ -8144,6 +8839,7 @@ var ART_ORDER = [
   document.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape') return;
     if (!$('celebrateModal').hidden) { closeCelebrate(); return; }
+    if ($('appPickModal') && !$('appPickModal').hidden) { closeAppPicker(); return; }
     if (!$('rewardModal').hidden) { closeRewardModal(); return; }
     if (!$('pinModal').hidden) { closePin(); return; }
     if (!$('quizSheet').hidden) { closeQuiz(); return; }
@@ -8154,13 +8850,33 @@ var ART_ORDER = [
   window.__byeol = {
     state: state,
     session: SESSION,
-    profile: function () { return { name: state.name, childAge: state.childAge, age: state.age, profileSet: state.profileSet }; },
+    profile: function () {
+      return {
+        name: state.name, childAge: state.childAge, childBirthdate: state.childBirthdate,
+        age: state.age, profileSet: state.profileSet, ageLabel: ageInfo().label
+      };
+    },
+    weeklyFocus: function () {
+      var w = weeklyFocus();
+      return { weekKey: w.weekKey, subjects: w.subjects.slice(), manual: !!w.manual, auto: autoFocusSubjects(w.weekKey) };
+    },
+    setWeeklyFocus: function (list, manual) { setWeeklyFocus(list, manual !== false); saveState(); renderAll(); return this.weeklyFocus(); },
+    weekKeyOf: function (d) { return weekKeyOf(d ? new Date(d) : new Date()); },
+    ageInfo: function () { return ageInfo(); },
+    todayDone: function () { return { date: state.todayDone.date, subs: state.todayDone.subs }; },
     givenName: function (n) { return givenName(n); },
     vocative: function (n) { return vocative(n); },
     kidLabel: function (n) { return kidLabel(n); },
     kidText: function (t) { return kidT(t); },
     guardianTab: function () { return guardianTab; },
-    hint: function () { return { on: hintOn, armed: !!hintTimer, delayMs: HINT_DELAY_MS }; },
+    pen: function () { return { active: PEN.active, lastAt: PEN.lastAt, graceMs: PEN.GRACE_MS }; },
+    hint: function () {
+      return {
+        on: hintOn, armed: !!hintTimer, delayMs: HINT_DELAY_MS,
+        afterVoice: true, minVoiceMs: 1500, perCharMs: 140,
+        scheduledFor: hintAt, now: Date.now()
+      };
+    },
     celebrate: function (emoji, title, sub, sticker, nextNo) { showCelebrate(emoji, title, sub, sticker, nextNo); },
     fx: function () { return { count: fxCount(), reduced: fxReduced(), state: lastRewardState }; },
     onboardOpen: function () { return !$('onboardScreen').hidden; },
@@ -8760,8 +9476,18 @@ var ART_ORDER = [
       t: lastChangeAt || 0,
       name: state.name,
       childAge: state.childAge,
+      childBirthdate: state.childBirthdate || '',
       profileSet: state.profileSet,
       age: state.age,
+      weeklyFocus: (function () {
+        var w = weeklyFocus();
+        return { weekKey: w.weekKey, subjects: w.subjects.slice(), manual: !!w.manual, t: w.t || 0 };
+      })(),
+      todayDone: (function () {
+        var t = state.todayDone;
+        if (!t || t.date !== todayStr() || !t.subs) return { date: todayStr(), subs: {} };
+        return { date: t.date, subs: t.subs };
+      })(),
       stars: state.stars,
       used: state.used,
       placed: state.placed,
@@ -8788,7 +9514,30 @@ var ART_ORDER = [
     try {
       if (typeof book.name === 'string' && book.name.trim()) state.name = book.name.trim();
       if (typeof book.childAge === 'number') state.childAge = Math.max(0, Math.floor(book.childAge));
+      if (typeof book.childBirthdate === 'string' && parseYmd(book.childBirthdate)) {
+        state.childBirthdate = book.childBirthdate;
+        var bookAge = ageFromBirthdate(book.childBirthdate);
+        if (bookAge) { state.childAge = bookAge.years; state.age = ageGroupForMonths(bookAge.months); }
+      }
       state.profileSet = !!book.profileSet;
+      if (book.weeklyFocus && typeof book.weeklyFocus === 'object' && book.weeklyFocus.weekKey === weekKeyOf(new Date())) {
+        var ws = cleanFocusSubjects(book.weeklyFocus.subjects);
+        if (ws.length === 2) {
+          state.weeklyFocus = {
+            weekKey: book.weeklyFocus.weekKey, subjects: ws,
+            manual: !!book.weeklyFocus.manual, t: Math.max(0, Number(book.weeklyFocus.t) || 0)
+          };
+        }
+      }
+      if (book.todayDone && typeof book.todayDone === 'object' && book.todayDone.date === todayStr()
+        && book.todayDone.subs && typeof book.todayDone.subs === 'object') {
+        var tsubs = {};
+        for (var tkey in book.todayDone.subs) {
+          if (!Object.prototype.hasOwnProperty.call(book.todayDone.subs, tkey)) continue;
+          tsubs[tkey] = Math.max(0, Math.floor(Number(book.todayDone.subs[tkey]) || 0));
+        }
+        state.todayDone = { date: book.todayDone.date, subs: tsubs };
+      }
       if (book.age === 0 || book.age === 1 || book.age === 2) state.age = book.age;
       if (typeof book.stars === 'number') state.stars = Math.max(0, Math.floor(book.stars));
       if (typeof book.used === 'number') state.used = Math.max(0, Math.floor(book.used));
@@ -8864,8 +9613,19 @@ var ART_ORDER = [
     toast: toast
   };
 
+  function applyAgeFromBirthdate(str) {
+    var a = ageFromBirthdate(str);
+    if (!a) return false;
+    state.childAge = a.years;
+    state.age = ageGroupForMonths(a.months);
+    return true;
+  }
+
   /* ── 시작 ──────────────────────────────────────────── */
   loadState();
+  /* 생년월일이 있으면 오늘 기준 만 나이·개월·연령대를 다시 계산한다 */
+  if (state.childBirthdate) applyAgeFromBirthdate(state.childBirthdate);
+  syncWeeklyFocus();          /* 이번 주 집중 2과목 고정(주가 바뀌면 자동 추천) */
   /* 어제 보던 보상 기록이 남아 있으면 오늘 기준으로 정리한다 */
   if (state.reward && state.reward.date !== todayStr()) {
     state.reward = { date: todayStr(), lessons: 0, sessions: 0, endsAt: 0 };

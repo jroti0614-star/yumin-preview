@@ -1,11 +1,11 @@
 {
-  "versionCode": 21,
-  "versionName": "2.0.0",
+  "versionCode": 20,
+  "versionName": "0.9.11",
   "apkUrl": "https://jroti0614-star.github.io/yumin-preview/apk/yumin-launcher-v0.9.11-debug.apk",
   "sha256": "70286ef2ddd3c2f0e963b12728cb570d14f1e29a596a198488441ead7d71fe62",
   "sizeBytes": 13312927,
-  "publishedAt": "2026-11-28T13:59:27.860Z",
-  "notes": "별별 탐험대 2.0 웹 기능 업데이트: 캐릭터 성장, 오늘의 구조 미션, 학습 성장 기록, 나만의 그림책. 기존 부모님 컨트롤 앱은 별도 유지.",
+  "publishedAt": "2026-11-28T08:41:14+09:00",
+  "notes": "현재 설치 APK 0.9.11. 별별 탐험대 2.0 웹 기능은 자동 갱신 중이며, Android 2.0 APK 빌드는 별도 진행 중입니다.",
   "releasePage": "https://github.com/jroti0614-star/yumin-preview/releases/tag/v0.9.11",
   "mirrorUrl": "https://github.com/jroti0614-star/yumin-preview/releases/download/v0.9.11/yumin-launcher-0.9.11-debug.apk"
 }

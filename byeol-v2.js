@@ -46,17 +46,43 @@
     return { count:n, level:level, name:names[level-1], next:next, pct:Math.min(100,Math.round((n/(next||120))*100)) };
   }
   var missions = [
-    {id:'hangul',icon:'🔤',title:'기역 구조 작전',desc:'한글 별에서 오늘의 글자 놀이를 해요',tab:'learn'},
-    {id:'math',icon:'🔢',title:'숫자 탐험 작전',desc:'수학 별에서 숫자 문제를 풀어요',tab:'learn'},
-    {id:'board',icon:'⭐',title:'별빛 지도 정리',desc:'모은 별로 별 지도에 별을 붙여요',tab:'board'},
-    {id:'story',icon:'📖',title:'이야기 구조 작전',desc:'이야기 구조대에서 한 편을 만나 봐요',tab:'learn'}
+    {id:'hangul',icon:'🔤',title:'한글 구조 작전',desc:'한글 별에서 새로운 학습 한 강을 완료해요',tab:'learn'},
+    {id:'math',icon:'🔢',title:'숫자 탐험 작전',desc:'수학 별에서 새로운 학습 한 강을 완료해요',tab:'learn'},
+    {id:'board',icon:'⭐',title:'별빛 지도 정리',desc:'모은 별을 별 지도에 한 개 붙여요',tab:'board'},
+    {id:'english',icon:'🔠',title:'영어 탐험 작전',desc:'영어 별에서 새로운 학습 한 강을 완료해요',tab:'learn'}
   ];
   function currentMission() {
     if (extra.missionDay !== today()) {
-      extra.missionDay = today(); extra.missionDone = false; saveExtra();
+      extra.missionDay = today();
+      extra.missionDone = false;
+      extra.missionStarted = false;
+      extra.missionBaseline = null;
+      saveExtra();
     }
     var idx = Math.floor(new Date().getDate() % missions.length);
     return missions[idx];
+  }
+  function missionProgress(mission) {
+    if (mission.id === 'board') return Math.max(0, Number(state.placed) || 0);
+    var lessons = state.lessons || {}, count = 0, suffix = '-' + mission.id;
+    Object.keys(lessons).forEach(function(key) {
+      if (key.slice(-suffix.length) !== suffix) return;
+      var done = lessons[key] && lessons[key].done;
+      if (done && typeof done === 'object') {
+        Object.keys(done).forEach(function(n) { if (done[n]) count++; });
+      }
+    });
+    return count;
+  }
+  function checkMissionProgress(mission) {
+    if (extra.missionDone || !extra.missionStarted || extra.missionDay !== today()) return;
+    var baseline = Number(extra.missionBaseline);
+    if (!Number.isFinite(baseline)) return;
+    if (missionProgress(mission) > baseline) {
+      extra.missionDone = true;
+      extra.missionCompletedAt = Date.now();
+      saveExtra();
+    }
   }
   function addStyles() {
     if (document.getElementById('byeolV2Style')) return;
@@ -128,8 +154,7 @@
       <div class="v2-card" style="margin-bottom:14px">
         <div class="v2-mission"><div class="v2-icon" id="v2MissionIcon">🚨</div><div style="flex:1;min-width:0"><h3 id="v2MissionTitle">오늘의 구조 미션</h3><p id="v2MissionDesc">오늘의 임무를 확인해요.</p></div></div>
         <button class="v2-btn" id="v2MissionGo" type="button">미션 시작하기</button>
-        <button class="v2-btn secondary" id="v2MissionDone" type="button" style="margin-left:6px">완료했어요</button>
-        <p id="v2MissionState" style="margin:9px 0 0;font-size:11px;color:#77718f"></p>
+        <p id="v2MissionState" style="margin:9px 0 0;font-size:11px;color:#77718f" aria-live="polite"></p>
       </div>
 `;
     main.appendChild(panel);
@@ -139,10 +164,15 @@
     tab.addEventListener('click',function(){switchExplore();});
     document.getElementById('v2MissionGo').addEventListener('click',function(){
       var m=currentMission();
+      loadState();
+      if (!extra.missionStarted && !extra.missionDone) {
+        extra.missionStarted = true;
+        extra.missionBaseline = missionProgress(m);
+        extra.missionStartedAt = Date.now();
+        saveExtra();
+      }
       if(m.tab==='board') clickTab('board'); else clickTab('learn');
-    });
-    document.getElementById('v2MissionDone').addEventListener('click',function(){
-      extra.missionDone=true;saveExtra();render(); 
+      render();
     });
     render();
   }
@@ -158,25 +188,38 @@
   function render() {
     loadState();
     var p=getProgress(), mission=currentMission();
+    checkMissionProgress(mission);
     var avatar=['🚓','🚒','🚁','🛸','🚀','🌟'][p.level-1]||'🚓';
     document.getElementById('v2Avatar').textContent=avatar;
     document.getElementById('v2Rank').textContent=p.name;
     document.getElementById('v2Xp').textContent='완료한 학습 '+p.count+'개 · '+p.level+'단계';
     document.getElementById('v2Progress').style.width=p.pct+'%';
-    document.getElementById('v2Analysis').textContent=p.count+'개의 학습을 완료했어요. 꾸준히 도전하면 '+(p.next-p.count)+'개 뒤에 다음 단계로 성장해요.';
     document.getElementById('v2MissionIcon').textContent=mission.icon;
     document.getElementById('v2MissionTitle').textContent=mission.title;
     document.getElementById('v2MissionDesc').textContent=mission.desc;
-    document.getElementById('v2MissionState').textContent=extra.missionDone?'오늘의 미션을 완료했어요! 멋져요 ⭐':'미션을 시작하고 완료하면 체크해 둘 수 있어요.';
-    document.getElementById('v2MissionDone').disabled=!!extra.missionDone;
-    document.getElementById('v2MissionDone').textContent=extra.missionDone?'오늘 미션 완료 ✓':'완료했어요';
+    var go=document.getElementById('v2MissionGo');
+    var status=document.getElementById('v2MissionState');
+    if (extra.missionDone) {
+      status.textContent='학습 기록이 확인되어 오늘의 미션을 자동 완료했어요! ⭐';
+      go.textContent='오늘 미션 완료 ✓';
+      go.disabled=true;
+    } else if (extra.missionStarted) {
+      status.textContent='미션 진행 중이에요. 해당 학습을 완료하면 자동으로 체크돼요.';
+      go.textContent='학습 이어하기';
+      go.disabled=false;
+    } else {
+      status.textContent='시작을 누른 뒤 실제 학습을 완료하면 자동으로 반영돼요.';
+      go.textContent='미션 시작하기';
+      go.disabled=false;
+    }
 
   }
   function boot() {
     addStyles();makePanel();addLearningAppLinks();
     if(!document.getElementById('panelExplore'))return;
-    window.addEventListener('storage',function(e){if(e.key===STATE_KEY)render();});
+    window.addEventListener('storage',function(e){if(e.key===STATE_KEY || e.key===V2_KEY)render();});
     document.addEventListener('visibilitychange',function(){if(!document.hidden)render();});
+    window.setInterval(function(){ if(document.getElementById('panelExplore')) render(); }, 3000);
   }
   function wait() {
     if(document.getElementById('main')&&document.querySelector('.tabbar-inner'))boot();

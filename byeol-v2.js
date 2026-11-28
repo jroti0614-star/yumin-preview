@@ -254,7 +254,7 @@
     var groups=[['paint','차체 색상',opts.paint],['wheels','바퀴',opts.wheels],['decal','스티커',opts.decal],['light','경광등',opts.light],['accessory','추가 장비',opts.accessory]];
     box.innerHTML=groups.map(function(g){
       return '<div class="v2-car-group"><strong>'+g[1]+'</strong><div class="v2-car-options">'+g[2].map(function(x){
-        var has=isCarItemOwned(g[0],x),selected=preview?preview.type===g[0]&&preview.value===x.id:equipped[g[0]]===x.id;
+        var has=isCarItemOwned(g[0],x),selected=(preview&&preview.type===g[0])?preview.value===x.id:equipped[g[0]]===x.id;
         var stateText=has?(equipped[g[0]]===x.id?'장착 중':'보유'):(x.price+'장');
         return '<button type="button" class="v2-car-option'+(selected?' active':'')+(has?' owned':'')+'" data-car-type="'+g[0]+'" data-car-value="'+x.id+'"><span>'+x.icon+'</span><b>'+x.label+'</b><small>'+(has?stateText:'🎟️ '+stateText)+'</small></button>';
       }).join('')+'</div></div>';

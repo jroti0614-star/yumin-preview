@@ -79,9 +79,40 @@
       .v2-books{display:grid;gap:9px;margin-top:12px}.v2-book{border:1px solid #e9e5f5;border-radius:14px;padding:12px;background:#fff}
       .v2-book strong{display:block;font-size:14px;margin-bottom:5px}.v2-book p{white-space:pre-wrap;margin:0 0 8px;font-size:12px;line-height:1.6;color:#655f7e}
       .v2-empty{color:#8c87a1;font-size:12px;padding:10px 0}
+      .v2-app-links{margin:0 0 14px;padding:15px;background:#fff;border:1px solid #e9e5f5;border-radius:18px;box-shadow:0 4px 14px #4030800a}
+      .v2-app-links h3{margin:0 0 5px;font-size:16px;color:#383354}
+      .v2-app-links p{margin:0 0 11px;font-size:12px;line-height:1.5;color:#77718f}
+      .v2-app-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+      .v2-app-btn{display:flex;align-items:center;gap:9px;min-width:0;padding:11px;border:1px solid #e8e4f4;border-radius:13px;background:#faf9ff;color:#393451;text-align:left}
+      .v2-app-btn:active{transform:scale(.98)}
+      .v2-app-btn .ico{font-size:23px;flex:0 0 auto}
+      .v2-app-btn .meta{min-width:0;display:flex;flex-direction:column;gap:2px}
+      .v2-app-btn strong{font-size:13px}
+      .v2-app-btn small{font-size:10px;color:#8a849e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
       @media(max-width:380px){.v2-grid{grid-template-columns:1fr}.v2-hero{padding:16px}}
     `;
     var st=document.createElement('style');st.id='byeolV2Style';st.textContent=css;document.head.appendChild(st);
+  }
+  function addLearningAppLinks() {
+    var panel=document.getElementById('panelLearn');
+    if(!panel || document.getElementById('v2LearningAppLinks')) return;
+    var card=document.createElement('section');
+    card.className='v2-app-links';
+    card.id='v2LearningAppLinks';
+    card.innerHTML='<h3>📲 연결된 학습 앱</h3><p>메인페이지에서 연결한 앱을 여기서도 바로 실행할 수 있어요.</p><div class="v2-app-grid">'+
+      '<button class="v2-app-btn" type="button" data-v2-slot="hangul"><span class="ico">✏️</span><span class="meta"><strong>한글</strong><small>연결된 한글 앱 열기</small></span></button>'+
+      '<button class="v2-app-btn" type="button" data-v2-slot="math"><span class="ico">🔢</span><span class="meta"><strong>수학</strong><small>연결된 수학 앱 열기</small></span></button>'+
+      '<button class="v2-app-btn" type="button" data-v2-slot="lang"><span class="ico">🔤</span><span class="meta"><strong>언어</strong><small>연결된 언어 앱 열기</small></span></button>'+
+      '<button class="v2-app-btn" type="button" data-v2-slot="library"><span class="ico">📚</span><span class="meta"><strong>도서관</strong><small>연결된 도서관 앱 열기</small></span></button></div>';
+    panel.insertBefore(card,panel.firstChild);
+    card.querySelectorAll('[data-v2-slot]').forEach(function(btn){
+      btn.addEventListener('click',function(){
+        var key=btn.getAttribute('data-v2-slot');
+        var homeTile=document.querySelector('#launchGrid [data-slot="'+key+'"]');
+        if(homeTile) homeTile.click();
+        else alert('메인페이지 앱 연결 기능을 찾지 못했어요. 앱을 새로고침해 주세요.');
+      });
+    });
   }
   function makePanel() {
     if (document.getElementById('panelExplore')) return;
@@ -178,7 +209,7 @@
     renderBooks();
   }
   function boot() {
-    addStyles();makePanel();
+    addStyles();makePanel();addLearningAppLinks();
     if(!document.getElementById('panelExplore'))return;
     window.addEventListener('storage',function(e){if(e.key===STATE_KEY)render();});
     document.addEventListener('visibilitychange',function(){if(!document.hidden)render();});

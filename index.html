@@ -1202,6 +1202,16 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
 /* ── 홈 아래: 학습 줄 · 보상 ────────────────────────── */
 .home-foot{display:flex;flex-direction:column;gap:10px}
 .home-foot .home-today-line{margin-top:0}
+.external-study-card{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  margin:12px 0;padding:13px 15px;border:1px solid #dcd6fb;border-radius:18px;background:#f8f6ff;}
+.external-study-copy{display:flex;flex-direction:column;gap:4px;min-width:0}
+.external-study-copy strong{font-size:14px;color:#40377b}
+.external-study-copy small{font-size:12px;line-height:1.45;color:#77718f}
+.external-study-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex:0 0 auto}
+.external-study-right b{font-size:12px;color:#5147a4}
+#externalStudyBtn{border:0;border-radius:999px;padding:9px 13px;background:#6c5ce7;color:#fff;font:700 12px inherit}
+#externalStudyBtn:disabled{opacity:.48}
+@media(max-width:520px){.external-study-card{align-items:flex-start}.external-study-right{align-self:center}}
 
 /* ── 홈: 보상 (유튜브 키즈) ──────────────────────────── */
 .home-reward{
@@ -1884,6 +1894,17 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
         </div>
 
         <div class="launch-grid" id="launchGrid"></div>
+
+        <section class="external-study-card" id="externalStudyCard" aria-live="polite">
+          <div class="external-study-copy">
+            <strong>📚 외부 앱 학습 보상</strong>
+            <small id="externalStudyHint">학습 앱에서 공부한 뒤 돌아오면 사용 시간을 확인해요.</small>
+          </div>
+          <div class="external-study-right">
+            <b id="externalStudyTime">0 / 10분</b>
+            <button id="externalStudyBtn" type="button">확인 중…</button>
+          </div>
+        </section>
 
         <div class="home-foot">
         <!-- 보상: 오늘 학습 2회를 마치면 유튜브 키즈 20분 -->
@@ -5192,6 +5213,87 @@ var ART_ORDER = [
     });
     if (!pkgs.length) return;
     try { b.updateAllowedPackages(JSON.stringify(pkgs)); } catch (e) {}
+  }
+
+  var externalStudyStatus = null;
+  function refreshExternalStudyReward() {
+    var bridge = window.YuminLauncherBridge;
+    var card = $('externalStudyCard');
+    var btn = $('externalStudyBtn');
+    if (!card || !btn) return;
+    if (!bridge || typeof bridge.getExternalLearningStatus !== 'function') {
+      card.style.display = 'none';
+      return;
+    }
+    card.style.display = '';
+    try {
+      externalStudyStatus = JSON.parse(bridge.getExternalLearningStatus() || '{}');
+    } catch (e) { externalStudyStatus = null; }
+    var s = externalStudyStatus || {};
+    var hint = $('externalStudyHint');
+    var time = $('externalStudyTime');
+    if (!s.hasUsageAccess) {
+      hint.textContent = '별별 탐험대가 앱 사용시간을 확인하도록 권한을 한 번 켜 주세요.';
+      time.textContent = '권한 필요';
+      btn.textContent = '측정 권한 켜기';
+      btn.disabled = false;
+      return;
+    }
+    var mins = Math.floor(Math.max(0, Number(s.seconds) || 0) / 60);
+    time.textContent = mins + ' / 10분';
+    if (!s.packageName) {
+      hint.textContent = '한글·수학 등 연결한 학습 앱을 열고, 공부한 뒤 돌아오세요.';
+      btn.textContent = '학습 앱을 열어 주세요';
+      btn.disabled = true;
+    } else if (s.claimed) {
+      hint.textContent = (s.appName || '외부 앱') + ' 학습 보상은 이미 받았어요.';
+      btn.textContent = '별 적립 완료';
+      btn.disabled = true;
+    } else if (s.qualified) {
+      hint.textContent = (s.appName || '외부 앱') + '에서 실제 화면 사용 10분을 확인했어요.';
+      btn.textContent = '별 1개 받기';
+      btn.disabled = false;
+    } else {
+      hint.textContent = (s.appName || '외부 앱') + ' 사용시간을 측정하고 있어요. 앱을 켜 둔 채로 다른 일을 하면 시간이 쌓이지 않아요.';
+      btn.textContent = '10분 학습 후 돌아오기';
+      btn.disabled = true;
+    }
+  }
+
+  function claimExternalStudyReward() {
+    var bridge = window.YuminLauncherBridge;
+    if (!bridge) return;
+    var s = externalStudyStatus || {};
+    if (!s.hasUsageAccess) {
+      try { bridge.requestUsageAccess(); } catch (e) { toast('사용 기록 접근 설정을 열지 못했어요.'); }
+      return;
+    }
+    var today = todayStr();
+    var count = state.daily && state.daily.date === today ? Number(state.daily.count) || 0 : 0;
+    if (state.dailyCap > 0 && count >= state.dailyCap) {
+      toast('오늘 모을 수 있는 별을 모두 모았어요.');
+      return;
+    }
+    if (!s.qualified || s.claimed) return;
+    var claimed = false;
+    try { claimed = bridge.claimExternalLearningStar() === true; } catch (e) {}
+    if (!claimed) {
+      toast('10분 학습 시간이 아직 확인되지 않았어요.');
+      refreshExternalStudyReward();
+      return;
+    }
+    if (!addEarnedStar()) {
+      toast('오늘 별 적립 한도에 도달했어요.');
+      refreshExternalStudyReward();
+      return;
+    }
+    saveState();
+    renderAll();
+    if (window.ByeolFamily && typeof window.ByeolFamily.markDirty === 'function') {
+      try { window.ByeolFamily.markDirty(); } catch (e) {}
+    }
+    toast('외부 앱 학습 완료! 별 1개를 받았어요 ⭐');
+    refreshExternalStudyReward();
   }
 
   function launchSlotByKey(key) {
@@ -9751,6 +9853,14 @@ var ART_ORDER = [
     saveState();
   }
   renderAll();
+  var externalStudyBtn = $('externalStudyBtn');
+  if (externalStudyBtn) externalStudyBtn.addEventListener('click', claimExternalStudyReward);
+  refreshExternalStudyReward();
+  setInterval(refreshExternalStudyReward, 5000);
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden) refreshExternalStudyReward();
+  });
+  window.addEventListener('focus', refreshExternalStudyReward);
   switchTab('home');
   window.scrollTo(0, 0);
   if (!state.profileSet) showOnboard();

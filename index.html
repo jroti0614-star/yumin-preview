@@ -9131,6 +9131,14 @@ var ART_ORDER = [
       };
     },
     mapState: function () { return { placed: state.placed, today: dailyUsed(), cap: state.dailyCap, left: dailyLeft(), stars: availableStars(), quiz: quizStarsLeft(), gift: giftStarsLeft(), tickets: state.tickets }; },
+    spendTickets: function (amount) {
+      amount = Math.max(0, Math.floor(Number(amount) || 0));
+      if (!amount || state.tickets < amount) return { ok: false, tickets: state.tickets };
+      state.tickets -= amount;
+      saveState();
+      renderAll();
+      return { ok: true, tickets: state.tickets };
+    },
     /* 퀴즈 완료로 별 하나 모으기 (테스트용) — 하루 상한에 걸리면 ok:false */
     earnStar: function () {
       var ok = addEarnedStar();
@@ -9880,6 +9888,6 @@ var ART_ORDER = [
   });
 })();
 </script>
-<script src="byeol-v2.js?v=2.0.0-13"></script>
+<script src="byeol-v2.js?v=2.0.0-14"></script>
 </body>
 </html>

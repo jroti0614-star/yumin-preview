@@ -6529,6 +6529,8 @@ var ART_ORDER = [
     for (var pi = 0; pi < allPanels.length; pi++) {
       allPanels[pi].hidden = (allPanels[pi].id !== activePanelId);
     }
+    var explorePanel = document.getElementById('panelExplore');
+    if (explorePanel) { explorePanel.hidden = true; explorePanel.style.setProperty('display', 'none', 'important'); }
     var btns = document.querySelectorAll('.tab');
     for (var i = 0; i < btns.length; i++) btns[i].classList.toggle('on', btns[i].getAttribute('data-tab') === name);
     document.body.setAttribute('data-tab', name);

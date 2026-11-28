@@ -336,14 +336,17 @@
       age: num(newer.age, 0),
       weeklyFocus: mergeWeeklyFocus(local.weeklyFocus, remote.weeklyFocus),
       todayDone: mergeTodayDone(local.todayDone, remote.todayDone),
-      stars: maxNum(local.stars, remote.stars),
-      used: maxNum(local.used, remote.used),
-      spent: maxNum(local.spent, remote.spent),
+      /* 별 지갑은 한 기기의 동일 시점 스냅샷으로 병합한다.
+         stars/used 또는 giftStars를 기기별 최대값으로 따로 합치면,
+         '한 번에 붙이기'로 차감한 잔액이 오래된 기기 값으로 되살아날 수 있다. */
+      stars: num(newer.stars, 0),
+      used: num(newer.used, 0),
+      spent: num(newer.spent, 0),
       tickets: maxNum(local.tickets, remote.tickets),
       placed: num(newer.placed, 0),
       lessons: mergeLessons(local.lessons, remote.lessons),
       daily: mergeDaily(local.daily, remote.daily),
-      giftStars: maxNum(local.giftStars, remote.giftStars),
+      giftStars: num(newer.giftStars, 0),
       coupons: unionById(local.coupons, remote.coupons),
       requests: unionById(local.requests, remote.requests),
       /* 선물은 '더 최신 문서'의 값을 그대로 따른다.

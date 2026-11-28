@@ -43,8 +43,12 @@ button{-webkit-appearance:none;appearance:none;font:inherit;cursor:pointer;}
 .btn[disabled]{opacity:.5;}
 .btn.on{background:var(--accent);border-color:var(--accent);color:#fff;}
 .btns{display:flex;flex-wrap:wrap;gap:8px;}
-input[type=email],input[type=password],input[type=time]{width:100%;padding:11px 12px;border-radius:12px;
-  border:1.5px solid var(--line);font-size:16px;background:#fff;color:var(--ink);}
+input[type=email],input[type=password],input[type=time]{width:100%;padding:14px 13px;border-radius:12px;
+  border:1.5px solid var(--line);font-size:17px;background:#fff;color:var(--ink);min-height:50px;}
+.password-wrap{display:flex;align-items:stretch;gap:7px;}
+.password-wrap input{flex:1;min-width:0;}
+.password-toggle{border:1px solid var(--line);background:#f7f5ff;border-radius:12px;padding:0 13px;
+  color:var(--accent);font-size:13px;font-weight:700;white-space:nowrap;}
 label.field{display:block;margin:8px 0;}
 label.field span{display:block;font-size:12px;font-weight:700;color:var(--sub);margin-bottom:4px;}
 .summary{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
@@ -75,7 +79,7 @@ label.field span{display:block;font-size:12px;font-weight:700;color:var(--sub);m
   <h2>부모님 로그인</h2>
   <p class="hint">태블릿 '기기 설정 → 가족 동기화'와 같은 계정이에요.</p>
   <label class="field"><span>이메일</span><input id="email" type="email" inputmode="email" autocomplete="username" placeholder="thskek11@naver.com"></label>
-  <label class="field"><span>비밀번호</span><input id="password" type="password" autocomplete="current-password" placeholder="부모 계정 비밀번호"></label>
+  <label class="field"><span>비밀번호</span><div class="password-wrap"><input id="password" type="password" autocomplete="current-password" enterkeyhint="go" placeholder="부모 계정 비밀번호"><button class="password-toggle" id="showPassword" type="button" aria-pressed="false">보기</button></div></label>
   <div class="btns" style="margin-top:10px;">
     <button class="btn primary" id="loginBtn" style="flex:1;">로그인</button>
   </div>
@@ -99,6 +103,15 @@ label.field span{display:block;font-size:12px;font-weight:700;color:var(--sub);m
       <button class="btn" id="logoutBtn">로그아웃</button>
     </div>
     <p class="state" id="saveState"></p>
+    <div style="border-top:1px solid var(--line);margin-top:12px;padding-top:12px;">
+      <button class="btn soft" id="openPasswordChange" type="button">비밀번호 변경</button>
+      <div id="passwordChangeBox" class="hide" style="margin-top:10px;">
+        <label class="field"><span>새 비밀번호</span><input id="newPassword" type="password" autocomplete="new-password" placeholder="새 비밀번호 8자 이상"></label>
+        <label class="field"><span>새 비밀번호 확인</span><input id="confirmPassword" type="password" autocomplete="new-password" placeholder="새 비밀번호 다시 입력"></label>
+        <div class="btns"><button class="btn primary" id="savePassword" type="button">변경 저장</button><button class="btn" id="cancelPasswordChange" type="button">취소</button></div>
+        <p class="state" id="passwordChangeState"></p>
+      </div>
+    </div>
   </div>
 
   <!-- 유튜브 키즈 -->
@@ -428,6 +441,46 @@ label.field span{display:block;font-size:12px;font-weight:700;color:var(--sub);m
   }
 
   /* ── 로그인 ─────────────────────────────────────────── */
+  if ($('email')) $('email').value = cfg.email || '';
+  $('showPassword').addEventListener('click', function () {
+    var field = $('password');
+    var showing = field.type === 'text';
+    field.type = showing ? 'password' : 'text';
+    this.textContent = showing ? '보기' : '숨기기';
+    this.setAttribute('aria-pressed', showing ? 'false' : 'true');
+  });
+
+  $('openPasswordChange').addEventListener('click', function () {
+    $('passwordChangeBox').classList.toggle('hide');
+    $('passwordChangeState').textContent = '';
+  });
+  $('cancelPasswordChange').addEventListener('click', function () {
+    $('passwordChangeBox').classList.add('hide');
+    $('newPassword').value = '';
+    $('confirmPassword').value = '';
+    $('passwordChangeState').textContent = '';
+  });
+  $('savePassword').addEventListener('click', function () {
+    var next = $('newPassword').value || '';
+    var confirm = $('confirmPassword').value || '';
+    var btn = this;
+    if (next.length < 8) { $('passwordChangeState').textContent = '새 비밀번호는 8자 이상 입력해 주세요.'; return; }
+    if (next !== confirm) { $('passwordChangeState').textContent = '새 비밀번호가 서로 달라요.'; return; }
+    btn.disabled = true;
+    $('passwordChangeState').textContent = '변경 중…';
+    ensureToken().then(function () {
+      return req('PUT', '/auth/v1/user', { password: next });
+    }).then(function () {
+      $('newPassword').value = '';
+      $('confirmPassword').value = '';
+      $('passwordChangeBox').classList.add('hide');
+      $('passwordChangeState').textContent = '비밀번호를 변경했어요.';
+      state('비밀번호를 변경했어요.', 'ok');
+    }).catch(function () {
+      $('passwordChangeState').textContent = '변경하지 못했어요. 다시 로그인한 뒤 시도해 주세요.';
+    }).then(function () { btn.disabled = false; });
+  });
+
   $('loginBtn').addEventListener('click', function () {
     var em = ($('email').value || '').trim();
     var pw = $('password').value || '';

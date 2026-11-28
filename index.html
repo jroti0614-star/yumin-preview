@@ -545,6 +545,13 @@ h1,h2,h3,p{margin:0}
   background:#fbfbfe;font-size:14px;color:var(--ink);
 }
 .field input:focus{outline:none;border-color:var(--purple);background:#fff}
+.field select{
+  padding:12px 10px;border-radius:13px;border:1.5px solid var(--line);
+  background:#fbfbfe;font-size:14px;color:var(--ink);font-family:inherit;
+}
+.field select:focus{outline:none;border-color:var(--purple);background:#fff}
+.birth-picks{display:flex;gap:8px}
+.birth-picks select{flex:1 1 0;min-width:0}
 .g-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:4px}
 .g-state{font-size:12px;color:#0e7a4b}
 .voice-list{display:flex;flex-direction:column;gap:8px}
@@ -1816,14 +1823,10 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
     </label>
     <div class="field" style="margin-bottom:0">
       <span>생년월일</span>
-      <input id="obBirth" type="date" min="2015-01-01" placeholder="2023-06-07" aria-label="아이 생년월일">
-      <div class="ob-ages" id="obAges" role="group" aria-label="생년월일 빠르게 고르기" style="margin-top:9px">
-        <button class="chip" type="button" data-obage="3">3살</button>
-        <button class="chip" type="button" data-obage="4">4살</button>
-        <button class="chip" type="button" data-obage="5">5살</button>
-        <button class="chip" type="button" data-obage="6">6살</button>
-        <button class="chip" type="button" data-obage="7">7살</button>
-        <button class="chip" type="button" data-obage="8">8살 이상</button>
+      <div class="birth-picks" role="group" aria-label="아이 생년월일">
+        <select id="obBirthYear" aria-label="태어난 연도"><option value="">년</option></select>
+        <select id="obBirthMonth" aria-label="태어난 월"><option value="">월</option></select>
+        <select id="obBirthDay" aria-label="태어난 일"><option value="">일</option></select>
       </div>
     </div>
     <p class="ob-pick" id="obPick">생년월일을 넣으면 만 나이로 학습 난이도를 맞춰요.</p>
@@ -2317,15 +2320,15 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
         <span>아이 이름</span>
         <input id="childNameInput" type="text" maxlength="10" placeholder="유민이">
       </label>
-      <label class="field">
+      <div class="field">
         <span>생년월일</span>
-        <input id="childBirthInput" type="date" min="2015-01-01" aria-label="아이 생년월일">
-      </label>
+        <div class="birth-picks" role="group" aria-label="아이 생년월일">
+          <select id="childBirthYear" aria-label="태어난 연도"><option value="">년</option></select>
+          <select id="childBirthMonth" aria-label="태어난 월"><option value="">월</option></select>
+          <select id="childBirthDay" aria-label="태어난 일"><option value="">일</option></select>
+        </div>
+      </div>
       <p class="wf-range" id="childBirthHint">생년월일을 넣으면 만 나이·개월이 자동으로 계산돼요.</p>
-      <label class="field">
-        <span>생년월일을 모르면 만 나이로</span>
-        <input id="childAgeInput" type="text" inputmode="numeric" maxlength="2" placeholder="예) 4">
-      </label>
       <div class="field">
         <span>연령대 (학습 난이도 기준)</span>
         <div class="chips" id="ageChips" role="group" aria-label="연령대">
@@ -4209,6 +4212,70 @@ var ART_ORDER = [
     return { known: false, years: 0, months: 0, exact: false, label: '' };
   }
 
+  /* ── 생년월일: 년 · 월 · 일 세 칸 드롭다운 ─────────────── */
+  /* 세 칸을 'YYYY-MM-DD'로 합쳐 childBirthdate에 넣으면 ageFromBirthdate가 만 나이·개월을 계산한다.
+     만 나이를 직접 적는 칸은 화면에서 뺐고, 예전에 저장된 childAge 값만 그대로 읽어 쓴다. */
+  var BIRTH_YEARS_BACK = 14;   /* 올해부터 14년 전까지(예: 2026~2012) 연도 목록에 보여 준다 */
+
+  function setSelOptions(sel, pairs, head) {
+    if (!sel) return;
+    if (sel.options.length === pairs.length + (head ? 1 : 0)) return;
+    var html = head ? '<option value="">' + head + '</option>' : '';
+    for (var i = 0; i < pairs.length; i++) {
+      html += '<option value="' + pairs[i][0] + '">' + pairs[i][1] + '</option>';
+    }
+    sel.innerHTML = html;
+  }
+
+  /* 그 달의 마지막 날 (m: 1~12). 연도를 모를 때는 2000년(윤년)으로 2월 29일까지 둔다 */
+  function daysInMonth(y, m) {
+    if (!m) return 31;
+    return new Date(y || 2000, m, 0).getDate();
+  }
+
+  /* 'YYYY-MM-DD'를 세 칸에 보여 준다. 없는 날짜(2월 31일 등)는 그 달 마지막 날로 보정하고,
+     보정된 'YYYY-MM-DD'를 돌려준다. 한 칸이라도 못 채우면 세 칸을 비우고 ''를 돌려준다. */
+  function paintBirthSelects(yEl, mEl, dEl, value) {
+    if (!yEl || !mEl || !dEl) return '';
+    var mm = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(value || ''));
+    var yv = mm ? Number(mm[1]) : 0;
+    var mv = mm ? Number(mm[2]) : 0;
+    var dv = mm ? Number(mm[3]) : 0;
+    var nowY = new Date().getFullYear();
+    var i;
+
+    var years = [];
+    for (i = 0; i <= BIRTH_YEARS_BACK; i++) years.push([String(nowY - i), (nowY - i) + '년']);
+    var listed = false;
+    for (i = 0; i < years.length; i++) if (Number(years[i][0]) === yv) listed = true;
+    if (yv && !listed) years.push([String(yv), yv + '년']);   /* 목록 밖 예전 생년월일도 보이게 */
+    setSelOptions(yEl, years, '년');
+
+    var months = [];
+    for (i = 1; i <= 12; i++) months.push([String(i), i + '월']);
+    setSelOptions(mEl, months, '월');
+
+    if (mv > 12) mv = 0;
+    var dim = daysInMonth(yv, mv);
+    if (dv > dim) dv = dim;
+    var days = [];
+    for (i = 1; i <= dim; i++) days.push([String(i), i + '일']);
+    setSelOptions(dEl, days, '일');
+
+    yEl.value = yv ? String(yv) : '';
+    mEl.value = mv ? String(mv) : '';
+    dEl.value = dv ? String(dv) : '';
+    return (yv && mv && dv) ? (yv + '-' + pad2(mv) + '-' + pad2(dv)) : '';
+  }
+
+  /* 세 칸을 합쳐 'YYYY-MM-DD'. 한 칸이라도 비어 있으면 '' */
+  function readBirthSelects(yEl, mEl, dEl) {
+    if (!yEl || !mEl || !dEl) return '';
+    var y = Number(yEl.value), m = Number(mEl.value), d = Number(dEl.value);
+    if (!y || !m || !d) return '';
+    return y + '-' + pad2(m) + '-' + pad2(d);
+  }
+
   function saveState() {
     lastChangeAt = Date.now();
     if (!applyingRemote && window.ByeolFamily && typeof window.ByeolFamily.markDirty === 'function') {
@@ -5700,7 +5767,7 @@ var ART_ORDER = [
     return Math.max(0, state.dailyCap - dailyUsed());
   }
   function dailyNote() {
-    if (state.dailyCap <= 0) return '오늘 모은 별: ' + dailyUsed() + '개 · 제한 없음';
+    if (state.dailyCap <= 0) return '오늘 모은 별: ' + dailyUsed() + '개';
     return '오늘 모은 별: ' + dailyUsed() + ' / ' + state.dailyCap + '개';
   }
 
@@ -6132,12 +6199,8 @@ var ART_ORDER = [
   function renderGuardian() {
     if (typeof renderSleepCard === 'function') renderSleepCard();
     $('childNameInput').value = gDraft.name;
-    $('childAgeInput').value = gDraft.childAge ? String(gDraft.childAge) : '';
-    var birthEl = $('childBirthInput');
-    if (birthEl) {
-      birthEl.max = ymdKey(new Date());
-      if (document.activeElement !== birthEl) birthEl.value = gDraft.childBirthdate || '';
-    }
+    if ($('childAgeInput')) $('childAgeInput').value = gDraft.childAge ? String(gDraft.childAge) : '';
+    if (gDraft.childBirthdate) paintBirthSelects($('childBirthYear'), $('childBirthMonth'), $('childBirthDay'), gDraft.childBirthdate);
     var birthHint = $('childBirthHint');
     if (birthHint) {
       var dAge = ageFromBirthdate(gDraft.childBirthdate);
@@ -8386,9 +8449,13 @@ var ART_ORDER = [
     $('childDirty').hidden = false;
     $('childState').textContent = '';
   });
+  /* 생년월일 세 칸 → 고른 순간 만 나이·연령대를 다시 맞춘다. 아직 다 안 골랐으면 칸을 그대로 둔다. */
+  var gYEl = $('childBirthYear'), gMEl = $('childBirthMonth'), gDEl = $('childBirthDay');
   function onBirthEdit() {
-    gDraft.childBirthdate = this.value || '';
-    var a = ageFromBirthdate(gDraft.childBirthdate);
+    var raw = readBirthSelects(gYEl, gMEl, gDEl);
+    var v = raw ? (paintBirthSelects(gYEl, gMEl, gDEl, raw) || '') : '';
+    gDraft.childBirthdate = v;
+    var a = ageFromBirthdate(v);
     if (a) {
       gDraft.childAge = a.years;
       gDraft.age = ageGroupForMonths(a.months);
@@ -8398,16 +8465,19 @@ var ART_ORDER = [
     $('childState').textContent = '';
     renderGuardian();
   }
-  var birthInput = $('childBirthInput');
-  if (birthInput) {
-    birthInput.addEventListener('input', onBirthEdit);
-    birthInput.addEventListener('change', onBirthEdit);
+  if (gYEl) {
+    gYEl.addEventListener('change', onBirthEdit);
+    gMEl.addEventListener('change', onBirthEdit);
+    gDEl.addEventListener('change', onBirthEdit);
   }
-  $('childAgeInput').addEventListener('input', function () {
+  /* 만 나이 직접 입력 칸은 화면에서 뺐다 — 예전 화면이 남아 있을 때만 동작한다 */
+  var childAgeEl = $('childAgeInput');
+  if (childAgeEl) childAgeEl.addEventListener('input', function () {
     this.value = this.value.replace(/[^0-9]/g, '').slice(0, 2);
     var n = Number(this.value) || 0;
     gDraft.childAge = n;
     gDraft.childBirthdate = '';                       /* 나이로 적으면 생년월일은 비운다 */
+    paintBirthSelects(gYEl, gMEl, gDEl, '');
     if (n >= 2 && n <= 9) gDraft.age = ageGroupOf(n);   // 나이를 적으면 연령대도 맞춘다
     gDraft.dirty = true;
     $('childDirty').hidden = false;
@@ -8728,22 +8798,13 @@ var ART_ORDER = [
   function obPaint() {
     var a = ageFromBirthdate(obBirth);
     obAge = a ? a.years : 0;
-    var chips = document.querySelectorAll('#obAges [data-obage]');
-    for (var i = 0; i < chips.length; i++) {
-      var v = Number(chips[i].getAttribute('data-obage'));
-      chips[i].classList.toggle('on', a ? (v === 8 ? obAge >= 8 : v === obAge) : false);
-    }
     var lab = $('obPick');
     if (lab) {
       lab.textContent = a
         ? ('만 ' + a.years + '세 (' + a.months + '개월) · ' + AGES[ageGroupForMonths(a.months)].name + ' 난이도로 시작해요.')
         : '생년월일을 넣으면 만 나이로 학습 난이도를 맞춰요.';
     }
-    var input = $('obBirth');
-    if (input) {
-      input.max = ymdKey(new Date());
-      if (obBirth && input.value !== obBirth) input.value = obBirth;
-    }
+    if (obBirth) paintBirthSelects($('obBirthYear'), $('obBirthMonth'), $('obBirthDay'), obBirth);
   }
 
   function showOnboard() {
@@ -8751,6 +8812,7 @@ var ART_ORDER = [
     if (!scr) return;
     if ($('obName')) $('obName').value = state.name || '';
     obBirth = state.childBirthdate || (state.childAge ? birthForYears(state.childAge) : '');
+    paintBirthSelects($('obBirthYear'), $('obBirthMonth'), $('obBirthDay'), obBirth);
     obPaint();
     if ($('obState')) { $('obState').textContent = ''; $('obState').style.color = '#0e7a4b'; }
     scr.hidden = false;
@@ -8764,22 +8826,21 @@ var ART_ORDER = [
     document.body.style.overflow = '';
   }
 
-  var obChipEls = document.querySelectorAll('#obAges [data-obage]');
-  for (var oci = 0; oci < obChipEls.length; oci++) {
-    obChipEls[oci].addEventListener('click', function () {
-      obBirth = birthForYears(Number(this.getAttribute('data-obage')));
-      obPaint();
-    });
+  /* 세 칸을 고르면 만 나이를 바로 보여 준다. 아직 다 안 골랐으면 고른 칸을 그대로 둔다. */
+  var obYEl = $('obBirthYear'), obMEl = $('obBirthMonth'), obDEl = $('obBirthDay');
+  function onObBirth() {
+    var raw = readBirthSelects(obYEl, obMEl, obDEl);
+    obBirth = raw ? (paintBirthSelects(obYEl, obMEl, obDEl, raw) || '') : '';
+    obPaint();
   }
-  var obBirthEl = $('obBirth');
-  if (obBirthEl) {
-    var onObBirth = function () { obBirth = this.value || ''; obPaint(); };
-    obBirthEl.addEventListener('input', onObBirth);
-    obBirthEl.addEventListener('change', onObBirth);
+  if (obYEl) {
+    obYEl.addEventListener('change', onObBirth);
+    obMEl.addEventListener('change', onObBirth);
+    obDEl.addEventListener('change', onObBirth);
   }
   $('obStart').addEventListener('click', function () {
     var name = $('obName').value.trim();
-    var birth = (obBirthEl && obBirthEl.value) || obBirth;
+    var birth = obBirth || readBirthSelects(obYEl, obMEl, obDEl);
     var bAge = ageFromBirthdate(birth);
     if (!name) {
       $('obState').style.color = '#c0392b';

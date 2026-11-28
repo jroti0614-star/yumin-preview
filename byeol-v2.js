@@ -121,24 +121,28 @@
   }
   function addLearningAppLinks() {
     var panel=document.getElementById('panelExplore');
-    if(!panel || document.getElementById('v2LearningAppLinks')) return;
-    var card=document.createElement('section');
-    card.className='v2-app-links';
-    card.id='v2LearningAppLinks';
-    card.innerHTML='<h3>📲 연결 학습 앱 바로가기</h3><p>탐험 화면에서 바로 학습 앱을 열 수 있어요.</p><div class="v2-app-grid">'+
-      '<button class="v2-app-btn" type="button" data-v2-slot="hangul"><span class="ico">✏️</span><span class="meta"><strong>한글</strong><small>연결된 한글 앱 열기</small></span></button>'+
-      '<button class="v2-app-btn" type="button" data-v2-slot="math"><span class="ico">🔢</span><span class="meta"><strong>수학</strong><small>연결된 수학 앱 열기</small></span></button>'+
-      '<button class="v2-app-btn" type="button" data-v2-slot="lang"><span class="ico">🔤</span><span class="meta"><strong>언어</strong><small>연결된 언어 앱 열기</small></span></button>'+
-      '<button class="v2-app-btn" type="button" data-v2-slot="library"><span class="ico">📚</span><span class="meta"><strong>도서관</strong><small>연결된 도서관 앱 열기</small></span></button></div>';
-    panel.appendChild(card);
-    card.querySelectorAll('[data-v2-slot]').forEach(function(btn){
-      btn.addEventListener('click',function(){
-        var key=btn.getAttribute('data-v2-slot');
-        var homeTile=document.querySelector('#launchGrid [data-slot="'+key+'"]');
-        if(homeTile) homeTile.click();
-        else alert('메인페이지 앱 연결 기능을 찾지 못했어요. 앱을 새로고침해 주세요.');
+    if(!panel) return;
+    var card=document.getElementById('v2LearningAppLinks');
+    if(!card) {
+      card=document.createElement('section');
+      card.className='v2-app-links';
+      card.id='v2LearningAppLinks';
+      card.innerHTML='<h3>📲 연결 학습 앱 바로가기</h3><p>탐험 화면에서 바로 학습 앱을 열 수 있어요.</p><div class="v2-app-grid">'+
+        '<button class="v2-app-btn" type="button" data-v2-slot="hangul"><span class="ico">✏️</span><span class="meta"><strong>한글</strong><small>연결된 한글 앱 열기</small></span></button>'+
+        '<button class="v2-app-btn" type="button" data-v2-slot="math"><span class="ico">🔢</span><span class="meta"><strong>수학</strong><small>연결된 수학 앱 열기</small></span></button>'+
+        '<button class="v2-app-btn" type="button" data-v2-slot="lang"><span class="ico">🔤</span><span class="meta"><strong>언어</strong><small>연결된 언어 앱 열기</small></span></button>'+
+        '<button class="v2-app-btn" type="button" data-v2-slot="library"><span class="ico">📚</span><span class="meta"><strong>도서관</strong><small>연결된 도서관 앱 열기</small></span></button></div>';
+      card.querySelectorAll('[data-v2-slot]').forEach(function(btn){
+        btn.addEventListener('click',function(){
+          var key=btn.getAttribute('data-v2-slot');
+          var homeTile=document.querySelector('#launchGrid [data-slot="'+key+'"]');
+          if(homeTile) homeTile.click();
+          else alert('메인페이지 앱 연결 기능을 찾지 못했어요. 앱을 새로고침해 주세요.');
+        });
       });
-    });
+    }
+    /* 이전 버전에서 학습 탭에 남은 카드를 탐험 탭으로 이동 */
+    if(card.parentElement!==panel) panel.appendChild(card);
   }
   function makePanel() {
     if (document.getElementById('panelExplore')) return;

@@ -105,10 +105,86 @@
       .v2-books{display:grid;gap:9px;margin-top:12px}.v2-book{border:1px solid #e9e5f5;border-radius:14px;padding:12px;background:#fff}
       .v2-book strong{display:block;font-size:14px;margin-bottom:5px}.v2-book p{white-space:pre-wrap;margin:0 0 8px;font-size:12px;line-height:1.6;color:#655f7e}
       .v2-empty{color:#8c87a1;font-size:12px;padding:10px 0}
+
+      .v2-homecar{display:flex;align-items:center;gap:14px;padding:14px 16px;margin:0 0 14px;border:1px solid #dfe7fb;border-radius:20px;background:linear-gradient(120deg,#eef5ff,#fff8e9);cursor:pointer;text-align:left;width:100%;color:#302b55}
+      .v2-homecar-art,.v2-car-art{display:grid;place-items:center;border-radius:18px;background:linear-gradient(145deg,#dceaff,#fff);font-size:54px;flex:0 0 92px;height:82px}
+      .v2-homecar-art[data-paint="blue"],.v2-car-art[data-paint="blue"]{background:linear-gradient(145deg,#cfe5ff,#f4f9ff)}
+      .v2-homecar-art[data-paint="red"],.v2-car-art[data-paint="red"]{background:linear-gradient(145deg,#ffd7d7,#fff5f2)}
+      .v2-homecar-art[data-paint="yellow"],.v2-car-art[data-paint="yellow"]{background:linear-gradient(145deg,#fff0b8,#fffaf0)}
+      .v2-homecar-copy{flex:1;min-width:0}.v2-homecar-copy strong{display:block;font-size:16px}.v2-homecar-copy small{display:block;color:#77718f;font-size:12px;margin-top:4px}
+      .v2-homecar-go{font-size:12px;font-weight:800;color:#5548bb;white-space:nowrap}
+      .v2-garage{margin-top:14px;padding:16px;border-radius:20px;border:1px solid #e5e1f3;background:#fff}
+      .v2-garage-head{font-size:17px;font-weight:800;color:#383354;margin-bottom:10px}
+      .v2-car-preview{display:flex;align-items:center;gap:14px;padding:12px;border-radius:17px;background:#f7f8ff}
+      .v2-car-preview .v2-car-art{height:92px;flex-basis:104px;font-size:60px}
+      .v2-car-meta{font-size:12px;color:#77718f;line-height:1.6}
+      .v2-car-group{margin-top:14px}.v2-car-group strong{display:block;font-size:13px;color:#4a4566;margin-bottom:8px}
+      .v2-car-options{display:flex;flex-wrap:wrap;gap:7px}
+      .v2-car-option{border:1px solid #e4def3;background:#fff;border-radius:999px;padding:8px 11px;font-size:12px;color:#554f70}
+      .v2-car-option.active{border-color:#7765eb;background:#f0edff;color:#5143b7;font-weight:800}
+      .v2-car-option:disabled{opacity:.45;background:#f6f5f9}
+      .v2-car-note{font-size:11px;color:#8c87a1;margin-top:8px;line-height:1.5}
+      @media(max-width:380px){.v2-homecar{gap:9px;padding:11px}.v2-homecar-art{flex-basis:70px;height:68px;font-size:43px}.v2-homecar-go{font-size:11px}.v2-car-preview .v2-car-art{flex-basis:82px}}
       @media(max-width:380px){.v2-grid{grid-template-columns:1fr}.v2-hero{padding:16px}}
     `;
     var st=document.createElement('style');st.id='byeolV2Style';st.textContent=css;document.head.appendChild(st);
   }
+  function ensureCar() {
+    if (!extra.car || typeof extra.car !== 'object') extra.car = {};
+    if (!extra.car.paint) extra.car.paint = 'blue';
+    if (!extra.car.wheels) extra.car.wheels = 'standard';
+    if (!extra.car.decal) extra.car.decal = 'star';
+  }
+  function carOptions() {
+    return {
+      paint:[{id:'blue',label:'파란색',need:0},{id:'red',label:'빨간색',need:3},{id:'yellow',label:'노란색',need:6}],
+      wheels:[{id:'standard',label:'기본 바퀴',need:0},{id:'sport',label:'스포츠 바퀴',need:4}],
+      decal:[{id:'star',label:'별 스티커',need:0},{id:'lightning',label:'번개 스티커',need:8}]
+    };
+  }
+  function isCarItemUnlocked(item){return completedLessons()>=item.need;}
+  function makeHomeCarCard() {
+    if(document.getElementById('v2HomeCar'))return;
+    var home=document.getElementById('panelHome'),dash=home&&home.querySelector('.home-dash');
+    if(!dash)return;
+    var card=document.createElement('button');
+    card.type='button';card.id='v2HomeCar';card.className='v2-homecar';
+    card.innerHTML='<span class="v2-homecar-art" id="v2HomeCarArt">🚓</span><span class="v2-homecar-copy"><strong>🚨 나의 출동 차량</strong><small id="v2HomeCarDesc">내 차를 꾸며 보세요!</small></span><span class="v2-homecar-go">차고 열기 ›</span>';
+    dash.parentNode.insertBefore(card,dash);
+    card.addEventListener('click',function(){clickTab('explore');});
+  }
+  function renderCar() {
+    ensureCar();
+    var opts=carOptions(),n=completedLessons();
+    var find=function(type){return opts[type].filter(function(x){return x.id===extra.car[type]&&isCarItemUnlocked(x);})[0]||opts[type][0];};
+    var paint=find('paint'),wheels=find('wheels'),decal=find('decal');
+    extra.car.paint=paint.id;extra.car.wheels=wheels.id;extra.car.decal=decal.id;
+    var homeArt=document.getElementById('v2HomeCarArt'),homeDesc=document.getElementById('v2HomeCarDesc');
+    if(homeArt){homeArt.textContent='🚓';homeArt.setAttribute('data-paint',paint.id);}
+    if(homeDesc)homeDesc.textContent=paint.label+' · '+wheels.label+' · '+decal.label;
+    var art=document.getElementById('v2CarArt'),meta=document.getElementById('v2CarMeta');
+    if(art){art.textContent='🚓';art.setAttribute('data-paint',paint.id);}
+    if(meta)meta.textContent=paint.label+' 차량 · '+wheels.label+' · '+decal.label;
+    var box=document.getElementById('v2CarOptions');if(!box)return;
+    var groups=[['paint','차량 색상',opts.paint],['wheels','바퀴',opts.wheels],['decal','스티커',opts.decal]];
+    box.innerHTML=groups.map(function(g){return '<div class="v2-car-group"><strong>'+g[1]+'</strong><div class="v2-car-options">'+g[2].map(function(item){
+      var unlocked=isCarItemUnlocked(item),active=extra.car[g[0]]===item.id;
+      var label=unlocked?item.label:'🔒 '+item.label+' · 학습 '+item.need+'개';
+      return '<button type="button" class="v2-car-option'+(active?' active':'')+'" data-car-type="'+g[0]+'" data-car-value="'+item.id+'" '+(unlocked?'':'disabled')+'>'+label+'</button>';
+    }).join('')+'</div></div>';}).join('')+'<p class="v2-car-note">학습을 완료하면 새 꾸미기 아이템이 열려요. 현재 완료한 학습 '+n+'개</p>';
+  }
+  function bindCarOptions() {
+    var box=document.getElementById('v2CarOptions');if(!box||box.dataset.bound==='1')return;
+    box.dataset.bound='1';
+    box.addEventListener('click',function(e){
+      var btn=e.target.closest('[data-car-type][data-car-value]');if(!btn||btn.disabled)return;
+      ensureCar();var type=btn.getAttribute('data-car-type'),value=btn.getAttribute('data-car-value');
+      var item=(carOptions()[type]||[]).filter(function(x){return x.id===value;})[0];
+      if(!item||!isCarItemUnlocked(item))return;
+      extra.car[type]=value;saveExtra();renderCar();
+    });
+  }
+
   function makePanel() {
     if (document.getElementById('panelExplore')) return;
     var main=document.getElementById('main'), nav=document.querySelector('.tabbar-inner');
@@ -125,6 +201,11 @@
         <button class="v2-btn" id="v2MissionGo" type="button">미션 시작하기</button>
         <p id="v2MissionState" style="margin:9px 0 0;font-size:11px;color:#77718f" aria-live="polite"></p>
       </div>
+      <section class="v2-garage">
+        <div class="v2-garage-head">🚓 나만의 출동 차량</div>
+        <div class="v2-car-preview"><div class="v2-car-art" id="v2CarArt" data-paint="blue">🚓</div><div class="v2-car-meta" id="v2CarMeta">파란색 차량 · 기본 바퀴 · 별 스티커</div></div>
+        <div id="v2CarOptions"></div>
+      </section>
 `;
     main.appendChild(panel);
     var tab=document.createElement('button');tab.className='tab';tab.type='button';tab.dataset.tab='explore';tab.innerHTML='<span aria-hidden="true">🚀</span><b>탐험</b>';
@@ -157,6 +238,7 @@
   function render() {
     loadState();
     var p=getProgress(), mission=currentMission();
+    renderCar();
     checkMissionProgress(mission);
     var avatar=['🚓','🚒','🚁','🛸','🚀','🌟'][p.level-1]||'🚓';
     document.getElementById('v2Avatar').textContent=avatar;
@@ -184,7 +266,7 @@
 
   }
   function boot() {
-    addStyles();makePanel();
+    addStyles();makeHomeCarCard();makePanel();bindCarOptions();
     if(!document.getElementById('panelExplore'))return;
     window.addEventListener('storage',function(e){if(e.key===STATE_KEY || e.key===V2_KEY)render();});
     document.addEventListener('visibilitychange',function(){if(!document.hidden)render();});

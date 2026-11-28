@@ -26,7 +26,7 @@
     ytMinutes: 20,          /* 유튜브 키즈 한 번에 보는 시간(분) */
     ytDailySessions: 0,     /* 하루에 볼 수 있는 횟수 (0 = 제한 없음) */
     rewardNeed: 2,          /* 보상을 열려면 오늘 마칠 학습 횟수 */
-    dailyCap: 2,            /* 별 지도에 하루 붙일 수 있는 별 수 */
+    dailyCap: 2,            /* 퀴즈로 하루에 모을 수 있는 별 수 (별 지도 붙이기는 제한 없음) */
     lockOn: false,          /* 사용 시간 제한 켜기 */
     lockStart: '21:00',
     lockEnd: '07:00',
@@ -343,6 +343,7 @@
       placed: num(newer.placed, 0),
       lessons: mergeLessons(local.lessons, remote.lessons),
       daily: mergeDaily(local.daily, remote.daily),
+      giftStars: maxNum(local.giftStars, remote.giftStars),
       coupons: unionById(local.coupons, remote.coupons),
       requests: unionById(local.requests, remote.requests),
       gift: newer.gift || (lt >= rt ? remote.gift : local.gift) || null,

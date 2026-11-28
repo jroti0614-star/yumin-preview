@@ -2452,18 +2452,7 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
 
     <div class="g-panel" id="gPanelDevice" data-gpanel="device" role="tabpanel" aria-labelledby="gTabDevice" hidden>
 
-    <details class="g-sec" id="gSecApps" open>
-      <summary><span class="gs-title">🧩 앱 연결</span><span class="gs-sub" id="gsAppsSub">홈 4칸</span></summary>
-      <div class="gs-body">
-        <div class="card g-card" id="launcherAdminCard">
-          <h3>런처 앱 연결</h3>
-          <p class="g-hint">홈 화면의 <b>한글 · 수학 · 언어 · 도서관</b> 칸과 <b>유튜브 키즈</b> 보상에 열 앱을 연결해요. <b>앱 고르기</b>를 누르면 태블릿에 설치된 앱이 아이콘으로 나오고, 한 번 누르면 바로 연결돼요.</p>
-          <div class="launch-admin" id="launchAdmin"></div>
-        </div>
-      </div>
-    </details>
-
-    <details class="g-sec" id="gSecTime">
+    <details class="g-sec" id="gSecTime" open>
       <summary><span class="gs-title">🌙 시간 · 화면 고정</span><span class="gs-sub" id="gsTimeSub">사용 시간 제한</span></summary>
       <div class="gs-body">
         <div class="card g-card" id="sleepCard">
@@ -2492,6 +2481,17 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
             <button class="btn" id="pinToggle" type="button" disabled>켜기</button>
           </div>
           <p class="g-hint">켜면 <span class="kid-name">유민이</span>가 별별 탐험대 안에서만 놀 수 있어요. 연결해 둔 학습 앱을 열면 화면 고정이 잠시 풀렸다가, 별별 탐험대로 돌아오면 다시 켜져요. 홈 버튼까지 막으려면 태블릿 설정에서 기본 홈 앱을 별별 탐험대로 정해 주세요. 기본은 꺼짐이에요.</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="g-sec" id="gSecApps">
+      <summary><span class="gs-title">🧩 앱 연결</span><span class="gs-sub" id="gsAppsSub">홈 4칸</span></summary>
+      <div class="gs-body">
+        <div class="card g-card" id="launcherAdminCard">
+          <h3>런처 앱 연결</h3>
+          <p class="g-hint">홈 화면의 <b>한글 · 수학 · 언어 · 도서관</b> 칸과 <b>유튜브 키즈</b> 보상에 열 앱을 연결해요. <b>앱 고르기</b>를 누르면 태블릿에 설치된 앱이 아이콘으로 나오고, 한 번 누르면 바로 연결돼요.</p>
+          <div class="launch-admin" id="launchAdmin"></div>
         </div>
       </div>
     </details>
@@ -8237,7 +8237,7 @@ var ART_ORDER = [
   /* 학습 관리(기본) · 앱 연결 · 앱 서랍 · 기기 설정. 홈에서 미연결 칸이나
      '앱 서랍'을 누르면 PIN 확인 뒤 해당 하위 탭으로 바로 들어간다. */
   var GUARDIAN_TABS = ['study', 'drawer', 'device'];
-  var DEVICE_SECS = ['gSecApps', 'gSecTime', 'gSecFam', 'gSecInfo'];
+  var DEVICE_SECS = ['gSecTime', 'gSecApps', 'gSecFam', 'gSecInfo'];
   var guardianTab = 'study';
   var guardianJump = null;   // { tab: 'device' | 'drawer', key: 'hangul' | '', sec: 'gSecApps' }
 

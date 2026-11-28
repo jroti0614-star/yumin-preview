@@ -6523,9 +6523,11 @@ var ART_ORDER = [
   function switchTab(name) {
     if (name === 'guardian') { guardianJump = null; enterGuardian(null, null); return; }
     if (typeof clearHint === 'function') clearHint();
-    for (var key in TABS) {
-      if (!Object.prototype.hasOwnProperty.call(TABS, key)) continue;
-      $(TABS[key]).hidden = (key !== name);
+    /* 탐험 패널처럼 동적으로 추가된 패널도 포함해 항상 한 화면만 표시 */
+    var activePanelId = TABS[name];
+    var allPanels = document.querySelectorAll('main.wrap > .panel');
+    for (var pi = 0; pi < allPanels.length; pi++) {
+      allPanels[pi].hidden = (allPanels[pi].id !== activePanelId);
     }
     var btns = document.querySelectorAll('.tab');
     for (var i = 0; i < btns.length; i++) btns[i].classList.toggle('on', btns[i].getAttribute('data-tab') === name);
@@ -9877,6 +9879,6 @@ var ART_ORDER = [
   });
 })();
 </script>
-<script src="byeol-v2.js?v=2.0.0-9"></script>
+<script src="byeol-v2.js?v=2.0.0-10"></script>
 </body>
 </html>

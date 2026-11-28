@@ -133,6 +133,15 @@
       });
   }
 
+  function changePassword(password) {
+    if (typeof password !== 'string' || password.length < 8) {
+      return Promise.reject(new Error('새 비밀번호는 8자 이상이어야 해요'));
+    }
+    return ensureToken().then(function () {
+      return request('PUT', '/auth/v1/user', { password: password });
+    });
+  }
+
   function refreshSession() {
     if (!cfg.session || !cfg.session.refresh_token) return Promise.reject(new Error('세션이 없어요'));
     return request('POST', '/auth/v1/token?grant_type=refresh_token', { refresh_token: cfg.session.refresh_token })
@@ -610,8 +619,8 @@
       '<p class="g-hint">부모 계정으로 연결하면 유민이의 별·기록이 부모님 폰과 같아지고, 부모님 폰에서 유튜브 시청 시간·잠금을 바꿀 수 있어요. 연결하지 않아도 이 태블릿은 그대로 쓸 수 있어요.</p>',
       '<p class="fam-state" id="famState">확인 중…</p>',
       '<div id="famLoginBox" hidden>',
-      '  <label class="fam-field"><span>부모 이메일</span><input id="famEmail" type="email" inputmode="email" autocomplete="username" placeholder="thskek11@naver.com"></label>',
-      '  <label class="fam-field"><span>비밀번호</span><input id="famPass" type="password" autocomplete="current-password" placeholder="부모 계정 비밀번호"></label>',
+      '  <label class="fam-field"><span>부모 이메일</span><input id="famEmail" type="email" inputmode="email" autocomplete="username" enterkeyhint="next" placeholder="부모 이메일"></label>',
+      '  <label class="fam-field"><span>비밀번호</span><div class="fam-password-wrap"><input id="famPass" type="password" autocomplete="current-password" enterkeyhint="go" placeholder="부모 계정 비밀번호"><button class="fam-show-pass" id="famShowPass" type="button">보기</button></div></label>',
       '  <div class="g-actions"><button class="btn primary" id="famLogin" type="button">로그인</button></div>',
       '  <p class="g-hint">계정은 부모님 한 개를 같이 써요. 부모님 폰에서는 <b>parent.html</b> 을 열어 같은 계정으로 들어옵니다.</p>',
       '</div>',
@@ -622,6 +631,12 @@
       '  <div class="g-actions">',
       '    <button class="btn primary" id="famNow" type="button">지금 동기화</button>',
       '    <button class="btn" id="famOut" type="button">로그아웃</button>',
+      '    <button class="btn" id="famOpenPassword" type="button">비밀번호 변경</button>',
+      '  </div>',
+      '  <div id="famPasswordBox" hidden>',
+      '    <label class="fam-field"><span>새 비밀번호 (8자 이상)</span><input id="famNewPassword" type="password" autocomplete="new-password" placeholder="새 비밀번호"></label>',
+      '    <label class="fam-field"><span>새 비밀번호 확인</span><input id="famConfirmPassword" type="password" autocomplete="new-password" placeholder="한 번 더 입력"></label>',
+      '    <div class="g-actions"><button class="btn primary" id="famSavePassword" type="button">변경 저장</button><button class="btn" id="famCancelPassword" type="button">취소</button></div>',
       '  </div>',
       '</div>',
       '<p class="g-hint" id="famErr" role="status"></p>',
@@ -635,6 +650,47 @@
       '</div>',
       '<p class="g-hint">하루 횟수를 다 채우면 그날은 학습을 더 해도 유튜브 키즈가 열리지 않아요.</p>'
     ].join('\n');
+
+    var emailInput = document.getElementById('famEmail');
+    if (emailInput) emailInput.value = cfg.email || '';
+    var showPass = document.getElementById('famShowPass');
+    if (showPass) showPass.addEventListener('click', function () {
+      var field = document.getElementById('famPass');
+      var showing = field.type === 'text';
+      field.type = showing ? 'password' : 'text';
+      this.textContent = showing ? '보기' : '숨기기';
+    });
+    var openPass = document.getElementById('famOpenPassword');
+    if (openPass) openPass.addEventListener('click', function () {
+      var box = document.getElementById('famPasswordBox');
+      box.hidden = !box.hidden;
+      setErr('');
+    });
+    var cancelPass = document.getElementById('famCancelPassword');
+    if (cancelPass) cancelPass.addEventListener('click', function () {
+      document.getElementById('famPasswordBox').hidden = true;
+      document.getElementById('famNewPassword').value = '';
+      document.getElementById('famConfirmPassword').value = '';
+      setErr('');
+    });
+    var savePass = document.getElementById('famSavePassword');
+    if (savePass) savePass.addEventListener('click', function () {
+      var next = document.getElementById('famNewPassword').value || '';
+      var confirm = document.getElementById('famConfirmPassword').value || '';
+      if (next.length < 8) { setErr('새 비밀번호는 8자 이상 입력해 주세요.'); return; }
+      if (next !== confirm) { setErr('새 비밀번호가 서로 달라요.'); return; }
+      savePass.disabled = true;
+      setErr('비밀번호 변경 중…');
+      changePassword(next).then(function () {
+        document.getElementById('famPasswordBox').hidden = true;
+        document.getElementById('famNewPassword').value = '';
+        document.getElementById('famConfirmPassword').value = '';
+        setErr('비밀번호를 변경했어요.');
+        notify('부모 계정 비밀번호를 변경했어요');
+      }).catch(function () {
+        setErr('비밀번호를 변경하지 못했어요. 다시 로그인한 뒤 시도해 주세요.');
+      }).then(function () { savePass.disabled = false; });
+    });
 
     var login = document.getElementById('famLogin');
     if (login) login.addEventListener('click', function () {
@@ -673,7 +729,10 @@
       '.fam-state[data-on="1"]{color:#2f8a5b;}',
       '.fam-field{display:block;margin:8px 0;}',
       '.fam-field span{display:block;font-size:12px;font-weight:700;color:#6f6b8a;margin-bottom:4px;}',
-      '.fam-field input{width:100%;box-sizing:border-box;padding:11px 12px;border-radius:12px;border:1.5px solid #ded9ef;font-size:15px;background:#fff;}',
+      '.fam-field input{width:100%;box-sizing:border-box;padding:14px 12px;border-radius:12px;border:1.5px solid #ded9ef;font-size:17px;background:#fff;min-height:48px;}',
+      '.fam-password-wrap{display:flex;gap:7px;align-items:stretch;}',
+      '.fam-password-wrap input{flex:1;min-width:0;}',
+      '.fam-show-pass{border:1px solid #ded9ef;background:#f7f5ff;border-radius:12px;padding:0 12px;color:#6c5ce7;font-weight:700;}',
       '.fam-line{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;margin:5px 0;color:#6f6b8a;}',
       '.fam-line b{color:#332f52;font-weight:700;text-align:right;}',
       '.fam-sep{height:1px;background:#ece8f7;margin:14px 0 10px;}',
@@ -793,6 +852,7 @@
     markDirty: markDirty,
     syncNow: syncNow,
     login: signIn,
+    changePassword: changePassword,
     logout: logout,
     locked: locked,
     remoteLocked: remoteLocked,

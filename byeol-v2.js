@@ -108,6 +108,7 @@
 
       .v2-homecar{display:flex;align-items:center;gap:14px;padding:14px 16px;margin:0 0 14px;border:1px solid #dfe7fb;border-radius:20px;background:linear-gradient(120deg,#eef5ff,#fff8e9);cursor:pointer;text-align:left;width:100%;color:#302b55}
       .v2-homecar-art,.v2-car-art{display:grid;place-items:center;border-radius:18px;background:linear-gradient(145deg,#dceaff,#fff);font-size:54px;flex:0 0 92px;height:82px}
+      .v2-homecar-art svg,.v2-car-art svg{display:block;width:100%;height:100%;max-width:140px}
       .v2-homecar-art[data-paint="blue"],.v2-car-art[data-paint="blue"]{background:linear-gradient(145deg,#cfe5ff,#f4f9ff)}
       .v2-homecar-art[data-paint="red"],.v2-car-art[data-paint="red"]{background:linear-gradient(145deg,#ffd7d7,#fff5f2)}
       .v2-homecar-art[data-paint="yellow"],.v2-car-art[data-paint="yellow"]{background:linear-gradient(145deg,#fff0b8,#fffaf0)}
@@ -143,6 +144,12 @@
     };
   }
   function isCarItemUnlocked(item){return completedLessons()>=item.need;}
+  function carIllustration(paint,wheels,decal) {
+    var colors={blue:'#4f91e8',red:'#e76b68',yellow:'#f1bd45'},body=colors[paint]||colors.blue;
+    var rim=wheels==='sport'?'#f7bd48':'#dce5f0';
+    var mark=decal==='lightning'?'<path d="M73 43 L67 54 L74 54 L70 64 L84 49 L77 49 L81 43 Z" fill="#fff7bd"/>':'<path d="M77 44 L79 49 L85 49 L80 53 L82 59 L77 55 L72 59 L74 53 L69 49 L75 49 Z" fill="#fff7bd"/>';
+    return '<svg viewBox="0 0 140 88" role="img" aria-label="내가 꾸민 출동 자동차"><path d="M15 54 Q17 46 27 45 L39 44 L51 27 Q54 23 62 23 H91 Q99 23 104 31 L116 45 L126 47 Q132 49 132 56 V66 H10 V59 Q10 55 15 54Z" fill="'+body+'" stroke="#36506f" stroke-width="3" stroke-linejoin="round"/><path d="M47 43 L57 29 Q59 27 64 27 H75 V43Z" fill="#dff4ff" stroke="#36506f" stroke-width="2"/><path d="M80 27 H91 Q95 27 99 33 L108 43 H80Z" fill="#dff4ff" stroke="#36506f" stroke-width="2"/><rect x="61" y="17" width="18" height="6" rx="3" fill="#ef6b79"/><rect x="79" y="17" width="18" height="6" rx="3" fill="#5b9cf0"/><path d="M12 57 H130" stroke="#fff" stroke-width="3" opacity=".8"/>'+mark+'<circle cx="38" cy="66" r="12" fill="#28364b"/><circle cx="38" cy="66" r="6" fill="'+rim+'" stroke="#fff" stroke-width="1.5"/><circle cx="105" cy="66" r="12" fill="#28364b"/><circle cx="105" cy="66" r="6" fill="'+rim+'" stroke="#fff" stroke-width="1.5"/><path d="M19 51 H28 M119 51 H127" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg>';
+  }
   function makeHomeCarCard() {
     if(document.getElementById('v2HomeCar'))return;
     var home=document.getElementById('panelHome'),dash=home&&home.querySelector('.home-dash');
@@ -160,10 +167,10 @@
     var paint=find('paint'),wheels=find('wheels'),decal=find('decal');
     extra.car.paint=paint.id;extra.car.wheels=wheels.id;extra.car.decal=decal.id;
     var homeArt=document.getElementById('v2HomeCarArt'),homeDesc=document.getElementById('v2HomeCarDesc');
-    if(homeArt){homeArt.textContent='🚓';homeArt.setAttribute('data-paint',paint.id);}
+    if(homeArt){homeArt.innerHTML=carIllustration(paint.id,wheels.id,decal.id);homeArt.setAttribute('data-paint',paint.id);}
     if(homeDesc)homeDesc.textContent=paint.label+' · '+wheels.label+' · '+decal.label;
     var art=document.getElementById('v2CarArt'),meta=document.getElementById('v2CarMeta');
-    if(art){art.textContent='🚓';art.setAttribute('data-paint',paint.id);}
+    if(art){art.innerHTML=carIllustration(paint.id,wheels.id,decal.id);art.setAttribute('data-paint',paint.id);}
     if(meta)meta.textContent=paint.label+' 차량 · '+wheels.label+' · '+decal.label;
     var box=document.getElementById('v2CarOptions');if(!box)return;
     var groups=[['paint','차량 색상',opts.paint],['wheels','바퀴',opts.wheels],['decal','스티커',opts.decal]];

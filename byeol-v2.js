@@ -131,18 +131,7 @@
         <button class="v2-btn secondary" id="v2MissionDone" type="button" style="margin-left:6px">완료했어요</button>
         <p id="v2MissionState" style="margin:9px 0 0;font-size:11px;color:#77718f"></p>
       </div>
-      <div class="v2-grid">
-        <div class="v2-card"><div class="v2-icon">📊</div><h3>나의 성장 기록</h3><p id="v2Analysis">학습 기록을 모아 성장 과정을 보여줘요.</p><button class="v2-btn secondary" id="v2Refresh" type="button">기록 새로고침</button></div>
-        <div class="v2-card"><div class="v2-icon">📚</div><h3>나만의 그림책</h3><p>내가 만든 이야기를 저장하고 소리 내어 들어요.</p><button class="v2-btn secondary" id="v2BookFocus" type="button">그림책 만들기</button></div>
-      </div>
-      <div class="v2-card" id="v2BookMaker">
-        <h3>✏️ 나만의 그림책 만들기</h3><div class="v2-book-form">
-          <input id="v2BookTitle" maxlength="40" placeholder="그림책 제목을 적어 봐요">
-          <textarea id="v2BookText" maxlength="1200" placeholder="주인공은 누구일까요? 어떤 모험을 할까요? 이야기를 적어 봐요."></textarea>
-          <button class="v2-btn" id="v2BookSave" type="button">내 그림책 저장하기</button>
-        </div>
-        <div class="v2-books" id="v2Books"></div>
-      </div>`;
+`;
     main.appendChild(panel);
     var tab=document.createElement('button');tab.className='tab';tab.type='button';tab.dataset.tab='explore';tab.innerHTML='<span aria-hidden="true">🚀</span><b>탐험</b>';
     var guardian=nav.querySelector('[data-tab="guardian"]');
@@ -155,16 +144,6 @@
     document.getElementById('v2MissionDone').addEventListener('click',function(){
       extra.missionDone=true;saveExtra();render(); 
     });
-    document.getElementById('v2Refresh').addEventListener('click',render);
-    document.getElementById('v2BookFocus').addEventListener('click',function(){document.getElementById('v2BookTitle').focus();});
-    document.getElementById('v2BookSave').addEventListener('click',function(){
-      var title=document.getElementById('v2BookTitle').value.trim(), body=document.getElementById('v2BookText').value.trim();
-      if(!title||!body){alert('제목과 이야기를 모두 적어 주세요.');return;}
-      extra.books=Array.isArray(extra.books)?extra.books:[];
-      extra.books.unshift({id:Date.now(),title:title,body:body,created:new Date().toISOString()});
-      extra.books=extra.books.slice(0,30);saveExtra();
-      document.getElementById('v2BookTitle').value='';document.getElementById('v2BookText').value='';renderBooks();
-    });
     render();
   }
   function clickTab(name) {
@@ -175,21 +154,6 @@
     document.querySelectorAll('main.wrap > .panel').forEach(function(p){p.hidden=p.id!=='panelExplore';});
     document.querySelectorAll('.tabbar .tab').forEach(function(b){b.classList.toggle('on',b.dataset.tab==='explore');});
     document.body.setAttribute('data-tab','explore');window.scrollTo({top:0,behavior:'smooth'});render();
-  }
-  function renderBooks() {
-    var root=document.getElementById('v2Books');if(!root)return;
-    var books=Array.isArray(extra.books)?extra.books:[];
-    if(!books.length){root.innerHTML='<div class="v2-empty">아직 만든 그림책이 없어요. 첫 이야기를 만들어 봐요!</div>';return;}
-    root.innerHTML=books.map(function(b){return '<article class="v2-book"><strong>'+esc(b.title)+'</strong><p>'+esc(b.body)+'</p><button class="v2-btn secondary" data-read="'+b.id+'" type="button">🔊 읽어 주기</button> <button class="v2-btn secondary" data-delete="'+b.id+'" type="button">삭제</button></article>';}).join('');
-    root.querySelectorAll('[data-read]').forEach(function(btn){btn.addEventListener('click',function(){
-      var book=books.find(function(b){return String(b.id)===btn.dataset.read;});if(!book)return;
-      if(!window.speechSynthesis){alert('이 기기에서는 음성 읽기를 지원하지 않아요.');return;}
-      window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(book.title+'. '+book.body);u.lang='ko-KR';u.rate=.88;window.speechSynthesis.speak(u);
-    });});
-    root.querySelectorAll('[data-delete]').forEach(function(btn){btn.addEventListener('click',function(){
-      if(!confirm('이 그림책을 삭제할까요?'))return;
-      extra.books=books.filter(function(b){return String(b.id)!==btn.dataset.delete;});saveExtra();renderBooks();
-    });});
   }
   function render() {
     loadState();
@@ -206,7 +170,7 @@
     document.getElementById('v2MissionState').textContent=extra.missionDone?'오늘의 미션을 완료했어요! 멋져요 ⭐':'미션을 시작하고 완료하면 체크해 둘 수 있어요.';
     document.getElementById('v2MissionDone').disabled=!!extra.missionDone;
     document.getElementById('v2MissionDone').textContent=extra.missionDone?'오늘 미션 완료 ✓':'완료했어요';
-    renderBooks();
+
   }
   function boot() {
     addStyles();makePanel();addLearningAppLinks();

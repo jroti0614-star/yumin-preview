@@ -87,7 +87,7 @@
   function addStyles() {
     if (document.getElementById('byeolV2Style')) return;
     var css = `
-      #panelExplore{padding-bottom:24px}#panelExplore[hidden]{display:none!important}body[data-tab="explore"] #panelExplore:not([hidden]){display:block}
+      #panelExplore{padding-bottom:24px}#panelExplore[hidden],body:not([data-tab="explore"]) #panelExplore{display:none!important}body[data-tab="explore"] #panelExplore:not([hidden]){display:block!important}
       .v2-hero{border-radius:22px;padding:20px;background:linear-gradient(135deg,#eef0ff,#fff7f0);border:1px solid #e4defb;margin-bottom:14px}
       .v2-hero h2{font-size:22px;margin:0 0 5px;color:#302b55}.v2-hero p{margin:0;color:#716b91;font-size:13px}
       .v2-character{display:flex;align-items:center;gap:14px;margin-top:16px}
@@ -150,7 +150,7 @@
     if(b)b.click();
   }
   function switchExplore() {
-    document.querySelectorAll('main.wrap > .panel').forEach(function(p){p.hidden=p.id!=='panelExplore';});
+    document.querySelectorAll('main.wrap > .panel').forEach(function(p){p.hidden=p.id!=='panelExplore';if(p.id==='panelExplore')p.style.setProperty('display','block','important');else p.style.removeProperty('display');});
     document.querySelectorAll('.tabbar .tab').forEach(function(b){b.classList.toggle('on',b.dataset.tab==='explore');});
     document.body.setAttribute('data-tab','explore');window.scrollTo({top:0,behavior:'smooth'});render();
   }

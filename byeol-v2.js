@@ -87,7 +87,7 @@
   function addStyles() {
     if (document.getElementById('byeolV2Style')) return;
     var css = `
-      #panelExplore{padding-bottom:24px}
+      #panelExplore{padding-bottom:24px}\n      #panelLearn #v2LearningAppLinks,#panelLearn .v2-app-links{display:none!important}
       .v2-hero{border-radius:22px;padding:20px;background:linear-gradient(135deg,#eef0ff,#fff7f0);border:1px solid #e4defb;margin-bottom:14px}
       .v2-hero h2{font-size:22px;margin:0 0 5px;color:#302b55}.v2-hero p{margin:0;color:#716b91;font-size:13px}
       .v2-character{display:flex;align-items:center;gap:14px;margin-top:16px}
@@ -143,6 +143,14 @@
     }
     /* 이전 버전에서 학습 탭에 남은 카드를 탐험 탭으로 이동 */
     if(card.parentElement!==panel) panel.appendChild(card);
+  }
+  function enforceLearningAppLinkLocation() {
+    var explore=document.getElementById('panelExplore');
+    if(!explore) return;
+    var cards=Array.prototype.slice.call(document.querySelectorAll('#v2LearningAppLinks, .v2-app-links'));
+    var keep=cards.shift();
+    cards.forEach(function(card){ if(card!==keep && card.parentNode) card.parentNode.removeChild(card); });
+    if(keep && keep.parentElement!==explore) explore.appendChild(keep);
   }
   function makePanel() {
     if (document.getElementById('panelExplore')) return;
@@ -219,11 +227,11 @@
 
   }
   function boot() {
-    addStyles();makePanel();addLearningAppLinks();
+    addStyles();makePanel();addLearningAppLinks();enforceLearningAppLinkLocation();
     if(!document.getElementById('panelExplore'))return;
     window.addEventListener('storage',function(e){if(e.key===STATE_KEY || e.key===V2_KEY)render();});
     document.addEventListener('visibilitychange',function(){if(!document.hidden)render();});
-    window.setInterval(function(){ if(document.getElementById('panelExplore')) render(); }, 3000);
+    window.setInterval(function(){ if(document.getElementById('panelExplore')) { render(); enforceLearningAppLinkLocation(); } }, 1000);\n    if(window.MutationObserver && document.body){ var linkObserver=new MutationObserver(function(){ enforceLearningAppLinkLocation(); }); linkObserver.observe(document.body,{childList:true,subtree:true}); }
   }
   function wait() {
     if(document.getElementById('main')&&document.querySelector('.tabbar-inner'))boot();

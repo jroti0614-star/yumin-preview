@@ -557,7 +557,7 @@ h1,h2,h3,p{margin:0}
 /* ── 보호자: 학습 관리 요약 ───────────────────────────── */
 .g-summary{padding:16px 18px 14px}
 .g-summary h3{margin-bottom:10px}
-.gs-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.gs-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
 .gs-item{
   display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 6px;
   border-radius:14px;background:linear-gradient(160deg,#f7f5ff,#fdfcff);border:1px solid #ece9fa;
@@ -1998,7 +1998,7 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
     <div class="card board-card">
       <div class="board-head">
         <span class="board-count" id="boardCount">0 / 14칸</span>
-        <span class="board-left"><b id="boardToday">오늘 붙인 별: 0 / 2개</b></span>
+        <span class="board-left"><b id="boardToday">오늘 모은 별: 0 / 2개</b></span>
       </div>
 
       <div class="star-tray-wrap">
@@ -2038,7 +2038,7 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
       <div class="reward-emoji" aria-hidden="true">🎟️</div>
       <div class="reward-text">
         <strong id="rewardTitle">완주 보상: 소원 쿠폰 1장 🎟️</strong>
-        <small id="rewardSub">14칸을 다 채우면 소원 쿠폰 1장을 받아요 (하루 2개씩 모아요)</small>
+        <small id="rewardSub">14칸을 다 채우면 소원 쿠폰 1장을 받아요 (퀴즈로 모은 별·선물 받은 별 모두 붙일 수 있어요)</small>
       </div>
     </div>
   </section>
@@ -2288,7 +2288,8 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
       <div class="gs-grid">
         <div class="gs-item"><span class="gs-ico" aria-hidden="true">⭐</span><b id="gsStars">0</b><small>모은 별</small></div>
         <div class="gs-item"><span class="gs-ico" aria-hidden="true">🌟</span><b id="gsPlaced">0/14</b><small>별 지도</small></div>
-        <div class="gs-item"><span class="gs-ico" aria-hidden="true">📅</span><b id="gsToday">0/2</b><small>오늘 붙인 별</small></div>
+        <div class="gs-item"><span class="gs-ico" aria-hidden="true">📅</span><b id="gsToday">0/2</b><small>오늘 모은 별</small></div>
+        <div class="gs-item"><span class="gs-ico" aria-hidden="true">🎁</span><b id="gsGift">0</b><small>선물 별</small></div>
         <div class="gs-item"><span class="gs-ico" aria-hidden="true">🎟️</span><b id="gsTickets">0</b><small>소원 쿠폰</small></div>
       </div>
     </div>
@@ -2366,9 +2367,9 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
     </div>
 
     <div class="card g-card">
-      <h3>별 지도 하루 붙이기 상한</h3>
-      <p class="g-hint">아이가 하루에 지도에 붙일 수 있는 별 개수예요. (기본 하루 2개)</p>
-      <div class="chips" id="dailyCapChips" role="group" aria-label="하루 붙이기 상한">
+      <h3>하루 별 모으기 상한</h3>
+      <p class="g-hint">아이가 퀴즈로 하루에 모을 수 있는 별 개수예요. 상한을 다 채워도 강은 계속 열리고, 별만 더 안 쌓여요. (기본 하루 2개)<br>별 지도에 붙이는 것은 한도가 없어, 가진 별은 모두 바로 붙일 수 있어요.</p>
+      <div class="chips" id="dailyCapChips" role="group" aria-label="하루 모으기 상한">
         <button class="chip" type="button" data-cap="1">하루 1개</button>
         <button class="chip" type="button" data-cap="2">하루 2개</button>
         <button class="chip" type="button" data-cap="3">하루 3개</button>
@@ -2379,7 +2380,8 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
 
     <div class="card g-card">
       <h3>별 선물하기</h3>
-      <p class="g-hint">보낸 별은 아이 홈에 "○○의 별 선물이 도착했어!"로 떠요.</p>
+      <p class="g-hint">보낸 별은 아이 홈에 "○○의 별 선물이 도착했어!"로 떠요. 선물한 별은 하루 모으기 상한과 상관없이 아이 별로 따로 쌓여요.</p>
+      <p class="g-state" id="giftStarsState" role="status"></p>
       <div class="field">
         <span>별 개수</span>
         <div class="chips" id="giftCountChips" role="group" aria-label="별 개수">
@@ -4090,11 +4092,12 @@ var ART_ORDER = [
     placed: 0,      // 지금 판에 붙인 별(판이 완주되면 0으로 돌아간다)
     spent: 0,
     tickets: 0,
-    dailyCap: CONFIG.defaultDailyCap,
-    daily: { date: '', count: 0 },
+    dailyCap: CONFIG.defaultDailyCap,   // 퀴즈로 하루에 모을 수 있는 별 수
+    daily: { date: '', count: 0 },      // 오늘 퀴즈로 모은 별 수
     coupons: null,
     requests: [],
-    gift: null,
+    gift: null,        // 아직 받지 않은 별 선물 { count, msg, from, time }
+    giftStars: 0,      // 부모님이 선물해서 받은 별(하루 한도와 따로 센다)
     voices: [],
     reward: { date: '', lessons: 0, sessions: 0, endsAt: 0 },   // 보상: 오늘 학습 횟수·본 횟수·끝나는 시각
     lock: { on: false, start: '21:00', end: '07:00', days: [] },  // 사용 시간 제한(취침 잠금)
@@ -4221,7 +4224,7 @@ var ART_ORDER = [
         stars: state.stars, used: state.used, placed: state.placed, spent: state.spent, tickets: state.tickets,
         dailyCap: state.dailyCap, daily: state.daily,
         coupons: state.coupons,
-        requests: state.requests, gift: state.gift,
+        requests: state.requests, gift: state.gift, giftStars: state.giftStars,
         reward: state.reward,
         lock: state.lock,
         launcher: state.launcher
@@ -4269,6 +4272,7 @@ var ART_ORDER = [
       if (typeof s.tickets === 'number') state.tickets = Math.max(0, Math.floor(s.tickets));
       if (typeof s.dailyCap === 'number') state.dailyCap = Math.max(0, Math.floor(s.dailyCap));
       if (s.daily && typeof s.daily === 'object') state.daily = { date: s.daily.date || '', count: Math.max(0, s.daily.count || 0) };
+      if (typeof s.giftStars === 'number') state.giftStars = Math.max(0, Math.floor(s.giftStars));
       if (Array.isArray(s.coupons)) state.coupons = s.coupons;
       if (Array.isArray(s.requests)) state.requests = s.requests;
       if (s.gift && typeof s.gift === 'object') state.gift = s.gift;
@@ -4420,9 +4424,31 @@ var ART_ORDER = [
     if (cn) cn.setAttribute('placeholder', state.name);
     document.title = '별별 탐험대 · ' + state.name;
   }
-  /* 붙일 수 있는 별 = 모은 별 - 지금까지 지도에 붙여 소모한 별(완주한 판의 별도 포함) */
-  function availableStars() {
+  /* 붙일 수 있는 별 = 퀴즈로 모은 별(지도에 붙여 소모한 별 제외) + 부모님이 선물한 별 */
+  function quizStarsLeft() {
     return Math.max(0, state.stars - state.used);
+  }
+  function giftStarsLeft() {
+    return Math.max(0, Math.floor(state.giftStars || 0));
+  }
+  function availableStars() {
+    return quizStarsLeft() + giftStarsLeft();
+  }
+  /* 별을 붙일 때 쓴다: 퀴즈 별을 먼저 쓰고, 모자라면 선물 별에서 채운다 */
+  function useStarsForPlace(n) {
+    var fromQuiz = Math.min(quizStarsLeft(), n);
+    state.used += fromQuiz;
+    var fromGift = n - fromQuiz;
+    if (fromGift > 0) state.giftStars = Math.max(0, giftStarsLeft() - fromGift);
+    return { quiz: fromQuiz, gift: fromGift };
+  }
+  /* 퀴즈로 별 하나 모으기 — 하루 dailyCap 개까지만 쌓인다(강 완료는 계속 된다) */
+  function addEarnedStar() {
+    if (state.daily.date !== todayStr()) { state.daily.date = todayStr(); state.daily.count = 0; }
+    if (state.dailyCap > 0 && state.daily.count >= state.dailyCap) return false;
+    state.stars += 1;
+    state.daily.count += 1;
+    return true;
   }
 
   function checkMapComplete() {
@@ -5020,6 +5046,7 @@ var ART_ORDER = [
       var left = Math.max(0, goal - state.placed);
       next.textContent = '';
       next.appendChild(document.createTextNode('별 지도 ' + state.placed + ' / ' + goal + '칸 · '));
+      if (giftStarsLeft()) next.appendChild(document.createTextNode('🎁 선물 ' + giftStarsLeft() + '개 · '));
       var b = make('b', null, left ? '소원 쿠폰까지 ' + left + '개' : '소원 쿠폰을 받았어!');
       next.appendChild(b);
     }
@@ -5662,34 +5689,37 @@ var ART_ORDER = [
     return d;
   }
 
+  /* daily = 오늘 퀴즈로 모은 별 수. 별 지도에 붙이는 것은 이제 하루 한도가 없다. */
   function dailyUsed() {
     if (state.daily.date !== todayStr()) return 0;
     return Math.max(0, state.daily.count || 0);
   }
+  /* 오늘 더 모을 수 있는 별 수 (선물 별은 이 한도와 상관없다) */
   function dailyLeft() {
     if (state.dailyCap <= 0) return 999;
     return Math.max(0, state.dailyCap - dailyUsed());
   }
   function dailyNote() {
-    if (state.dailyCap <= 0) return '오늘 붙인 별: ' + dailyUsed() + '개 · 제한 없음';
-    return '오늘 붙인 별: ' + dailyUsed() + ' / ' + state.dailyCap + '개';
+    if (state.dailyCap <= 0) return '오늘 모은 별: ' + dailyUsed() + '개 · 제한 없음';
+    return '오늘 모은 별: ' + dailyUsed() + ' / ' + state.dailyCap + '개';
   }
 
   function renderBoard() {
     var goal = CONFIG.stickerGoal;
     $('boardCount').textContent = state.placed + ' / ' + goal + '칸';
-    $('boardToday').textContent = dailyNote();
+    var gAvail = giftStarsLeft();
+    $('boardToday').textContent = dailyNote() + (gAvail ? ' · 🎁 선물 별 ' + gAvail + '개' : '');
     $('boardAvail').textContent = availableStars();
 
     var tray = $('starTray');
     tray.innerHTML = '';
     var avail = availableStars();
-    var canPlace = dailyLeft() > 0;
+    var canPlace = avail > 0 && state.placed < goal;   /* 하루 붙이기 한도 없음 — 가진 별은 모두 붙일 수 있다 */
     tray.classList.toggle('locked', !canPlace);
     if (!avail) {
       tray.appendChild(make('span', 'tray-empty', '퀴즈로 별을 모아요 ⭐'));
-    } else if (!canPlace) {
-      tray.appendChild(make('span', 'tray-empty', '오늘은 다 붙였어요 🌙'));
+    } else if (state.placed >= goal) {
+      tray.appendChild(make('span', 'tray-empty', '별 지도를 다 채웠어요 🎁'));
     } else {
       for (var s = 0; s < Math.min(avail, 6); s++) {
         var chip = make('button', 'star-chip');
@@ -5701,7 +5731,7 @@ var ART_ORDER = [
       }
       if (avail > 6) tray.appendChild(make('span', 'tray-more', '+' + (avail - 6)));
     }
-    $('trayCount').textContent = avail ? '⭐ ' + avail + '개' : '';
+    $('trayCount').textContent = avail ? ('⭐ ' + avail + '개' + (gAvail ? ' (선물 ' + gAvail + '개)' : '')) : '';
 
     var layout = mapLayout();
     var mapBox = $('starMap').getBoundingClientRect();
@@ -5747,8 +5777,7 @@ var ART_ORDER = [
 
     var hint = $('mapHint');
     if (state.placed >= goal) hint.textContent = '별자리 길을 다 채웠어요! 지도 끝 보물 상자가 열렸어요 🎁';
-    else if (!canPlace) hint.textContent = '오늘 붙일 별을 다 붙였어요! 내일 또 붙이러 와요 🌙 (' + dailyNote() + ')';
-    else if (!avail) hint.textContent = '별이 없어요! 퀴즈를 풀어 별을 모아 와요 ⭐';
+    else if (!avail) hint.textContent = '별이 없어요! 퀴즈를 풀어 별을 모아 와요 ⭐ (' + dailyNote() + ')';
     else hint.textContent = '⭐ 별을 손가락으로 끌어다 ' + (state.placed + 1) + '번 별자리에 놓아 봐요!';
 
     var full = state.placed >= goal;
@@ -5757,7 +5786,7 @@ var ART_ORDER = [
     $('rewardTitle').textContent = full ? '지도 완주! 소원 쿠폰 1장 🎟️' : '완주 보상: 소원 쿠폰 1장 🎟️';
     $('rewardSub').textContent = full
       ? '14칸을 다 채웠어요! 소원 쿠폰 1장을 받고 새 별 지도를 시작해요.'
-      : '14칸을 다 채우면 소원 쿠폰 1장을 받아요 (하루 2개씩 모아요)';
+      : '14칸을 다 채우면 소원 쿠폰 1장을 받아요 (퀴즈로 모은 별·선물 받은 별 모두 붙일 수 있어요)';
   }
 
   function placeAt(nodeNo) {
@@ -5765,25 +5794,13 @@ var ART_ORDER = [
     var idx = nodeNo - 1;
     if (idx < state.placed) { toast('이미 붙인 별이에요!'); return false; }
     var need = idx - state.placed + 1;
-    if (dailyLeft() <= 0) {
-      var msg = '오늘 붙일 별을 다 붙였어요! 내일 또 붙이러 와요 🌙 (' + dailyNote() + ')';
-      toast(msg);
-      speak(msg);
-      return false;
-    }
     if (availableStars() < need) {
       toast('별이 모자라요! 퀴즈로 별을 모아요 ⭐');
       speak('별이 모자라요. 퀴즈로 별을 모아 봐요!');
       return false;
     }
-    if (need > dailyLeft()) {
-      toast('오늘은 별 ' + dailyLeft() + '개까지 붙일 수 있어요 🌙');
-      return false;
-    }
     state.placed = Math.min(CONFIG.stickerGoal, idx + 1);
-    state.used = Math.max(state.placed, state.used + need); /* 붙인 별은 영구 소모 */
-    if (state.daily.date !== todayStr()) { state.daily.date = todayStr(); state.daily.count = 0; }
-    state.daily.count += need;
+    useStarsForPlace(need);              /* 붙인 별은 영구 소모 · 선물 별도 함께 쓴다 */
     saveState();
     renderAll();
     speak('쏙! ' + (idx + 1) + '번 별자리에 붙었어요!');
@@ -5794,7 +5811,7 @@ var ART_ORDER = [
   $('starTray').addEventListener('pointerdown', function (e) {
     var chip = e.target && e.target.closest ? e.target.closest('.star-chip') : null;
     if (!chip) return;
-    if (dailyLeft() <= 0 || availableStars() <= 0) return;
+    if (availableStars() <= 0) return;
     startDrag('star', e, '<span class="dg-star">⭐</span>', function (x, y) {
       return nodeAt(x, y);
     }, function (hot, moved) {
@@ -5812,17 +5829,13 @@ var ART_ORDER = [
 
   $('stickerAuto').addEventListener('click', function () {
     if (sleepGuard()) return;
-    var left = dailyLeft();
-    if (left <= 0) {
-      var msg = '오늘 붙일 별을 다 붙였어요! 내일 또 붙이러 와요 🌙 (' + dailyNote() + ')';
-      toast(msg); speak(msg); return;
+    var n = Math.min(availableStars(), CONFIG.stickerGoal - state.placed);
+    if (n <= 0) {
+      if (state.placed >= CONFIG.stickerGoal) { toast('별 지도를 다 채웠어요! 🎁'); return; }
+      toast('붙일 별이 없어요. 퀴즈로 별을 모아 보세요!'); return;
     }
-    var n = Math.min(availableStars(), left, CONFIG.stickerGoal - state.placed);
-    if (n <= 0) { toast('붙일 별이 없어요. 퀴즈로 별을 모아 보세요!'); return; }
     state.placed += n;
-    state.used = Math.max(state.placed, state.used + n); /* 붙인 별은 영구 소모 */
-    if (state.daily.date !== todayStr()) { state.daily.date = todayStr(); state.daily.count = 0; }
-    state.daily.count += n;
+    useStarsForPlace(n);                 /* 붙인 별은 영구 소모 · 선물 별도 함께 쓴다 */
     saveState();
     renderAll();
     toast('⭐ ' + n + '개를 붙였어요!');
@@ -6145,6 +6158,8 @@ var ART_ORDER = [
     var fromChips = $('giftFromChips').querySelectorAll('[data-from]');
     for (var f = 0; f < fromChips.length; f++) fromChips[f].classList.toggle('on', fromChips[f].getAttribute('data-from') === giftForm.from);
 
+    if ($('giftStarsState')) $('giftStarsState').textContent = '지금 ' + vocative(state.name) + '가 가진 선물 별: ' + giftStarsLeft() + '개';
+
     var box = $('guardianRequests');
     box.innerHTML = '';
     if (!state.requests.length) box.appendChild(make('p', 'hint', '아직 아이가 보낸 요청이 없어요.'));
@@ -6178,6 +6193,7 @@ var ART_ORDER = [
     if (s) s.textContent = availableStars();
     if (p) p.textContent = state.placed + '/' + CONFIG.stickerGoal;
     if (t) t.textContent = dailyUsed() + (state.dailyCap > 0 ? '/' + state.dailyCap : '');
+    if ($('gsGift')) $('gsGift').textContent = giftStarsLeft();
     if (c) c.textContent = state.tickets;
   }
 
@@ -6725,7 +6741,8 @@ var ART_ORDER = [
     var already = !!rec.done[no];
     rec.part[no] = 4;
     var next = no < LESSON_MAX ? no + 1 : 0;
-    if (!already) { rec.done[no] = true; state.stars += 1; }
+    var earnedStar = false;
+    if (!already) { rec.done[no] = true; earnedStar = addEarnedStar(); }
     rewardNoteLesson();   // 오늘 완료한 학습 수를 세어 '유튜브 키즈' 보상을 연다
     noteFocusDone(id);    // 과목별 오늘 완료 — 추천 카드의 '✓ 오늘 완료'
     saveState();
@@ -6733,15 +6750,22 @@ var ART_ORDER = [
     renderAll();
     stopSpeak();
     if (!already) {
-      var pill = $('starPill');
-      pill.classList.remove('pop');
-      void pill.offsetWidth;
-      pill.classList.add('pop');
-      setTimeout(function () { pill.classList.remove('pop'); }, 420);
-      showCelebrate('🌟', no + '강 완료!',
-        sub.title + ' ' + LEVELS[state.level].short + ' · 별 1개를 받았어요!' +
-        (next ? ' 다음 ' + next + '강이 열렸어요!' : ' 24강을 모두 마쳤어요!'), true, next);
-      speak('축하합니다! 별 한 개를 얻었어요!' + (next ? ' 다음 강이 열렸어요!' : ''));
+      if (earnedStar) {
+        var pill = $('starPill');
+        pill.classList.remove('pop');
+        void pill.offsetWidth;
+        pill.classList.add('pop');
+        setTimeout(function () { pill.classList.remove('pop'); }, 420);
+        showCelebrate('🌟', no + '강 완료!',
+          sub.title + ' ' + LEVELS[state.level].short + ' · 별 1개를 받았어요!' +
+          (next ? ' 다음 ' + next + '강이 열렸어요!' : ' 24강을 모두 마쳤어요!'), true, next);
+        speak('축하합니다! 별 한 개를 얻었어요!' + (next ? ' 다음 강이 열렸어요!' : ''));
+      } else {
+        showCelebrate('🌟', no + '강 완료!',
+          '오늘 모을 별 ' + state.dailyCap + '개를 다 모았어요. 별은 내일 또 모아요!' +
+          (next ? ' 다음 ' + next + '강이 열렸어요!' : ' 24강을 모두 마쳤어요!'), true, next);
+        speak('잘했어요! 오늘 별은 다 모았고, 다음 강이 열렸어요. 별은 내일 또 모아요!');
+      }
     } else {
       showCelebrate('✅', no + '강 다시 완료!', '이미 별을 받은 강이에요. 별은 그대로예요.', true, next);
       speak('다시 해도 정말 잘했어요!');
@@ -8110,11 +8134,12 @@ var ART_ORDER = [
   $('giftBanner').addEventListener('click', function () {
     if (!state.gift) return;
     var g = state.gift;
-    state.stars += g.count;
+    /* 부모님이 선물한 별은 퀴즈로 모은 별과 따로 센다 — 하루 2개 한도와 상관없이 다 받는다 */
+    state.giftStars = giftStarsLeft() + Math.max(0, Math.floor(Number(g.count) || 0));
     state.gift = null;
     saveState();
     renderAll();
-    showCelebrate('🎁', (g.from || '엄마') + '의 별 선물이 도착했어!', '별 ' + g.count + '개를 받았어요!' + (g.msg ? ' ' + g.msg : ''), true);
+    showCelebrate('🎁', (g.from || '엄마') + '의 별 선물이 도착했어!', '별 ' + g.count + '개를 받았어요! 별 지도에 바로 붙일 수 있어요.' + (g.msg ? ' ' + g.msg : ''), true);
     speak((g.from || '엄마') + '의 별 선물이 도착했어! 별 ' + g.count + '개를 받았어요!');
   });
 
@@ -8473,7 +8498,7 @@ var ART_ORDER = [
       }
       renderAll();
       renderGuardian();
-      toast(state.dailyCap ? '하루 별 ' + state.dailyCap + '개까지 붙일 수 있어요' : '하루 제한 없이 붙일 수 있어요 (테스트용)');
+      toast(state.dailyCap ? '퀴즈로 하루 별 ' + state.dailyCap + '개까지 모을 수 있어요' : '하루 제한 없이 별을 모을 수 있어요 (테스트용)');
     });
   }
   $('previewToggle').addEventListener('click', function () {
@@ -8798,6 +8823,7 @@ var ART_ORDER = [
     state.tickets = 0;
     state.requests = [];
     state.gift = null;
+    state.giftStars = 0;
     state.lessons = {};
     state.daily = { date: '', count: 0 };
     state.coupons = null;
@@ -8916,7 +8942,14 @@ var ART_ORDER = [
         solved: ART.solved
       };
     },
-    mapState: function () { return { placed: state.placed, today: dailyUsed(), cap: state.dailyCap, stars: availableStars(), tickets: state.tickets }; },
+    mapState: function () { return { placed: state.placed, today: dailyUsed(), cap: state.dailyCap, left: dailyLeft(), stars: availableStars(), quiz: quizStarsLeft(), gift: giftStarsLeft(), tickets: state.tickets }; },
+    /* 퀴즈 완료로 별 하나 모으기 (테스트용) — 하루 상한에 걸리면 ok:false */
+    earnStar: function () {
+      var ok = addEarnedStar();
+      saveState();
+      renderAll();
+      return { ok: ok, stars: state.stars, today: dailyUsed(), cap: state.dailyCap };
+    },
     launcherState: function () {
       var out = {};
       LAUNCH_SLOTS.forEach(function (s) { out[s.key] = { name: state.launcher[s.key].name, pkg: state.launcher[s.key].pkg }; });
@@ -8935,7 +8968,7 @@ var ART_ORDER = [
       }
       saveState();
       renderAll();
-      return { stars: state.stars, used: state.used, placed: state.placed, tickets: state.tickets, avail: availableStars() };
+      return { stars: state.stars, used: state.used, placed: state.placed, tickets: state.tickets, gift: giftStarsLeft(), avail: availableStars() };
     },
     matchCards: function () { return ART.match.cards.map(function (c, i) { return { i: i, pair: c.pair, kind: c.kind, word: c.word, matched: c.matched }; }); },
     puzzleState: function () { return { placed: ART.puzzle.placed.slice(), count: puzzleCount() }; },
@@ -9494,6 +9527,7 @@ var ART_ORDER = [
       coupons: couponList(),
       requests: state.requests,
       gift: state.gift,
+      giftStars: giftStarsLeft(),
       reward: {
         date: (state.reward && state.reward.date) || todayStr(),
         lessons: (state.reward && state.reward.lessons) || 0,
@@ -9547,6 +9581,7 @@ var ART_ORDER = [
       if (Array.isArray(book.coupons)) state.coupons = book.coupons;
       if (Array.isArray(book.requests)) state.requests = book.requests;
       if (book.gift !== undefined) state.gift = book.gift;
+      if (typeof book.giftStars === 'number') state.giftStars = Math.max(0, Math.floor(book.giftStars));
       if (book.reward && typeof book.reward === 'object') {
         state.reward = {
           date: String(book.reward.date || todayStr()),

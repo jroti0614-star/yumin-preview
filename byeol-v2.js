@@ -120,17 +120,17 @@
     var st=document.createElement('style');st.id='byeolV2Style';st.textContent=css;document.head.appendChild(st);
   }
   function addLearningAppLinks() {
-    var panel=document.getElementById('panelLearn');
+    var panel=document.getElementById('panelExplore');
     if(!panel || document.getElementById('v2LearningAppLinks')) return;
     var card=document.createElement('section');
     card.className='v2-app-links';
     card.id='v2LearningAppLinks';
-    card.innerHTML='<h3>📲 연결된 학습 앱</h3><p>메인페이지에서 연결한 앱을 여기서도 바로 실행할 수 있어요.</p><div class="v2-app-grid">'+
+    card.innerHTML='<h3>📲 연결 학습 앱 바로가기</h3><p>탐험 화면에서 바로 학습 앱을 열 수 있어요.</p><div class="v2-app-grid">'+
       '<button class="v2-app-btn" type="button" data-v2-slot="hangul"><span class="ico">✏️</span><span class="meta"><strong>한글</strong><small>연결된 한글 앱 열기</small></span></button>'+
       '<button class="v2-app-btn" type="button" data-v2-slot="math"><span class="ico">🔢</span><span class="meta"><strong>수학</strong><small>연결된 수학 앱 열기</small></span></button>'+
       '<button class="v2-app-btn" type="button" data-v2-slot="lang"><span class="ico">🔤</span><span class="meta"><strong>언어</strong><small>연결된 언어 앱 열기</small></span></button>'+
       '<button class="v2-app-btn" type="button" data-v2-slot="library"><span class="ico">📚</span><span class="meta"><strong>도서관</strong><small>연결된 도서관 앱 열기</small></span></button></div>';
-    panel.insertBefore(card,panel.firstChild);
+    panel.appendChild(card);
     card.querySelectorAll('[data-v2-slot]').forEach(function(btn){
       btn.addEventListener('click',function(){
         var key=btn.getAttribute('data-v2-slot');

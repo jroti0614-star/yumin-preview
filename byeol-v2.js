@@ -87,7 +87,7 @@
   function addStyles() {
     if (document.getElementById('byeolV2Style')) return;
     var css = `
-      #panelExplore{padding-bottom:24px}
+      #panelExplore{display:none;padding-bottom:24px}body[data-tab="explore"] #panelExplore{display:block}
       .v2-hero{border-radius:22px;padding:20px;background:linear-gradient(135deg,#eef0ff,#fff7f0);border:1px solid #e4defb;margin-bottom:14px}
       .v2-hero h2{font-size:22px;margin:0 0 5px;color:#302b55}.v2-hero p{margin:0;color:#716b91;font-size:13px}
       .v2-character{display:flex;align-items:center;gap:14px;margin-top:16px}

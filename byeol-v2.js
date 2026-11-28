@@ -87,7 +87,7 @@
   function addStyles() {
     if (document.getElementById('byeolV2Style')) return;
     var css = `
-      #panelExplore{padding-bottom:24px}\n      #panelLearn #v2LearningAppLinks,#panelLearn .v2-app-links{display:none!important}
+      #panelExplore{padding-bottom:24px}
       .v2-hero{border-radius:22px;padding:20px;background:linear-gradient(135deg,#eef0ff,#fff7f0);border:1px solid #e4defb;margin-bottom:14px}
       .v2-hero h2{font-size:22px;margin:0 0 5px;color:#302b55}.v2-hero p{margin:0;color:#716b91;font-size:13px}
       .v2-character{display:flex;align-items:center;gap:14px;margin-top:16px}
@@ -105,52 +105,9 @@
       .v2-books{display:grid;gap:9px;margin-top:12px}.v2-book{border:1px solid #e9e5f5;border-radius:14px;padding:12px;background:#fff}
       .v2-book strong{display:block;font-size:14px;margin-bottom:5px}.v2-book p{white-space:pre-wrap;margin:0 0 8px;font-size:12px;line-height:1.6;color:#655f7e}
       .v2-empty{color:#8c87a1;font-size:12px;padding:10px 0}
-      .v2-app-links{margin:0 0 14px;padding:15px;background:#fff;border:1px solid #e9e5f5;border-radius:18px;box-shadow:0 4px 14px #4030800a}
-      .v2-app-links h3{margin:0 0 5px;font-size:16px;color:#383354}
-      .v2-app-links p{margin:0 0 11px;font-size:12px;line-height:1.5;color:#77718f}
-      .v2-app-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-      .v2-app-btn{display:flex;align-items:center;gap:9px;min-width:0;padding:11px;border:1px solid #e8e4f4;border-radius:13px;background:#faf9ff;color:#393451;text-align:left}
-      .v2-app-btn:active{transform:scale(.98)}
-      .v2-app-btn .ico{font-size:23px;flex:0 0 auto}
-      .v2-app-btn .meta{min-width:0;display:flex;flex-direction:column;gap:2px}
-      .v2-app-btn strong{font-size:13px}
-      .v2-app-btn small{font-size:10px;color:#8a849e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
       @media(max-width:380px){.v2-grid{grid-template-columns:1fr}.v2-hero{padding:16px}}
     `;
     var st=document.createElement('style');st.id='byeolV2Style';st.textContent=css;document.head.appendChild(st);
-  }
-  function addLearningAppLinks() {
-    var panel=document.getElementById('panelExplore');
-    if(!panel) return;
-    var card=document.getElementById('v2LearningAppLinks');
-    if(!card) {
-      card=document.createElement('section');
-      card.className='v2-app-links';
-      card.id='v2LearningAppLinks';
-      card.innerHTML='<h3>📲 연결 학습 앱 바로가기</h3><p>탐험 화면에서 바로 학습 앱을 열 수 있어요.</p><div class="v2-app-grid">'+
-        '<button class="v2-app-btn" type="button" data-v2-slot="hangul"><span class="ico">✏️</span><span class="meta"><strong>한글</strong><small>연결된 한글 앱 열기</small></span></button>'+
-        '<button class="v2-app-btn" type="button" data-v2-slot="math"><span class="ico">🔢</span><span class="meta"><strong>수학</strong><small>연결된 수학 앱 열기</small></span></button>'+
-        '<button class="v2-app-btn" type="button" data-v2-slot="lang"><span class="ico">🔤</span><span class="meta"><strong>언어</strong><small>연결된 언어 앱 열기</small></span></button>'+
-        '<button class="v2-app-btn" type="button" data-v2-slot="library"><span class="ico">📚</span><span class="meta"><strong>도서관</strong><small>연결된 도서관 앱 열기</small></span></button></div>';
-      card.querySelectorAll('[data-v2-slot]').forEach(function(btn){
-        btn.addEventListener('click',function(){
-          var key=btn.getAttribute('data-v2-slot');
-          var homeTile=document.querySelector('#launchGrid [data-slot="'+key+'"]');
-          if(homeTile) homeTile.click();
-          else alert('메인페이지 앱 연결 기능을 찾지 못했어요. 앱을 새로고침해 주세요.');
-        });
-      });
-    }
-    /* 이전 버전에서 학습 탭에 남은 카드를 탐험 탭으로 이동 */
-    if(card.parentElement!==panel) panel.appendChild(card);
-  }
-  function enforceLearningAppLinkLocation() {
-    var explore=document.getElementById('panelExplore');
-    if(!explore) return;
-    var cards=Array.prototype.slice.call(document.querySelectorAll('#v2LearningAppLinks, .v2-app-links'));
-    var keep=cards.shift();
-    cards.forEach(function(card){ if(card!==keep && card.parentNode) card.parentNode.removeChild(card); });
-    if(keep && keep.parentElement!==explore) explore.appendChild(keep);
   }
   function makePanel() {
     if (document.getElementById('panelExplore')) return;
@@ -227,11 +184,11 @@
 
   }
   function boot() {
-    addStyles();makePanel();addLearningAppLinks();enforceLearningAppLinkLocation();
+    addStyles();makePanel();
     if(!document.getElementById('panelExplore'))return;
     window.addEventListener('storage',function(e){if(e.key===STATE_KEY || e.key===V2_KEY)render();});
     document.addEventListener('visibilitychange',function(){if(!document.hidden)render();});
-    window.setInterval(function(){ if(document.getElementById('panelExplore')) { render(); enforceLearningAppLinkLocation(); } }, 1000);\n    if(window.MutationObserver && document.body){ var linkObserver=new MutationObserver(function(){ enforceLearningAppLinkLocation(); }); linkObserver.observe(document.body,{childList:true,subtree:true}); }
+    window.setInterval(function(){ if(document.getElementById('panelExplore')) render(); }, 3000);
   }
   function wait() {
     if(document.getElementById('main')&&document.querySelector('.tabbar-inner'))boot();

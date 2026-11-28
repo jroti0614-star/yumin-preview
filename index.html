@@ -4101,6 +4101,7 @@ var ART_ORDER = [
     requests: [],
     gift: null,        // 아직 받지 않은 별 선물 { count, msg, from, time }
     giftStars: 0,      // 부모님이 선물해서 받은 별(하루 한도와 따로 센다)
+    lastGiftAt: 0,     // 마지막으로 받은 선물 시각 — 같은 선물이 동기화로 되살아나도 두 번 받지 않는다
     voices: [],
     reward: { date: '', lessons: 0, sessions: 0, endsAt: 0 },   // 보상: 오늘 학습 횟수·본 횟수·끝나는 시각
     lock: { on: false, start: '21:00', end: '07:00', days: [] },  // 사용 시간 제한(취침 잠금)
@@ -4291,7 +4292,8 @@ var ART_ORDER = [
         stars: state.stars, used: state.used, placed: state.placed, spent: state.spent, tickets: state.tickets,
         dailyCap: state.dailyCap, daily: state.daily,
         coupons: state.coupons,
-        requests: state.requests, gift: state.gift, giftStars: state.giftStars,
+        requests: state.requests, gift: liveGift(), giftStars: state.giftStars,
+        lastGiftAt: Number(state.lastGiftAt) || 0,
         reward: state.reward,
         lock: state.lock,
         launcher: state.launcher
@@ -4343,6 +4345,7 @@ var ART_ORDER = [
       if (Array.isArray(s.coupons)) state.coupons = s.coupons;
       if (Array.isArray(s.requests)) state.requests = s.requests;
       if (s.gift && typeof s.gift === 'object') state.gift = s.gift;
+      if (typeof s.lastGiftAt === 'number') state.lastGiftAt = Math.max(0, Number(s.lastGiftAt) || 0);
       if (s.reward && typeof s.reward === 'object') {
         state.reward = {
           date: typeof s.reward.date === 'string' ? s.reward.date : '',
@@ -4497,6 +4500,20 @@ var ART_ORDER = [
   }
   function giftStarsLeft() {
     return Math.max(0, Math.floor(state.giftStars || 0));
+  }
+  /* 선물에 찍힌 시각 — 오래된 화면은 time, 가족 동기화는 at을 쓴다 */
+  function giftAt(g) {
+    if (!g || typeof g !== 'object') return 0;
+    var t = Number(g.at || g.time || 0);
+    return isFinite(t) && t > 0 ? t : 0;
+  }
+  /* 아직 안 받은 선물만 돌려준다. 이미 받은 시각(lastGiftAt) 이전·같은 선물은 무시한다. */
+  function liveGift() {
+    var g = state.gift;
+    if (!g || typeof g !== 'object') return null;
+    var t = giftAt(g);
+    if (t && t <= (Number(state.lastGiftAt) || 0)) return null;
+    return g;
   }
   function availableStars() {
     return quizStarsLeft() + giftStarsLeft();
@@ -5717,11 +5734,12 @@ var ART_ORDER = [
 
   function renderGiftBanner() {
     var banner = $('giftBanner');
-    if (!state.gift) { banner.hidden = true; return; }
+    var g = liveGift();
+    if (!g) { banner.hidden = true; return; }
     banner.hidden = false;
-    $('giftTitle').textContent = (state.gift.from || '엄마') + '의 별 선물이 도착했어!';
-    $('giftSub').textContent = '별 ' + state.gift.count + '개가 들어 있어요' +
-      (state.gift.msg ? ' · ' + state.gift.msg : '');
+    $('giftTitle').textContent = (g.from || '엄마') + '의 별 선물이 도착했어!';
+    $('giftSub').textContent = '별 ' + g.count + '개가 들어 있어요' +
+      (g.msg ? ' · ' + g.msg : '');
   }
 
   /* ══════════════════════════════════════════════════════
@@ -8195,10 +8213,13 @@ var ART_ORDER = [
 
   /* ── 별 선물 받기 ──────────────────────────────────── */
   $('giftBanner').addEventListener('click', function () {
-    if (!state.gift) return;
-    var g = state.gift;
+    var g = liveGift();
+    if (!g) { state.gift = null; saveState(); renderAll(); return; }
     /* 부모님이 선물한 별은 퀴즈로 모은 별과 따로 센다 — 하루 2개 한도와 상관없이 다 받는다 */
     state.giftStars = giftStarsLeft() + Math.max(0, Math.floor(Number(g.count) || 0));
+    /* 받은 시각을 남겨, 같은 선물이 동기화로 다시 내려와도 두 번 받지 않는다 */
+    var at = giftAt(g) || Date.now();
+    state.lastGiftAt = Math.max(Number(state.lastGiftAt) || 0, at);
     state.gift = null;
     saveState();
     renderAll();
@@ -8885,6 +8906,7 @@ var ART_ORDER = [
     state.requests = [];
     state.gift = null;
     state.giftStars = 0;
+    state.lastGiftAt = 0;
     state.lessons = {};
     state.daily = { date: '', count: 0 };
     state.coupons = null;
@@ -9587,7 +9609,8 @@ var ART_ORDER = [
       daily: state.daily,
       coupons: couponList(),
       requests: state.requests,
-      gift: state.gift,
+      gift: liveGift(),
+      lastGiftAt: Number(state.lastGiftAt) || 0,
       giftStars: giftStarsLeft(),
       reward: {
         date: (state.reward && state.reward.date) || todayStr(),
@@ -9642,6 +9665,7 @@ var ART_ORDER = [
       if (Array.isArray(book.coupons)) state.coupons = book.coupons;
       if (Array.isArray(book.requests)) state.requests = book.requests;
       if (book.gift !== undefined) state.gift = book.gift;
+      if (typeof book.lastGiftAt === 'number') state.lastGiftAt = Math.max(Number(state.lastGiftAt) || 0, Number(book.lastGiftAt) || 0);
       if (typeof book.giftStars === 'number') state.giftStars = Math.max(0, Math.floor(book.giftStars));
       if (book.reward && typeof book.reward === 'object') {
         state.reward = {

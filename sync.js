@@ -346,7 +346,10 @@
       giftStars: maxNum(local.giftStars, remote.giftStars),
       coupons: unionById(local.coupons, remote.coupons),
       requests: unionById(local.requests, remote.requests),
-      gift: newer.gift || (lt >= rt ? remote.gift : local.gift) || null,
+      /* 선물은 '더 최신 문서'의 값을 그대로 따른다.
+         이미 받아 null이 된 선물을 예전 서버 값으로 되살리지 않는다(선물이 계속 주던 버그). */
+      gift: newer.gift !== undefined ? (newer.gift || null) : null,
+      lastGiftAt: Math.max(num(local.lastGiftAt, 0), num(remote.lastGiftAt, 0)),
       reward: mergeReward(local.reward, remote.reward)
     };
   }

@@ -1,11 +1,11 @@
 {
-  "versionCode": 20,
-  "versionName": "0.9.11",
-  "apkUrl": "https://jroti0614-star.github.io/yumin-preview/apk/yumin-launcher-v0.9.11-debug.apk",
-  "sha256": "70286ef2ddd3c2f0e963b12728cb570d14f1e29a596a198488441ead7d71fe62",
-  "sizeBytes": 13312927,
-  "publishedAt": "2026-11-28T08:41:14+09:00",
-  "notes": "화면 고정 중 뒤로가기를 눌러도 '화면 고정 중이에요' 안내 팝업이 뜨지 않습니다 — 아이가 건드릴 때마다 알림이 뜨지 않게 조용히 막기만 합니다 · 구글 TTS 엔진 직접 지정·키오스크 홈(●) 버튼·OTA·백그라운드 소리 정지 유지",
-  "releasePage": "https://github.com/jroti0614-star/yumin-preview/releases/tag/v0.9.11",
-  "mirrorUrl": "https://github.com/jroti0614-star/yumin-preview/releases/download/v0.9.11/yumin-launcher-0.9.11-debug.apk"
+  "versionCode": 21,
+  "versionName": "0.9.12",
+  "apkUrl": "https://github.com/jroti0614-star/yumin-lanucher/releases/download/v0.9.12/app-debug.apk",
+  "sha256": "67d5c5c7a949236396d644cc5777b74e9d6bbe5a843f73dece54511126649ee8",
+  "sizeBytes": 13318419,
+  "publishedAt": "2026-11-28T23:24:00+09:00",
+  "notes": "외부 학습 앱 실제 전면 사용시간 측정(10분) 및 세션당 별 1회 적립 · 사용정보 접근 권한 필요 · 부모 연동 비밀번호 보기/변경 개선",
+  "releasePage": "https://github.com/jroti0614-star/yumin-lanucher/releases/tag/v0.9.12",
+  "mirrorUrl": "https://github.com/jroti0614-star/yumin-lanucher/releases/download/v0.9.12/app-debug.apk"
 }
